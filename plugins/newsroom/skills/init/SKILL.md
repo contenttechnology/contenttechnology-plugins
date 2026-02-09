@@ -66,6 +66,10 @@ Use AskUserQuestion to gather the editorial mission from the user. Ask these que
 
 Use all four answers to craft the editorial mission for PUBLICATION.md. The user's own mission statement (Question 2) should be the foundation — do not rewrite it into generic language. Expand it with context from the audience and stance answers.
 
+## Steps 3–11: Generate Project Files (Parallel)
+
+Steps 3 through 11 have no dependencies on each other — they all depend only on the editorial mission gathered in Step 2 (and most don't depend on that either). **Execute all Write calls for Steps 3–11 in parallel** to minimise setup time. Issue all file writes in a single tool-call batch.
+
 ## Step 3: Generate PUBLICATION.md
 
 Write `PUBLICATION.md` to the project root with:
@@ -594,5 +598,13 @@ Initialise Newsroom project scaffold
 ```
 
 If no beats were created, omit the beats line from the commit message.
+
+## Step 14: Voice Model Reminder
+
+After the commit, inform the user:
+
+> **Sample voice models created.** Two example authors — Steve and Sarah — have been added to `voice-models/authors/`. These are generic templates. You should review and modify them to match your publication's tone of voice before running the editorial pipeline. Use `/newsroom:add-author` to create new authors or edit the files in `voice-models/authors/` directly.
+
+Then proceed to display next steps from SUMMARY.md.
 
 </process>
