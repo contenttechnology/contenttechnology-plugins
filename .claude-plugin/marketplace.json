@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "newsroom",
-      "source": "./",
+      "source": "./plugins/newsroom",
       "description": "Newsroom - autonomous editorial pipeline"
     }
   ]
