@@ -48,17 +48,23 @@ Use Bash `mkdir -p` to create all directories in one command.
 
 ## Step 2: Gather Editorial Mission
 
-Use AskUserQuestion to gather the editorial mission from the user. Ask these questions:
+Use AskUserQuestion to gather the editorial mission from the user. Ask these questions in order, using the answers to inform follow-up questions.
 
-1. **Industry/Domain**: "What industry or domain will this content engine cover?" — Provide options like "SaaS/Technology", "Financial services", "Healthcare", "Other (describe)".
+**Question 1 — Publication Name**: "What is the name of your publication or brand?"
+- Free-text input. This grounds the conversation and gives the engine an identity.
 
-2. **Audience**: "Who is your primary audience?" — Provide options relevant to the chosen domain. Examples: "Industry practitioners", "Business leaders and executives", "Industry investors", "Technology buyers".
+**Question 2 — Mission**: "In a sentence or two, what is the high-level mission for {Publication Name}? What do you want this publication to be known for?"
+- Free-text input. The user should describe the purpose of their publication in their own words. Examples to show (not as options, but as placeholder guidance): "We explain complex climate policy so business leaders can act on it", "We give independent SaaS founders the strategic insight that's usually locked behind expensive analysts".
 
-3. **Content Goal**: "What is the primary goal of your content?" — Options: "Build brand authority through editorial insight", "Drive product awareness through valuable content", "Establish thought leadership in the space", "Educate and inform industry professionals".
+**Question 3 — Audience**: Based on the mission, ask a targeted audience question. "Who is the primary reader of {Publication Name}?" — Offer 3-4 options inferred from the mission statement, plus an "Other" option. For example, if the mission mentions SaaS founders, offer options like "Founders and CEOs", "Product leaders", "Operators and practitioners". If the mission mentions policy, offer "Policy professionals", "Business leaders affected by regulation", etc. Use judgement to generate relevant options from the user's own words.
 
-4. **Publication Name**: "What is the name of your publication or brand?"
+**Question 4 — Editorial Stance**: "What editorial stance should {Publication Name} take?" — Options:
+  - "Opinionated and thesis-driven" — description: "Take clear positions backed by evidence. Not afraid to be wrong."
+  - "Analytical and balanced" — description: "Present multiple perspectives. Let the evidence speak."
+  - "Practical and actionable" — description: "Every piece ends with something the reader can do."
+  - "Investigative and deep" — description: "Go further than anyone else. Original research and primary sources."
 
-Use the answers to craft the editorial mission statement for PUBLICATION.md.
+Use all four answers to craft the editorial mission for PUBLICATION.md. The user's own mission statement (Question 2) should be the foundation — do not rewrite it into generic language. Expand it with context from the audience and stance answers.
 
 ## Step 3: Generate PUBLICATION.md
 
@@ -68,7 +74,7 @@ Write `PUBLICATION.md` to the project root with:
 # Newsroom — Editorial Mission
 
 ## Mission
-[Crafted from user's answers — e.g., "{Publication Name} produces insight-driven editorial content for {industry} professionals. Every piece must combine multiple sources to deliver genuine insight that the audience cannot easily find elsewhere. Single-source summarisation is explicitly prohibited."]
+[Use the user's own mission statement from Question 2 as the opening line — do not paraphrase it into generic language. Then expand with 1-2 sentences that incorporate the target audience (Question 3) and editorial stance (Question 4). End with: "Single-source summarisation is explicitly prohibited."]
 
 ## Quality Criteria
 - **Synthesis over summarisation:** Every piece must combine multiple sources. If a single article covers it, we don't publish.
@@ -102,7 +108,7 @@ The current state of the editorial pipeline is readable from the folder structur
 - `pipeline/rejected/` — Killed angles with reasoning
 ```
 
-Incorporate the user's editorial mission answers into the Mission section. Keep the rest as-is.
+Incorporate the user's editorial mission answers into the Mission section. The user's own words from Question 2 should be preserved as the core of the mission — do not flatten it into a generic template. Weave in audience and stance context naturally. Keep the rest of PUBLICATION.md as-is.
 
 ## Step 4: Generate config.md
 
