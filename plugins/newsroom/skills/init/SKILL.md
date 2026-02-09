@@ -2,7 +2,7 @@
 name: init
 description: Initialise a new content engine project with full folder structure, editorial mission, voice models, and configuration.
 disable-model-invocation: true
-allowed-tools: Read, Write, Edit, Bash, AskUserQuestion, Glob
+allowed-tools: Read, Write, Edit, Bash, AskUserQuestion, Glob, Task
 ---
 
 <objective>
@@ -66,19 +66,33 @@ Use AskUserQuestion to gather the editorial mission from the user. Ask these que
 
 Use all four answers to craft the editorial mission for PUBLICATION.md. The user's own mission statement (Question 2) should be the foundation — do not rewrite it into generic language. Expand it with context from the audience and stance answers.
 
-## Steps 3–10: Generate Project Files (Parallel)
+## Step 3: Scaffold Project Files (Parallel Subagents)
 
-Steps 3 through 10 have no dependencies on each other — they all depend only on the editorial mission gathered in Step 2 (and most don't depend on that either). **Execute all Write calls for Steps 3–10 in parallel** to minimise setup time. Issue all file writes in a single tool-call batch.
+Dispatch **four parallel scaffolding subagents** using the Task tool (subagent_type: "general-purpose", model: "haiku"). Launch all four in a single message so they run concurrently.
 
-## Step 3: Generate PUBLICATION.md
+### Task A: Core Project Files
 
-Write `PUBLICATION.md` to the project root with:
+```
+You are a file scaffolding agent. Create the following 3 files using the Write tool.
 
-```markdown
+## Editorial Mission Context
+- Publication Name: {publication_name}
+- Mission Statement: {mission_statement}
+- Target Audience: {audience}
+- Editorial Stance: {editorial_stance}
+
+## File 1: PUBLICATION.md
+
+Write to `PUBLICATION.md` in the project root.
+
+IMPORTANT: For the Mission section, use the user's exact mission statement as the opening line — do not paraphrase it into generic language. Then expand with 1-2 sentences that naturally incorporate the target audience and editorial stance. End the section with: "Single-source summarisation is explicitly prohibited."
+
+Content:
+
 # Newsroom — Editorial Mission
 
 ## Mission
-[Use the user's own mission statement from Question 2 as the opening line — do not paraphrase it into generic language. Then expand with 1-2 sentences that incorporate the target audience (Question 3) and editorial stance (Question 4). End with: "Single-source summarisation is explicitly prohibited."]
+[Compose using the editorial mission context above. Preserve the user's own words as the core.]
 
 ## Quality Criteria
 - **Synthesis over summarisation:** Every piece must combine multiple sources. If a single article covers it, we don't publish.
@@ -110,15 +124,11 @@ The current state of the editorial pipeline is readable from the folder structur
 - `pipeline/review/` — Drafts awaiting human review
 - `pipeline/published/` — Published pieces (archive)
 - `pipeline/rejected/` — Killed angles with reasoning
-```
 
-Incorporate the user's editorial mission answers into the Mission section. The user's own words from Question 2 should be preserved as the core of the mission — do not flatten it into a generic template. Weave in audience and stance context naturally. Keep the rest of PUBLICATION.md as-is.
+## File 2: config.md
 
-## Step 4: Generate config.md
+Write to `config.md` in the project root. Use this exact content:
 
-Write `config.md` to the project root:
-
-```markdown
 # Newsroom Configuration
 
 ## Research Settings
@@ -143,13 +153,49 @@ Write `config.md` to the project root:
 - Regulatory Watch: as warranted
 - Practitioner Insights: weekly
 - Market Pulse: bi-weekly
+
+## File 3: editorial-calendar.md
+
+Write to `editorial-calendar.md` in the project root. Use this exact content:
+
+# Editorial Calendar
+
+## Current Month
+
+| Week | Content Type | Topic/Angle | Author | Status |
+|------|-------------|-------------|--------|--------|
+| | | | | |
+
+## Recurring Commitments
+- **Practitioner Insights**: Weekly
+- **Market Pulse**: Bi-weekly
+- **Deep Analysis**: 2-4 per month
+- **Data Intelligence**: Per data release calendar
+- **Regulatory Watch**: As warranted
+
+## Upcoming Events
+<!-- Add industry events, data release dates, regulatory deadlines that drive content -->
+
+## Campaign Slots
+<!-- Reserve weeks for thematic campaigns -->
+
+## Notes
+- Rapid response pieces override the calendar when timeliness demands it
+- Calendar is a guide, not a constraint — quality always trumps schedule
+
+## Output
+After creating all 3 files, confirm completion.
 ```
 
-## Step 5: Generate Brand Guidelines
+### Task B: Voice Infrastructure
 
-Write `voice-models/brand-guidelines.md`:
+```
+You are a file scaffolding agent. Create the following files using the Write tool and Bash.
 
-```markdown
+## File 1: voice-models/brand-guidelines.md
+
+Write to `voice-models/brand-guidelines.md`. Use this exact content:
+
 # Brand Voice Guidelines
 
 ## Brand Voice Constraints
@@ -177,13 +223,36 @@ Write `voice-models/brand-guidelines.md`:
 - Disclose potential conflicts of interest
 - Never fabricate quotes, data points, or sources
 - Correct errors promptly and transparently
+
+## File 2: knowledge-base/index.json
+
+Write to `knowledge-base/index.json`. Use this exact content:
+
+{
+  "last_updated": null,
+  "next_signal_id": 1,
+  "processed_urls": {},
+  "processed_files": {},
+  "signals": {}
+}
+
+## File 3: .gitkeep files
+
+Use Bash to create .gitkeep files in all empty directories so git tracks them. Run a single command:
+
+touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep campaigns/active/.gitkeep campaigns/archive/.gitkeep pipeline/pitches/.gitkeep pipeline/approved/.gitkeep pipeline/drafts/.gitkeep pipeline/review/.gitkeep pipeline/published/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
+
+## Output
+After creating all files, confirm completion.
 ```
 
-## Step 6: Generate Example Author — Steve
+### Task C: Steve Voice Model
 
-Create `voice-models/authors/steve/baseline.md`:
+```
+You are a file scaffolding agent. Create the following 4 files using the Write tool. All files go under voice-models/authors/steve/.
 
-```markdown
+## File 1: voice-models/authors/steve/baseline.md
+
 # Steve — Author Baseline
 
 ## Core Personality
@@ -225,11 +294,9 @@ Steve believes the best professionals are the ones who understand both the numbe
 - Closes with practical implications — "what this means for your Q3 pricing review"
 - Avoids neat summaries — prefers to leave the reader with a question or forward-looking implication
 - Never closes with a call to action
-```
 
-Create `voice-models/authors/steve/style-deep-analysis.md`:
+## File 2: voice-models/authors/steve/style-deep-analysis.md
 
-```markdown
 # Steve — Style Modifier: Deep Analysis
 
 ## How the Voice Shifts
@@ -251,11 +318,9 @@ When Steve writes deep analysis, his natural directness becomes more measured. H
 - 1,500-2,500 words
 - Slower pacing — gives the reader time to absorb complex arguments
 - Section breaks every 300-500 words
-```
 
-Create `voice-models/authors/steve/style-commentary.md`:
+## File 3: voice-models/authors/steve/style-commentary.md
 
-```markdown
 # Steve — Style Modifier: Commentary
 
 ## How the Voice Shifts
@@ -277,11 +342,9 @@ Commentary Steve is the version you meet at the bar after the conference. The op
 - 800-1,200 words
 - Fast-paced — respects the reader's time
 - Minimal section breaks — flows as a single argument
-```
 
-Create `voice-models/authors/steve/style-humorous.md`:
+## File 4: voice-models/authors/steve/style-humorous.md
 
-```markdown
 # Steve — Style Modifier: Humorous
 
 ## How the Voice Shifts
@@ -303,13 +366,18 @@ Steve's humorous mode is the industry newsletter you actually look forward to re
 - 400-800 words
 - Quick and punchy
 - Short paragraphs — almost conversational rhythm
+
+## Output
+After creating all 4 files, confirm completion.
 ```
 
-## Step 7: Generate Example Author — Sarah
+### Task D: Sarah Voice Model
 
-Create `voice-models/authors/sarah/baseline.md`:
+```
+You are a file scaffolding agent. Create the following 2 files using the Write tool. All files go under voice-models/authors/sarah/.
 
-```markdown
+## File 1: voice-models/authors/sarah/baseline.md
+
 # Sarah — Author Baseline
 
 ## Core Personality
@@ -351,11 +419,9 @@ Sarah is precise without being dry. She respects her readers' intelligence and t
 - Closes with a timeline and action items
 - "What to do now" section with concrete steps
 - Provides next dates to watch
-```
 
-Create `voice-models/authors/sarah/style-regulatory.md`:
+## File 2: voice-models/authors/sarah/style-regulatory.md
 
-```markdown
 # Sarah — Style Modifier: Regulatory Analysis
 
 ## How the Voice Shifts
@@ -379,71 +445,16 @@ In regulatory analysis mode, Sarah becomes even more precise and structured. Eve
 - 600-1,000 words
 - Structured for scanning — readers should be able to jump to the section they need
 - Heavy use of headers, bullets, and bold text for key dates/amounts
+
+## Output
+After creating all 2 files, confirm completion.
 ```
 
-## Step 8: Generate Editorial Calendar Template
+### Wait for Completion
 
-Write `editorial-calendar.md` to the project root:
+Once all four subagents return, proceed to Step 4. If any task reports errors, create those files directly before continuing.
 
-```markdown
-# Editorial Calendar
-
-## Current Month
-
-| Week | Content Type | Topic/Angle | Author | Status |
-|------|-------------|-------------|--------|--------|
-| | | | | |
-
-## Recurring Commitments
-- **Practitioner Insights**: Weekly
-- **Market Pulse**: Bi-weekly
-- **Deep Analysis**: 2-4 per month
-- **Data Intelligence**: Per data release calendar
-- **Regulatory Watch**: As warranted
-
-## Upcoming Events
-<!-- Add industry events, data release dates, regulatory deadlines that drive content -->
-
-## Campaign Slots
-<!-- Reserve weeks for thematic campaigns -->
-
-## Notes
-- Rapid response pieces override the calendar when timeliness demands it
-- Calendar is a guide, not a constraint — quality always trumps schedule
-```
-
-## Step 9: Generate Knowledge Base Index
-
-Write `knowledge-base/index.json`:
-
-```json
-{
-  "last_updated": null,
-  "next_signal_id": 1,
-  "processed_urls": {},
-  "processed_files": {},
-  "signals": {}
-}
-```
-
-## Step 10: Add .gitkeep Files
-
-Add `.gitkeep` files to empty directories so git tracks them:
-- `knowledge-base/signals/.gitkeep`
-- `knowledge-base/sources/.gitkeep`
-- `knowledge-base/archive/.gitkeep`
-- `beats/.gitkeep`
-- `campaigns/active/.gitkeep`
-- `campaigns/archive/.gitkeep`
-- `pipeline/pitches/.gitkeep`
-- `pipeline/approved/.gitkeep`
-- `pipeline/drafts/.gitkeep`
-- `pipeline/review/.gitkeep`
-- `pipeline/published/.gitkeep`
-- `pipeline/rejected/.gitkeep`
-- `metrics/.gitkeep`
-
-## Step 11: Create Initial Beats (Optional)
+## Step 4: Create Initial Beats (Optional)
 
 Ask the user if they would like to create any research beats now. Use AskUserQuestion:
 
@@ -506,7 +517,7 @@ After writing each beat file, ask whether to add another:
 
 Continue the loop until the user indicates they're done.
 
-## Step 12: Git Commit
+## Step 5: Git Commit
 
 Stage all new files and commit with message:
 ```
@@ -522,7 +533,7 @@ Initialise Newsroom project scaffold
 
 If no beats were created, omit the beats line from the commit message.
 
-## Step 13: Next Steps
+## Step 6: Next Steps
 
 After the commit, inform the user:
 
