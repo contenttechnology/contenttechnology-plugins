@@ -1,0 +1,13 @@
+{
+  "name": "contenttechnology-plugins",
+  "owner": {
+    "name": "Content Technology"
+  },
+  "plugins": [
+    {
+      "name": "newsroom",
+      "source": "./",
+      "description": "Newsroom - autonomous editorial pipeline"
+    }
+  ]
+}
