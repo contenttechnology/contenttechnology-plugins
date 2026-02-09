@@ -61,7 +61,7 @@ claude
 Inside Claude Code, run:
 
 ```
-/newsroom:init
+/init
 ```
 
 The init skill walks you through an interactive setup:
@@ -79,7 +79,7 @@ You now have a working newsroom.
 Beats are the topics your newsroom monitors. Each beat has its own sources and schedule.
 
 ```
-/newsroom:add-beat
+/add-beat
 ```
 
 You'll define the beat's scope, add sources (URLs, feeds, databases), set check frequency, and assign credibility tiers.
@@ -89,7 +89,7 @@ You'll define the beat's scope, add sources (URLs, feeds, databases), set check 
 Each author has a distinct voice — personality, vocabulary, rhythm, and style variations.
 
 ```
-/newsroom:add-author
+/add-author
 ```
 
 The skill interviews you about the author's personality, then generates a baseline voice model and style modifiers (deep-analysis, commentary, regulatory, humorous).
@@ -99,24 +99,24 @@ The skill interviews you about the author's personality, then generates a baseli
 Run the full autonomous cycle:
 
 ```
-/newsroom:run
+/run
 ```
 
 This executes research through quality gate with zero human interaction and outputs articles ready for review. You can also run individual stages:
 
 ```
-/newsroom:research
-/newsroom:angle
-/newsroom:validate
-/newsroom:editorial
-/newsroom:produce
-/newsroom:quality
+/research
+/angle
+/validate
+/editorial
+/produce
+/quality
 ```
 
 ### Review Drafts
 
 ```
-/newsroom:review
+/review
 ```
 
 An interactive session where you read quality-approved drafts and decide: **approve** (publish), **revise** (send back with feedback), or **kill** (reject with reasoning). Every decision is logged and committed to git.

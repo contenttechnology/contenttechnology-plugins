@@ -33,7 +33,7 @@ Also extract the headline from the first `#` heading in the markdown body (after
 If no drafts are found, report:
 ```
 No drafts awaiting review. The pipeline has not produced any quality-approved drafts.
-Run /newsroom:run or /newsroom:quality first.
+Run /run or /quality first.
 ```
 And exit.
 

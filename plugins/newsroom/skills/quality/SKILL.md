@@ -21,7 +21,7 @@ Read each draft. Filter for:
 
 Skip `status: passed` and `status: killed`.
 
-If no drafts are found, report "No drafts to review. Run /newsroom:produce first." and exit.
+If no drafts are found, report "No drafts to review. Run /produce first." and exit.
 
 ## Step 2: Load Quality Context
 

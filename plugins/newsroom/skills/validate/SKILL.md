@@ -17,7 +17,7 @@ Use Glob to find all pitch memos: `pipeline/pitches/*.md`
 
 Read each pitch memo. Filter for those with `status: pending` in frontmatter — these have not yet been validated. Skip any with `status: validated`, `status: approved`, or `status: rejected`.
 
-If no pending pitch memos are found, report "No pending pitch memos to validate. Run /newsroom:angle first." and exit.
+If no pending pitch memos are found, report "No pending pitch memos to validate. Run /angle first." and exit.
 
 Read `config.md` for quality thresholds (min sources for angle, max revision cycles).
 

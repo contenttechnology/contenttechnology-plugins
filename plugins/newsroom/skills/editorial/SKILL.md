@@ -49,7 +49,7 @@ Use Glob to find all pitch memos: `pipeline/pitches/*.md`
 
 Read each and filter for `status: validated` — these have passed validation and are ready for editorial review. Skip `pending` (not yet validated), `approved`, and `rejected`.
 
-If no validated pitch memos are found, report "No validated pitches to review. Run /newsroom:validate first." and exit.
+If no validated pitch memos are found, report "No validated pitches to review. Run /validate first." and exit.
 
 ## Step 3: Evaluate Each Pitch
 

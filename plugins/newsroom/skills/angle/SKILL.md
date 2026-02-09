@@ -199,7 +199,7 @@ Angle scan: {N} pitch memos from {M} signals
 
 ## Error Handling
 
-- If no signals exist in the knowledge base, report "No signals in knowledge base. Run /newsroom:research first." and exit
+- If no signals exist in the knowledge base, report "No signals in knowledge base. Run /research first." and exit
 - If all candidate angles fail quality filters, report "No viable angles found this cycle" — this is expected and healthy
 - If no authors exist in voice-models/, still write pitch memos but set recommended_author to null
 - Never lower quality standards to produce pitch memos — zero pitches is a valid and common outcome

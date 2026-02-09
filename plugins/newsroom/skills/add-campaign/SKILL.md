@@ -20,9 +20,9 @@ Use AskUserQuestion to determine the campaign type:
   - "Seasonal — Recurring industry cycle (e.g., Q1 rate increases, summer demand, budget season)"
   - "Event-driven — Specific event creating an audience interest window (e.g., conference, major announcement, regulatory change)"
   - "Thematic — Sustained focus on a topic for 4-8 weeks (e.g., emerging market trends, technology adoption, regulatory impact)"
-  - "Rapid Response — Breaking news requiring expedited pipeline (use /newsroom:rush for immediate firefighting)"
+  - "Rapid Response — Breaking news requiring expedited pipeline (use /rush for immediate firefighting)"
 
-If the user selects "Rapid Response", inform them that `/newsroom:rush` is better suited for immediate breaking news, but a rapid response campaign can be created here to sustain coverage over several days after the initial rush piece. Ask if they want to continue or use `/newsroom:rush` instead.
+If the user selects "Rapid Response", inform them that `/rush` is better suited for immediate breaking news, but a rapid response campaign can be created here to sustain coverage over several days after the initial rush piece. Ask if they want to continue or use `/rush` instead.
 
 ## Step 2: Campaign Identity
 

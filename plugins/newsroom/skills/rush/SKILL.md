@@ -461,7 +461,7 @@ Rush: {Headline}
 
 ## Error Handling
 
-- If research subagents find almost nothing, inform the user: "Not enough source material for a Newsroom-quality piece. Consider monitoring this topic and running /newsroom:research when more information emerges."
+- If research subagents find almost nothing, inform the user: "Not enough source material for a Newsroom-quality piece. Consider monitoring this topic and running /research when more information emerges."
 - If the synthesis test fails (only one source), do not force production. Inform the user that the story needs more sources before Newsroom can cover it with integrity.
 - If author voice models are missing, ask the user to select an author or write in brand-voice-only mode as a fallback.
 - Always flag confidence issues explicitly — rush pieces have higher factual risk and the human must know what to verify.

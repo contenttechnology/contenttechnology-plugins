@@ -17,7 +17,7 @@ Use Glob to find all production briefs: `pipeline/approved/*.md`
 
 Read each brief. Filter for `status: ready` — these are ready for production. Skip any with `status: in-production` or `status: produced`.
 
-If no ready briefs are found, report "No production briefs ready. Run /newsroom:editorial first." and exit.
+If no ready briefs are found, report "No production briefs ready. Run /editorial first." and exit.
 
 ## Step 2: Load Shared Context
 
@@ -175,7 +175,7 @@ Edit the production brief frontmatter to set `status: produced` and add `draft_i
 {Any notable decisions, compromises, or flags from the production agents}
 
 ### Next Step
-Run `/newsroom:quality` to assess these drafts against the quality gate.
+Run `/quality` to assess these drafts against the quality gate.
 ```
 
 ## Step 6: Git Commit

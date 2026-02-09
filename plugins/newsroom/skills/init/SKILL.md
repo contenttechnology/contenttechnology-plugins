@@ -89,12 +89,12 @@ Write `PUBLICATION.md` to the project root with:
 ## Cycle Instructions
 
 Run all pipeline stages in order:
-1. `/newsroom:research` — Scan all active beats for new signals
-2. `/newsroom:angle` — Construct theses from converging signals
-3. `/newsroom:validate` — Validate angles with supporting/counter evidence
-4. `/newsroom:editorial` — Approve or kill angles, assign authors
-5. `/newsroom:produce` — Write drafts in assigned voice
-6. `/newsroom:quality` — Quality gate assessment
+1. `/research` — Scan all active beats for new signals
+2. `/angle` — Construct theses from converging signals
+3. `/validate` — Validate angles with supporting/counter evidence
+4. `/editorial` — Approve or kill angles, assign authors
+5. `/produce` — Write drafts in assigned voice
+6. `/quality` — Quality gate assessment
 
 ## Configuration
 See `config.md` for research modes, step budgets, and quality thresholds.
@@ -439,19 +439,19 @@ The Newsroom is an autonomous editorial system that produces high-quality, insig
 ## Getting Started
 
 ### 1. Initialise the Project
-Run `/newsroom:init` to create the project structure, define your editorial mission, and set up initial voice models.
+Run `/init` to create the project structure, define your editorial mission, and set up initial voice models.
 
 ### 2. Add Research Beats
-Run `/newsroom:add-beat` to define the topics and sources your engine will monitor. Each beat specifies:
+Run `/add-beat` to define the topics and sources your engine will monitor. Each beat specifies:
 - The scope of coverage
 - Source URLs with type and credibility tier
 - Check frequency (every-run, daily, weekly)
 
 ### 3. Add Author Voices
-Run `/newsroom:add-author` to create new author voice models. The system ships with two example authors (Steve and Sarah) — create your own to match your publication's needs.
+Run `/add-author` to create new author voice models. The system ships with two example authors (Steve and Sarah) — create your own to match your publication's needs.
 
 ### 4. Run Research
-Run `/newsroom:research` to scan all active beats for new signals. This dispatches subagents per beat, processes local source files, and updates the knowledge base.
+Run `/research` to scan all active beats for new signals. This dispatches subagents per beat, processes local source files, and updates the knowledge base.
 
 ## Key Directories
 - `knowledge-base/signals/` — Signal reports from research
@@ -485,21 +485,21 @@ The next research cycle will process these automatically.
 ## Available Skills
 
 ### Setup
-- `/newsroom:init` — Initialise a new Newsroom project
-- `/newsroom:add-author` — Create a new author voice model
-- `/newsroom:add-beat` — Create a new research beat
-- `/newsroom:add-campaign` — Create a new editorial campaign
+- `/init` — Initialise a new Newsroom project
+- `/add-author` — Create a new author voice model
+- `/add-beat` — Create a new research beat
+- `/add-campaign` — Create a new editorial campaign
 
 ### Editorial Pipeline
-- `/newsroom:research` — Scan all active beats for new signals
-- `/newsroom:angle` — Construct theses from converging signals
-- `/newsroom:validate` — Validate angles with supporting/counter evidence
-- `/newsroom:editorial` — Approve or kill angles, assign authors, produce briefs
-- `/newsroom:produce` — Write drafts in assigned author voice
-- `/newsroom:quality` — Quality gate assessment — pass, revise, or kill
+- `/research` — Scan all active beats for new signals
+- `/angle` — Construct theses from converging signals
+- `/validate` — Validate angles with supporting/counter evidence
+- `/editorial` — Approve or kill angles, assign authors, produce briefs
+- `/produce` — Write drafts in assigned author voice
+- `/quality` — Quality gate assessment — pass, revise, or kill
 
 ### Rapid Response
-- `/newsroom:rush` — Compressed pipeline for breaking news
+- `/rush` — Compressed pipeline for breaking news
 ```
 
 ## Step 11: Add .gitkeep Files
@@ -526,7 +526,7 @@ Ask the user if they would like to create any research beats now. Use AskUserQue
 **Question**: "Would you like to create some research beats now? Beats define the topics your engine will monitor for signals."
 - Options:
   - "Yes, let me add some beats" — description: "Define one or more beats by short description"
-  - "No, I'll add beats later" — description: "Skip for now — use /newsroom:add-beat later to add beats"
+  - "No, I'll add beats later" — description: "Skip for now — use /add-beat later to add beats"
 
 If the user chooses to add beats, enter a loop:
 
@@ -570,7 +570,7 @@ When scanning this beat, research agents should:
 - Look for connections to signals from other beats
 
 ## Notes
-This beat was created during project initialisation with a quick description. To add specific sources, credibility tiers, and detailed methodology, run `/newsroom:add-beat` to create a more detailed beat, or edit this file directly.
+This beat was created during project initialisation with a quick description. To add specific sources, credibility tiers, and detailed methodology, run `/add-beat` to create a more detailed beat, or edit this file directly.
 ```
 
 After writing each beat file, ask whether to add another:
@@ -603,7 +603,7 @@ If no beats were created, omit the beats line from the commit message.
 
 After the commit, inform the user:
 
-> **Sample voice models created.** Two example authors — Steve and Sarah — have been added to `voice-models/authors/`. These are generic templates. You should review and modify them to match your publication's tone of voice before running the editorial pipeline. Use `/newsroom:add-author` to create new authors or edit the files in `voice-models/authors/` directly.
+> **Sample voice models created.** Two example authors — Steve and Sarah — have been added to `voice-models/authors/`. These are generic templates. You should review and modify them to match your publication's tone of voice before running the editorial pipeline. Use `/add-author` to create new authors or edit the files in `voice-models/authors/` directly.
 
 Then proceed to display next steps from SUMMARY.md.
 
