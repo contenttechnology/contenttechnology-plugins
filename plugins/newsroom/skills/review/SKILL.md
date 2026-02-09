@@ -71,7 +71,7 @@ Read the full content of the selected draft file. Present to the human:
    Brief: {brief_id}
    ```
 
-2. **Quality report**: If a quality report section is appended to the draft (from `newsroom:quality`), display a condensed version showing the 7 criterion scores table.
+2. **Quality report**: If a quality report section is appended to the draft (from `quality`), display a condensed version showing the 7 criterion scores table.
 
 3. **Full article text**: The complete draft body.
 

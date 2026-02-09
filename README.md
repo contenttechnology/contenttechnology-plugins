@@ -129,29 +129,29 @@ An interactive session where you read quality-approved drafts and decide: **appr
 
 | Skill | What it does |
 |---|---|
-| `newsroom:init` | Create a new newsroom project — folder structure, editorial mission, config, example authors, and first beats |
-| `newsroom:add-author` | Interactively create a new author voice model with baseline personality and style modifiers |
-| `newsroom:add-beat` | Define a new research beat with sources, schedule, scope, and methodology |
-| `newsroom:add-campaign` | Launch an editorial campaign — seasonal, event-driven, thematic, or rapid response |
+| `init` | Create a new newsroom project — folder structure, editorial mission, config, example authors, and first beats |
+| `add-author` | Interactively create a new author voice model with baseline personality and style modifiers |
+| `add-beat` | Define a new research beat with sources, schedule, scope, and methodology |
+| `add-campaign` | Launch an editorial campaign — seasonal, event-driven, thematic, or rapid response |
 
 ### Pipeline (run autonomously or manually)
 
 | Skill | What it does |
 |---|---|
-| `newsroom:research` | Scan all active beats for new signals. Dispatches parallel subagents per beat, produces signal reports, updates the knowledge base |
-| `newsroom:angle` | Scan the knowledge base for convergent patterns. Applies quality filters (So What?, Synthesis, Novelty, Durability). Writes pitch memos |
-| `newsroom:validate` | Validate pitch memos with four parallel subagents: supporting evidence, counter-evidence, scope, and audience resonance |
-| `newsroom:editorial` | Evaluate validated pitches. Make approve/kill/hold decisions. Assign authors and styles. Write production briefs |
-| `newsroom:produce` | Write article drafts from production briefs using the three-layer voice model (brand + author + style) |
-| `newsroom:quality` | Assess drafts against seven criteria. Pass, revise (up to 2 cycles), or kill |
-| `newsroom:run` | Execute the full pipeline end-to-end with zero human interaction. Designed for cron |
+| `research` | Scan all active beats for new signals. Dispatches parallel subagents per beat, produces signal reports, updates the knowledge base |
+| `angle` | Scan the knowledge base for convergent patterns. Applies quality filters (So What?, Synthesis, Novelty, Durability). Writes pitch memos |
+| `validate` | Validate pitch memos with four parallel subagents: supporting evidence, counter-evidence, scope, and audience resonance |
+| `editorial` | Evaluate validated pitches. Make approve/kill/hold decisions. Assign authors and styles. Write production briefs |
+| `produce` | Write article drafts from production briefs using the three-layer voice model (brand + author + style) |
+| `quality` | Assess drafts against seven criteria. Pass, revise (up to 2 cycles), or kill |
+| `run` | Execute the full pipeline end-to-end with zero human interaction. Designed for cron |
 
 ### Human Interaction
 
 | Skill | What it does |
 |---|---|
-| `newsroom:review` | Interactive review session — read drafts, approve, revise with feedback, or kill with reasoning |
-| `newsroom:rush` | Rapid response for breaking news — compressed pipeline, abbreviated validation, draft ready in a single session |
+| `review` | Interactive review session — read drafts, approve, revise with feedback, or kill with reasoning |
+| `rush` | Rapid response for breaking news — compressed pipeline, abbreviated validation, draft ready in a single session |
 
 ---
 
