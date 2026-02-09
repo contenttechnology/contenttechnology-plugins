@@ -66,9 +66,9 @@ Use AskUserQuestion to gather the editorial mission from the user. Ask these que
 
 Use all four answers to craft the editorial mission for PUBLICATION.md. The user's own mission statement (Question 2) should be the foundation — do not rewrite it into generic language. Expand it with context from the audience and stance answers.
 
-## Steps 3–11: Generate Project Files (Parallel)
+## Steps 3–10: Generate Project Files (Parallel)
 
-Steps 3 through 11 have no dependencies on each other — they all depend only on the editorial mission gathered in Step 2 (and most don't depend on that either). **Execute all Write calls for Steps 3–11 in parallel** to minimise setup time. Issue all file writes in a single tool-call batch.
+Steps 3 through 10 have no dependencies on each other — they all depend only on the editorial mission gathered in Step 2 (and most don't depend on that either). **Execute all Write calls for Steps 3–10 in parallel** to minimise setup time. Issue all file writes in a single tool-call batch.
 
 ## Step 3: Generate PUBLICATION.md
 
@@ -426,83 +426,7 @@ Write `knowledge-base/index.json`:
 }
 ```
 
-## Step 10: Generate SUMMARY.md
-
-Write `SUMMARY.md` to the project root:
-
-```markdown
-# Newsroom — Usage Guide
-
-## Overview
-The Newsroom is an autonomous editorial system that produces high-quality, insight-driven content. It operates through a 6-stage pipeline: Research → Angle → Validation → Editorial → Production → Quality Gate.
-
-## Getting Started
-
-### 1. Initialise the Project
-Run `/init` to create the project structure, define your editorial mission, and set up initial voice models.
-
-### 2. Add Research Beats
-Run `/add-beat` to define the topics and sources your engine will monitor. Each beat specifies:
-- The scope of coverage
-- Source URLs with type and credibility tier
-- Check frequency (every-run, daily, weekly)
-
-### 3. Add Author Voices
-Run `/add-author` to create new author voice models. The system ships with two example authors (Steve and Sarah) — create your own to match your publication's needs.
-
-### 4. Run Research
-Run `/research` to scan all active beats for new signals. This dispatches subagents per beat, processes local source files, and updates the knowledge base.
-
-## Key Directories
-- `knowledge-base/signals/` — Signal reports from research
-- `knowledge-base/sources/` — Drop files here for manual source submission (Tier 1)
-- `beats/` — Beat configuration files
-- `voice-models/` — Brand guidelines and author voice definitions
-- `pipeline/` — Editorial pipeline stages (pitches → approved → drafts → review → published)
-- `metrics/` — Cycle logs and performance data
-- `campaigns/` — Active and archived campaign briefs
-
-## Configuration
-Edit `config.md` to adjust:
-- Research mode (scan/investigate/deep-dive)
-- Step budgets per research cycle
-- Quality thresholds and content mix targets
-
-## Submitting Sources
-Drop markdown files into `knowledge-base/sources/` with optional frontmatter:
-```yaml
----
-beat: financial-intelligence  # optional
-source_tier: 1                # optional, defaults to 1
-title: Article Title           # optional
-url: https://original-url     # optional
----
-[Content here]
-```
-
-The next research cycle will process these automatically.
-
-## Available Skills
-
-### Setup
-- `/init` — Initialise a new Newsroom project
-- `/add-author` — Create a new author voice model
-- `/add-beat` — Create a new research beat
-- `/add-campaign` — Create a new editorial campaign
-
-### Editorial Pipeline
-- `/research` — Scan all active beats for new signals
-- `/angle` — Construct theses from converging signals
-- `/validate` — Validate angles with supporting/counter evidence
-- `/editorial` — Approve or kill angles, assign authors, produce briefs
-- `/produce` — Write drafts in assigned author voice
-- `/quality` — Quality gate assessment — pass, revise, or kill
-
-### Rapid Response
-- `/rush` — Compressed pipeline for breaking news
-```
-
-## Step 11: Add .gitkeep Files
+## Step 10: Add .gitkeep Files
 
 Add `.gitkeep` files to empty directories so git tracks them:
 - `knowledge-base/signals/.gitkeep`
@@ -519,7 +443,7 @@ Add `.gitkeep` files to empty directories so git tracks them:
 - `pipeline/rejected/.gitkeep`
 - `metrics/.gitkeep`
 
-## Step 12: Create Initial Beats (Optional)
+## Step 11: Create Initial Beats (Optional)
 
 Ask the user if they would like to create any research beats now. Use AskUserQuestion:
 
@@ -582,7 +506,7 @@ After writing each beat file, ask whether to add another:
 
 Continue the loop until the user indicates they're done.
 
-## Step 13: Git Commit
+## Step 12: Git Commit
 
 Stage all new files and commit with message:
 ```
@@ -593,18 +517,20 @@ Initialise Newsroom project scaffold
 - Generate config.md with research settings and quality thresholds
 - Generate brand guidelines and example author voice models (Steve, Sarah)
 - Generate editorial calendar template and knowledge base index
-- Generate SUMMARY.md usage guide
 - Create {N} initial research beats (if any were added)
 ```
 
 If no beats were created, omit the beats line from the commit message.
 
-## Step 14: Voice Model Reminder
+## Step 13: Next Steps
 
 After the commit, inform the user:
 
 > **Sample voice models created.** Two example authors — Steve and Sarah — have been added to `voice-models/authors/`. These are generic templates. You should review and modify them to match your publication's tone of voice before running the editorial pipeline. Use `/add-author` to create new authors or edit the files in `voice-models/authors/` directly.
-
-Then proceed to display next steps from SUMMARY.md.
+>
+> **Next steps:**
+> 1. Run `/add-beat` to define the topics and sources your engine will monitor
+> 2. Run `/add-author` to create author voices that match your publication
+> 3. Run `/research` to scan your beats for signals and start the editorial pipeline
 
 </process>
