@@ -4,6 +4,8 @@
 
 ## [1.0.6] - 2026-02-10
 
+## [1.0.6] - 2026-02-10
+
 ### Added
 - Editorial feedback loop via `pipeline/editorial-feedback.md` — editorial skill writes carry-forward notes (production notes, angle guidance, research guidance, held pitch triggers) that research, angle, and produce skills read and act on in subsequent cycles
 - Entries have open/addressed lifecycle with 14-day auto-pruning of addressed entries
