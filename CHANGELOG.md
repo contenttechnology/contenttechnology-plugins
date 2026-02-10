@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-02-10
+
 ### Changed
 - Pipeline folders numbered by stage order: `010_pitches`, `020_approved`, `030_drafts`, `040_review`, `050_published` — `rejected` and `validation` remain unnumbered (cross-cutting concerns)
 
