@@ -95,13 +95,7 @@ The skill interviews you about the author's personality, then generates a baseli
 
 ### Run the Pipeline
 
-Run the full autonomous cycle:
-
-```
-/run
-```
-
-This executes research through quality gate with zero human interaction and outputs articles ready for review. You can also run individual stages:
+Use each skill progress signals to pitches to drafts.
 
 ```
 /research
@@ -119,6 +113,14 @@ This executes research through quality gate with zero human interaction and outp
 ```
 
 An interactive session where you read quality-approved drafts and decide: **approve** (publish), **revise** (send back with feedback), or **kill** (reject with reasoning). Every decision is logged and committed to git.
+
+### Run AFK
+
+```
+/run
+```
+
+This executes research through quality gate with zero human interaction and outputs articles ready for review. 
 
 ---
 
