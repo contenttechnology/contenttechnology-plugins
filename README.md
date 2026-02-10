@@ -95,7 +95,7 @@ The skill interviews you about the author's personality, then generates a baseli
 
 ### Run the Pipeline
 
-Use each skill progress signals to pitches to drafts.
+Use each skill to progress from signals to pitches to drafts.
 
 ```
 /research
