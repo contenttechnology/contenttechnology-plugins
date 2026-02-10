@@ -6,14 +6,14 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, WebFetch, WebSearch
 ---
 
 <objective>
-Run validation on all pending pitch memos in `pipeline/pitches/`. For each pitch, dispatch parallel validation subagents that independently seek supporting evidence, counter-evidence, scope assessment, and audience resonance. Subagents write detailed reports to files and return only a compact summary to the parent context. Synthesise results and update the pitch memo with a validation report. This is the adversarial layer that prevents weak angles from reaching production.
+Run validation on all pending pitch memos in `pipeline/010_pitches/`. For each pitch, dispatch parallel validation subagents that independently seek supporting evidence, counter-evidence, scope assessment, and audience resonance. Subagents write detailed reports to files and return only a compact summary to the parent context. Synthesise results and update the pitch memo with a validation report. This is the adversarial layer that prevents weak angles from reaching production.
 </objective>
 
 <process>
 
 ## Step 1: Load Pending Pitch Memos
 
-Use Glob to find all pitch memos: `pipeline/pitches/*.md`
+Use Glob to find all pitch memos: `pipeline/010_pitches/*.md`
 
 Read each pitch memo. Filter for those with `status: pending` in frontmatter — these have not yet been validated. Skip any with `status: validated`, `status: approved`, or `status: rejected`.
 
@@ -324,7 +324,7 @@ rejected_date: {YYYY-MM-DD}
 rejected_reason: {brief reason}
 ```
 
-Use Bash `mv` to move rejected pitch files from `pipeline/pitches/` to `pipeline/rejected/`.
+Use Bash `mv` to move rejected pitch files from `pipeline/010_pitches/` to `pipeline/rejected/`.
 
 **Then move on to the next pending pitch and repeat Step 2.**
 

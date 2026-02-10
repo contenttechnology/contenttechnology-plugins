@@ -28,7 +28,7 @@ Research  →  Angle  →  Validate  →  Editorial  →  Produce  →  Quality 
 
 **6. Quality** - Assesses drafts against seven criteria: insight density, source fidelity, thesis delivery, AI-tell scan, voice match, novelty, and readability. Drafts get up to two revision cycles before being killed.
 
-Articles that pass land in `pipeline/review/` for a human to approve, revise, or kill.
+Articles that pass land in `pipeline/040_review/` for a human to approve, revise, or kill.
 
 ---
 
@@ -177,11 +177,11 @@ my-publication/
 │   ├── active/                     # Current campaign briefs
 │   └── archive/                    # Completed campaigns
 ├── pipeline/
-│   ├── pitches/                    # Angle pitch memos
-│   ├── approved/                   # Production briefs
-│   ├── drafts/                     # Drafts in progress
-│   ├── review/                     # Ready for human review
-│   ├── published/                  # Approved final articles
+│   ├── 010_pitches/                # Angle pitch memos
+│   ├── 020_approved/               # Production briefs
+│   ├── 030_drafts/                 # Drafts in progress
+│   ├── 040_review/                 # Ready for human review
+│   ├── 050_published/              # Approved final articles
 │   ├── rejected/                   # Killed with reasoning
 │   ├── validation/                 # Detailed validation reports per pitch
 │   └── editorial-feedback.md       # Carry-forward notes between cycles

@@ -34,11 +34,11 @@ knowledge-base/archive/
 beats/
 campaigns/active/
 campaigns/archive/
-pipeline/pitches/
-pipeline/approved/
-pipeline/drafts/
-pipeline/review/
-pipeline/published/
+pipeline/010_pitches/
+pipeline/020_approved/
+pipeline/030_drafts/
+pipeline/040_review/
+pipeline/050_published/
 pipeline/rejected/
 voice-models/authors/
 metrics/
@@ -118,11 +118,11 @@ See `voice-models/` for brand guidelines and author voice definitions.
 
 ## Pipeline State
 The current state of the editorial pipeline is readable from the folder structure:
-- `pipeline/pitches/` — Angles awaiting editorial review
-- `pipeline/approved/` — Briefs ready for production
-- `pipeline/drafts/` — Drafts in progress or revision
-- `pipeline/review/` — Drafts awaiting human review
-- `pipeline/published/` — Published pieces (archive)
+- `pipeline/010_pitches/` — Angles awaiting editorial review
+- `pipeline/020_approved/` — Briefs ready for production
+- `pipeline/030_drafts/` — Drafts in progress or revision
+- `pipeline/040_review/` — Drafts awaiting human review
+- `pipeline/050_published/` — Published pieces (archive)
 - `pipeline/rejected/` — Killed angles with reasoning
 
 ## File 2: config.md
@@ -240,7 +240,7 @@ Write to `knowledge-base/index.json`. Use this exact content:
 
 Use Bash to create .gitkeep files in all empty directories so git tracks them. Run a single command:
 
-touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep campaigns/active/.gitkeep campaigns/archive/.gitkeep pipeline/pitches/.gitkeep pipeline/approved/.gitkeep pipeline/drafts/.gitkeep pipeline/review/.gitkeep pipeline/published/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
+touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep campaigns/active/.gitkeep campaigns/archive/.gitkeep pipeline/010_pitches/.gitkeep pipeline/020_approved/.gitkeep pipeline/030_drafts/.gitkeep pipeline/040_review/.gitkeep pipeline/050_published/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
 
 ## Output
 After creating all files, confirm completion.

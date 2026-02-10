@@ -6,14 +6,14 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep
 ---
 
 <objective>
-Assess every draft in `pipeline/drafts/` against the quality gate checklist. Each draft is evaluated on insight density, source fidelity, thesis delivery, AI-tell detection, voice match, novelty, and readability. Passing drafts move to `pipeline/review/` for human review. Failing drafts are returned for revision (up to 2 cycles) or killed. This is the final automated checkpoint before human eyes.
+Assess every draft in `pipeline/030_drafts/` against the quality gate checklist. Each draft is evaluated on insight density, source fidelity, thesis delivery, AI-tell detection, voice match, novelty, and readability. Passing drafts move to `pipeline/040_review/` for human review. Failing drafts are returned for revision (up to 2 cycles) or killed. This is the final automated checkpoint before human eyes.
 </objective>
 
 <process>
 
 ## Step 1: Load Drafts for Review
 
-Use Glob to find all drafts: `pipeline/drafts/*.md`
+Use Glob to find all drafts: `pipeline/030_drafts/*.md`
 
 Read each draft. Filter for:
 - `status: draft` — new drafts awaiting first quality review
@@ -32,7 +32,7 @@ Read the following:
 3. **`voice-models/brand-guidelines.md`** — Brand constraints to check against
 
 For each draft, also read:
-- The corresponding production brief from `pipeline/approved/{brief_id}.md`
+- The corresponding production brief from `pipeline/020_approved/{brief_id}.md`
 - The assigned author's voice model from `voice-models/authors/{author}/baseline.md`
 - The style modifier (if any) from `voice-models/authors/{author}/style-{style}.md`
 
@@ -168,7 +168,7 @@ For each draft, based on the subagent's quality report:
 
 1. Update the draft frontmatter: `status: passed`, add `quality_passed_date`
 2. Append the quality report to the draft file (so human reviewers can see the assessment)
-3. Rename and move the draft to `pipeline/review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
+3. Rename and move the draft to `pipeline/040_review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
 4. The draft is now ready for human review
 
 ### REVISE
@@ -177,7 +177,7 @@ For each draft, based on the subagent's quality report:
 2. If `revision < max_revisions` (default 2):
    - Update frontmatter: `status: revision`, increment `revision` by 1
    - Append the quality feedback to the draft
-   - The draft stays in `pipeline/drafts/` for the production agent to revise
+   - The draft stays in `pipeline/030_drafts/` for the production agent to revise
    - **Dispatch a revision subagent** immediately (same prompt as production, but with the quality feedback included as revision instructions)
    - Save the revised draft, re-run quality assessment (recursive — up to max_revisions total)
 3. If `revision >= max_revisions`:
@@ -242,7 +242,7 @@ This creates a loop: draft → quality check → revise → quality check → re
 1. **{Headline}** ({draft-id})
    - Author: {author} / Style: {style}
    - All 7 criteria: PASS
-   - Moved to: pipeline/review/
+   - Moved to: pipeline/040_review/
 
 ### Revised and Passed: {count}
 {Drafts that passed after revision:}
@@ -270,10 +270,10 @@ This creates a loop: draft → quality check → revise → quality check → re
 ## Step 7: Git Commit
 
 Stage all new and modified files:
-- `pipeline/review/*.md` (passed drafts moved here)
-- `pipeline/drafts/*.md` (updated status on remaining drafts)
+- `pipeline/040_review/*.md` (passed drafts moved here)
+- `pipeline/030_drafts/*.md` (updated status on remaining drafts)
 - `pipeline/rejected/*.md` (killed drafts moved here)
-- `pipeline/approved/*.md` (updated brief status for killed drafts)
+- `pipeline/020_approved/*.md` (updated brief status for killed drafts)
 
 ```
 Quality gate: {N} passed, {M} revised, {K} killed
@@ -288,7 +288,7 @@ Killed:
 
 - If the quality subagent fails or returns unparseable output, keep the draft at current status and report the error. Do not auto-pass.
 - If a voice model file is missing (can't assess voice match), proceed with the other 6 criteria and note "Voice match: SKIPPED (model not found)" in the report.
-- If the production brief is missing (can't assess thesis delivery or source fidelity), flag the draft for manual review and move to `pipeline/review/` with a note.
+- If the production brief is missing (can't assess thesis delivery or source fidelity), flag the draft for manual review and move to `pipeline/040_review/` with a note.
 - Never auto-pass a draft that has any FAIL criterion — revision or kill is mandatory.
 - The quality gate should kill pieces. A 100% pass rate means the gate is too lenient.
 

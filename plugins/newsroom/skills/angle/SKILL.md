@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 <objective>
-Scan the knowledge base for patterns of converging signals across beats and time periods. Construct falsifiable theses that combine multiple sources into genuine editorial angles. Write pitch memos for viable angles to `pipeline/pitches/`. This is the editorial brain of Newsroom — it turns raw intelligence into publishable ideas.
+Scan the knowledge base for patterns of converging signals across beats and time periods. Construct falsifiable theses that combine multiple sources into genuine editorial angles. Write pitch memos for viable angles to `pipeline/010_pitches/`. This is the editorial brain of Newsroom — it turns raw intelligence into publishable ideas.
 </objective>
 
 <process>
@@ -22,9 +22,9 @@ Read the following files to build full editorial context:
 
 Use Glob to check for active campaigns in `campaigns/active/*.md` and read any found.
 
-Use Glob to check for existing pitch memos in `pipeline/pitches/*.md` — read these to avoid proposing duplicate angles.
+Use Glob to check for existing pitch memos in `pipeline/010_pitches/*.md` — read these to avoid proposing duplicate angles.
 
-Also check `pipeline/approved/*.md`, `pipeline/drafts/*.md`, `pipeline/review/*.md`, and `pipeline/published/*.md` for recently covered angles.
+Also check `pipeline/020_approved/*.md`, `pipeline/030_drafts/*.md`, `pipeline/040_review/*.md`, and `pipeline/050_published/*.md` for recently covered angles.
 
 ### Editorial Feedback
 
@@ -98,12 +98,12 @@ Kill any angle that fails the "So What?", Synthesis, or Novelty tests. Flag time
 
 ## Step 5: Construct Pitch Memos
 
-For each surviving angle, write a pitch memo to `pipeline/pitches/`.
+For each surviving angle, write a pitch memo to `pipeline/010_pitches/`.
 
 ### Filename Convention
 `pitch-{YYYY-MM-DD}-{NNN}.md` where NNN is a zero-padded sequential number for the day.
 
-Check existing files in `pipeline/pitches/` to determine the next available number for today's date.
+Check existing files in `pipeline/010_pitches/` to determine the next available number for today's date.
 
 ### Pitch Memo Format
 
@@ -204,7 +204,7 @@ After writing all pitch memos, output a summary:
 ## Step 8: Git Commit
 
 Stage all new and modified files:
-- `pipeline/pitches/*.md` (new pitch memos)
+- `pipeline/010_pitches/*.md` (new pitch memos)
 - `pipeline/editorial-feedback.md` (if modified)
 
 Commit with message:

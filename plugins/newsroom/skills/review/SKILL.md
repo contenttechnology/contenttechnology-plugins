@@ -6,14 +6,14 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 ---
 
 <objective>
-Interactive skill for human review of quality-approved drafts in `pipeline/review/`. The human selects a draft, reads it, and decides: approve (publish), revise (send back with feedback), or kill (reject with reasoning). Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
+Interactive skill for human review of quality-approved drafts in `pipeline/040_review/`. The human selects a draft, reads it, and decides: approve (publish), revise (send back with feedback), or kill (reject with reasoning). Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
 </objective>
 
 <process>
 
 ## Step 1: Load Drafts for Review
 
-Use Glob to find all files: `pipeline/review/*.md`
+Use Glob to find all files: `pipeline/040_review/*.md`
 
 Read each draft file. Parse YAML frontmatter to extract:
 - `id` (draft ID)
@@ -80,7 +80,7 @@ Then use AskUserQuestion:
 **Question**: "What is your decision for this draft?"
 
 **Options**:
-- **Label**: "Approve" — **Description**: "Publish this draft — move to pipeline/published/"
+- **Label**: "Approve" — **Description**: "Publish this draft — move to pipeline/050_published/"
 - **Label**: "Revise" — **Description**: "Send back with feedback for revision and quality re-assessment"
 - **Label**: "Kill" — **Description**: "Reject this draft — move to pipeline/rejected/ with reasoning"
 
@@ -100,7 +100,7 @@ When the human selects "Approve":
    - Add `approved_by: human`
    - If notes provided, add `approval_notes: {notes}`
 
-3. **Move file** via Bash: `mv pipeline/review/{filename} pipeline/published/{filename}`
+3. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/050_published/{filename}`
 
 4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{draft-id}.md`:
 
@@ -129,7 +129,7 @@ human_revisions: {human_revision}
 ```
 Review: approve "{headline}"
 
-- Published to pipeline/published/
+- Published to pipeline/050_published/
 - Author: {author}/{style}
 - {word_count} words
 ```
@@ -156,7 +156,7 @@ When the human selects "Revise":
    - Read `voice-models/brand-guidelines.md`
    - Read `voice-models/authors/{author}/baseline.md`
    - Read `voice-models/authors/{author}/style-{style}.md` (if style is specified in frontmatter)
-   - Read the corresponding production brief from `pipeline/approved/{brief_id}.md`
+   - Read the corresponding production brief from `pipeline/020_approved/{brief_id}.md`
 
    If author voice model files are missing, report the error and skip the revision. Ask the human if they want to approve as-is or kill instead.
 
@@ -205,7 +205,7 @@ CHANGES_MADE:
    - Set `status: revision`
    - Increment `revision` count
 
-6. **Move file** via Bash: `mv pipeline/review/{filename} pipeline/drafts/{filename}`
+6. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/030_drafts/{filename}`
 
 7. **Dispatch quality re-assessment** via Task (subagent_type: "general-purpose", model: "sonnet"):
 
@@ -331,9 +331,9 @@ Return your assessment in this exact format:
 
 8. **Process quality verdict**:
 
-   - **PASS**: Move draft back to `pipeline/review/` via Bash `mv pipeline/drafts/{filename} pipeline/review/{filename}`. Update frontmatter: `status: passed`. Append quality report to the draft. The draft re-enters the review queue for the human to see the result on their next review pass.
+   - **PASS**: Move draft back to `pipeline/040_review/` via Bash `mv pipeline/030_drafts/{filename} pipeline/040_review/{filename}`. Update frontmatter: `status: passed`. Append quality report to the draft. The draft re-enters the review queue for the human to see the result on their next review pass.
 
-   - **REVISE or KILL**: The human triggered this revision and should see the result. Move back to `pipeline/review/` via Bash `mv pipeline/drafts/{filename} pipeline/review/{filename}`. Set `status: passed`. Append quality report with a note: "Quality gate flagged issues after human-requested revision. Review the quality report below." Let the human decide on the next pass.
+   - **REVISE or KILL**: The human triggered this revision and should see the result. Move back to `pipeline/040_review/` via Bash `mv pipeline/030_drafts/{filename} pipeline/040_review/{filename}`. Set `status: passed`. Append quality report with a note: "Quality gate flagged issues after human-requested revision. Review the quality report below." Let the human decide on the next pass.
 
 9. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{draft-id}.md`:
 
@@ -365,12 +365,12 @@ Review: revise "{headline}" (human revision {N})
 
 - Human feedback applied and quality re-assessed
 - Quality verdict: {verdict}
-- Draft returned to pipeline/review/
+- Draft returned to pipeline/040_review/
 ```
 
-If the revision subagent fails, report the error, keep the draft in `pipeline/review/` unchanged, and ask the human if they want to approve as-is or kill instead.
+If the revision subagent fails, report the error, keep the draft in `pipeline/040_review/` unchanged, and ask the human if they want to approve as-is or kill instead.
 
-If the quality re-assessment subagent fails, move the revised draft back to `pipeline/review/` without a quality report. Note that quality was not re-assessed. Let the human decide.
+If the quality re-assessment subagent fails, move the revised draft back to `pipeline/040_review/` without a quality report. Note that quality was not re-assessed. Let the human decide.
 
 ## Step 4c: Kill Path
 
@@ -391,9 +391,9 @@ When the human selects "Kill":
    - Add `killed_date: {YYYY-MM-DD}`
    - Add `killed_reason: {reason}`
 
-3. **Move file** via Bash: `mv pipeline/review/{filename} pipeline/rejected/{filename}`
+3. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/rejected/{filename}`
 
-4. **Update corresponding production brief**: Read `brief_id` from the draft frontmatter. Edit the brief in `pipeline/approved/{brief_id}.md` to set `status: killed`. If the brief file is not found, log the gap and continue.
+4. **Update corresponding production brief**: Read `brief_id` from the draft frontmatter. Edit the brief in `pipeline/020_approved/{brief_id}.md` to set `status: killed`. If the brief file is not found, log the gap and continue.
 
 5. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{draft-id}.md`:
 
@@ -429,7 +429,7 @@ Review: kill "{headline}"
 
 ## Step 5: Loop Behaviour
 
-After processing one draft, re-scan `pipeline/review/` using Glob to get a fresh count (revision processing may have added a draft back).
+After processing one draft, re-scan `pipeline/040_review/` using Glob to get a fresh count (revision processing may have added a draft back).
 
 If more drafts remain, use AskUserQuestion:
 - **Question**: "{N} more draft(s) waiting for review. Continue?"
@@ -451,7 +451,7 @@ Output a summary of all decisions made in this session:
 
 #### Approved: {count}
 {For each approved draft:}
-1. **{Headline}** ({draft-id}) — Published to pipeline/published/
+1. **{Headline}** ({draft-id}) — Published to pipeline/050_published/
 
 #### Revised: {count}
 {For each revised draft:}
@@ -462,11 +462,11 @@ Output a summary of all decisions made in this session:
 1. **{Headline}** ({draft-id}) — Reason: {reason}
 
 ### Remaining in Review: {count}
-{List any unreviewed drafts still in pipeline/review/}
+{List any unreviewed drafts still in pipeline/040_review/}
 
 ### Pipeline Status
 - In review: {count}
-- Published (total): {count in pipeline/published/}
+- Published (total): {count in pipeline/050_published/}
 - Rejected (total): {count in pipeline/rejected/}
 ```
 
@@ -475,8 +475,8 @@ Output a summary of all decisions made in this session:
 - **No drafts in review**: Report and exit cleanly. No AskUserQuestion needed.
 - **Missing voice model files during revision**: Report the error, skip the revision, ask the human if they want to approve as-is or kill.
 - **Missing production brief during revision**: Proceed with revision using only the draft text and human feedback. Note the gap. The brief is "for reference" — not critical for targeted revisions.
-- **Revision subagent failure**: Report the error, keep the draft at its current location in `pipeline/review/`, ask the human whether to retry, approve as-is, or kill.
-- **Quality re-assessment subagent failure**: Move the revised draft back to `pipeline/review/` without quality report. Note that quality was not re-assessed. Let the human decide.
+- **Revision subagent failure**: Report the error, keep the draft at its current location in `pipeline/040_review/`, ask the human whether to retry, approve as-is, or kill.
+- **Quality re-assessment subagent failure**: Move the revised draft back to `pipeline/040_review/` without quality report. Note that quality was not re-assessed. Let the human decide.
 - **Git commit failure**: Log the error, continue with the review session. Report all git failures in the session summary.
 - **File move failure**: Report the error, do not proceed with that draft. The draft remains in its current location.
 

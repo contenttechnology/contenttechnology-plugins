@@ -21,7 +21,7 @@
 - Validate skill: subagents now write detailed reports to `pipeline/validation/{pitch-id}/` files and return only a single summary line to the parent context, significantly reducing context window usage
 - Validate skill: pitches now processed sequentially (full validate-synthesise-update cycle per pitch) instead of launching all agents across all pitches at once
 - Validate skill: counter-evidence summary line now includes refined thesis and kill reason, eliminating need to read detail files during synthesis
-- Quality skill: drafts that pass are renamed from `draft-` to `for-review-` prefix when moved to `pipeline/review/`
+- Quality skill: drafts that pass are renamed from `draft-` to `for-review-` prefix when moved to `pipeline/040_review/`
 
 ## [1.0.2] - 2026-02-10
 

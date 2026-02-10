@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep
 ---
 
 <objective>
-Execute the complete Newsroom editorial pipeline autonomously, from research through quality gate, with zero human interaction. This skill is designed for scheduled/cron execution. It processes all pending work at every stage — both new work generated in this run and leftovers from previous runs. The final output is either "nothing to do" or a list of articles now in `pipeline/review/` awaiting human review.
+Execute the complete Newsroom editorial pipeline autonomously, from research through quality gate, with zero human interaction. This skill is designed for scheduled/cron execution. It processes all pending work at every stage — both new work generated in this run and leftovers from previous runs. The final output is either "nothing to do" or a list of articles now in `pipeline/040_review/` awaiting human review.
 
 The pipeline stages execute sequentially: Research → Angle → Validate → Editorial → Produce → Quality. Each stage is dispatched as a Task subagent. Between stages, the orchestrator checks the filesystem for pending work. If a stage has no work, it is skipped (not aborted — later stages may have pending work from prior runs).
 </objective>
@@ -27,10 +27,10 @@ Scan the full pipeline to count pending work at each stage:
 
 1. Use Glob for `knowledge-base/sources/*.md` — count unprocessed local files (compare filenames against `processed_files` in index.json)
 2. Use Glob for `beats/*.md` — read each, count active beats due for this cycle
-3. Use Glob for `pipeline/pitches/*.md` — read each, count `status: pending` and `status: validated`
-4. Use Glob for `pipeline/approved/*.md` — read each, count `status: ready`
-5. Use Glob for `pipeline/drafts/*.md` — read each, count `status: draft` or `status: revision`
-6. Use Glob for `pipeline/review/*.md` — count existing articles (for final report baseline)
+3. Use Glob for `pipeline/010_pitches/*.md` — read each, count `status: pending` and `status: validated`
+4. Use Glob for `pipeline/020_approved/*.md` — read each, count `status: ready`
+5. Use Glob for `pipeline/030_drafts/*.md` — read each, count `status: draft` or `status: revision`
+6. Use Glob for `pipeline/040_review/*.md` — count existing articles (for final report baseline)
 7. Read `pipeline/editorial-feedback.md` if it exists — count open entries by type for the run report
 
 Store all counts. You will use these for early-exit logic, stage skipping, and the final run report.
@@ -53,10 +53,10 @@ Then there is nothing to do. Output:
 No new work at any pipeline stage.
 
 Pipeline status:
-- Articles in review: {count from pipeline/review/}
-- Published: {count from pipeline/published/}
+- Articles in review: {count from pipeline/040_review/}
+- Published: {count from pipeline/050_published/}
 
-{If articles in review:} Action required: {count} articles awaiting human review in pipeline/review/.
+{If articles in review:} Action required: {count} articles awaiting human review in pipeline/040_review/.
 {If none:} All clear — no work pending anywhere in the pipeline.
 ```
 
@@ -188,7 +188,7 @@ You are the Angle Stage agent of an autonomous editorial pipeline. Scan the know
 {Paste editorial-calendar.md content}
 
 ## Existing Coverage (avoid duplication)
-{List headlines from pipeline/pitches/, pipeline/approved/, pipeline/drafts/, pipeline/review/, pipeline/published/}
+{List headlines from pipeline/010_pitches/, pipeline/020_approved/, pipeline/030_drafts/, pipeline/040_review/, pipeline/050_published/}
 
 ## Active Campaigns
 {List active campaign slugs and theses from campaigns/active/}
@@ -219,7 +219,7 @@ Read author baselines from `voice-models/authors/*/baseline.md`. Match topic to 
 Read `pipeline/editorial-feedback.md` if it exists. Any open entries targeting `angle` should influence your convergence analysis and content type weighting. If your pitches address an open entry, mark it as addressed (change status to `addressed`, add `addressed_by: angle`, `addressed_date: {today}`, `resolution: {brief description}`, move from "Active Entries" to "Addressed Entries").
 
 ### 6. Write Pitch Memos
-For each surviving angle, write to `pipeline/pitches/pitch-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: pending, signals, beats, tags, timeliness, campaign, recommended_author, recommended_style, recommended_type) and body (Working Headline, Thesis, Supporting Evidence, Counter-Evidence, Source Map, Recommended Treatment, Timeliness Assessment, Campaign Alignment).
+For each surviving angle, write to `pipeline/010_pitches/pitch-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: pending, signals, beats, tags, timeliness, campaign, recommended_author, recommended_style, recommended_type) and body (Working Headline, Thesis, Supporting Evidence, Counter-Evidence, Source Map, Recommended Treatment, Timeliness Assessment, Campaign Alignment).
 
 ### 7. Output Format
 Return:
@@ -237,7 +237,7 @@ killed:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/pitches/ pipeline/editorial-feedback.md
+git add pipeline/010_pitches/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Angle scan: {N} pitch memos from {M} signals`
@@ -246,7 +246,7 @@ If the angle subagent fails, log the error and continue to Step 5.
 
 ## Step 5: Execute Validate Stage
 
-**Check**: Use Glob to re-scan `pipeline/pitches/*.md`. Read each and filter for `status: pending`.
+**Check**: Use Glob to re-scan `pipeline/010_pitches/*.md`. Read each and filter for `status: pending`.
 
 If no pending pitches, skip to Step 6.
 
@@ -301,7 +301,7 @@ results:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/pitches/ pipeline/rejected/
+git add pipeline/010_pitches/ pipeline/rejected/
 ```
 
 Commit message: `Validate pitches: {N} validated, {M} rejected`
@@ -310,12 +310,12 @@ If the validate subagent fails, log the error and continue to Step 6 (to process
 
 ## Step 6: Execute Editorial Stage
 
-**Check**: Use Glob to re-scan `pipeline/pitches/*.md`. Read each and filter for `status: validated`.
+**Check**: Use Glob to re-scan `pipeline/010_pitches/*.md`. Read each and filter for `status: validated`.
 
 If no validated pitches, skip to Step 7.
 
 If work exists, read context needed for editorial decisions:
-- Recent publications from `pipeline/published/`, `pipeline/review/`, `pipeline/drafts/`
+- Recent publications from `pipeline/050_published/`, `pipeline/040_review/`, `pipeline/030_drafts/`
 - Active campaigns from `campaigns/active/`
 - Available author baselines from `voice-models/authors/*/baseline.md`
 - Brand guidelines from `voice-models/brand-guidelines.md`
@@ -335,7 +335,7 @@ You are the Editorial Stage agent of an autonomous editorial pipeline. Act as ed
 {Paste editorial-calendar.md content}
 
 ## Recent Publication History
-{List recent headlines, content types, authors from pipeline/published/, pipeline/review/, pipeline/drafts/, pipeline/approved/}
+{List recent headlines, content types, authors from pipeline/050_published/, pipeline/040_review/, pipeline/030_drafts/, pipeline/020_approved/}
 
 ## Active Campaigns
 {Paste campaign details}
@@ -381,7 +381,7 @@ For each approved piece:
 6. Document rationale in production brief.
 
 ### 5. Write Production Briefs
-For each approved angle, write to `pipeline/approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, author, style, content_type, target_length, audience, campaign, timeliness, deadline) and body (Approved Thesis, Source Inventory with primary/supporting/counter-arguments, Structure Guidance, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
+For each approved angle, write to `pipeline/020_approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, author, style, content_type, target_length, audience, campaign, timeliness, deadline) and body (Approved Thesis, Source Inventory with primary/supporting/counter-arguments, Structure Guidance, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
 
 ### 6. Update Pitch Memos
 - Approved: set `status: approved`, add `brief_id`
@@ -407,7 +407,7 @@ killed_list:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/approved/ pipeline/pitches/ pipeline/rejected/ pipeline/editorial-feedback.md
+git add pipeline/020_approved/ pipeline/010_pitches/ pipeline/rejected/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Editorial review: {N} approved, {M} killed, {K} held`
@@ -416,7 +416,7 @@ If the editorial subagent fails, log the error and continue to Step 7 (to proces
 
 ## Step 7: Execute Produce Stage
 
-**Check**: Use Glob to re-scan `pipeline/approved/*.md`. Read each and filter for `status: ready`.
+**Check**: Use Glob to re-scan `pipeline/020_approved/*.md`. Read each and filter for `status: ready`.
 
 If no ready briefs, skip to Step 8.
 
@@ -463,7 +463,7 @@ Prompt the production subagent with:
 - Output format: ---DRAFT_START--- / ---DRAFT_END--- with WORD_COUNT and PRODUCTION_NOTES
 
 ### 6. Save Draft
-Write to `pipeline/drafts/draft-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, author, style, content_type, word_count, revision: 0, max_revisions: 2, audience) and body (article text, Production Metadata section with notes and source references).
+Write to `pipeline/030_drafts/draft-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, author, style, content_type, word_count, revision: 0, max_revisions: 2, audience) and body (article text, Production Metadata section with notes and source references).
 
 ### 7. Update Brief
 Edit brief frontmatter: set `status: produced`, add `draft_id`.
@@ -480,7 +480,7 @@ drafts:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/drafts/ pipeline/approved/ pipeline/editorial-feedback.md
+git add pipeline/030_drafts/ pipeline/020_approved/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Produce drafts: {N} articles written`
@@ -489,7 +489,7 @@ If the produce subagent fails, log the error and continue to Step 8 (to process 
 
 ## Step 8: Execute Quality Stage
 
-**Check**: Use Glob to re-scan `pipeline/drafts/*.md`. Read each and filter for `status: draft` or `status: revision`.
+**Check**: Use Glob to re-scan `pipeline/030_drafts/*.md`. Read each and filter for `status: draft` or `status: revision`.
 
 If no drafts awaiting quality check, skip to Step 9.
 
@@ -518,7 +518,7 @@ For each draft:
 
 ### 1. Load Context
 - Read the draft file
-- Read the corresponding production brief from `pipeline/approved/{brief_id}.md`
+- Read the corresponding production brief from `pipeline/020_approved/{brief_id}.md`
 - Read the author baseline from `voice-models/authors/{author}/baseline.md`
 - Read the style modifier from `voice-models/authors/{author}/style-{style}.md` (if any)
 
@@ -536,7 +536,7 @@ Output format: ---QUALITY_REPORT--- with Overall Verdict (PASS/REVISE/KILL), Cri
 
 ### 3. Process Verdicts
 
-**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/review/`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` → `for-review-2026-02-10-001.md`).
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/040_review/`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` → `for-review-2026-02-10-001.md`).
 
 **REVISE**: If `revision < max_revisions`:
 - Increment revision count, set `status: revision`
@@ -555,7 +555,7 @@ revised_and_passed: {count}
 killed: {count}
 first_pass_rate: {percentage}
 passed_list:
-- {draft-id}: {headline} — pipeline/review/{filename}
+- {draft-id}: {headline} — pipeline/040_review/{filename}
 killed_list:
 - {draft-id}: {headline} — {reason}
 ```
@@ -563,7 +563,7 @@ killed_list:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/review/ pipeline/drafts/ pipeline/rejected/ pipeline/approved/
+git add pipeline/040_review/ pipeline/030_drafts/ pipeline/rejected/ pipeline/020_approved/
 ```
 
 Commit message: `Quality gate: {N} passed, {M} revised, {K} killed`
@@ -573,7 +573,7 @@ If the quality subagent fails, log the error — never auto-pass drafts.
 ## Step 9: Write Run Summary and Final Report
 
 Count the final state:
-- Use Glob to count files now in `pipeline/review/` (compare to baseline from Step 1 to determine how many are new)
+- Use Glob to count files now in `pipeline/040_review/` (compare to baseline from Step 1 to determine how many are new)
 - Compile results from each stage
 
 Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
@@ -620,12 +620,12 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 {Or: "Skipped — no drafts to review"}
 
 ## Articles Ready for Human Review
-{For each article now in pipeline/review/:}
+{For each article now in pipeline/040_review/:}
 1. **{Headline}** ({draft-id})
    - Author: {author} / Style: {style}
    - Content type: {type}
    - Word count: {count}
-   - Path: pipeline/review/{filename}
+   - Path: pipeline/040_review/{filename}
 
 ## Pipeline Status
 - Pending pitches: {count}

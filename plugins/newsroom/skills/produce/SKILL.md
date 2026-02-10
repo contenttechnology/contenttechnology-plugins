@@ -6,14 +6,14 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep
 ---
 
 <objective>
-Produce article drafts from approved production briefs. For each brief, load the three-layer voice model (brand guidelines → author baseline → style modifier), compose the article according to the brief's structure guidance, and save the draft to `pipeline/drafts/`. The production agent writes in the assigned author's authentic voice, weaving multiple sources into genuine synthesis.
+Produce article drafts from approved production briefs. For each brief, load the three-layer voice model (brand guidelines → author baseline → style modifier), compose the article according to the brief's structure guidance, and save the draft to `pipeline/030_drafts/`. The production agent writes in the assigned author's authentic voice, weaving multiple sources into genuine synthesis.
 </objective>
 
 <process>
 
 ## Step 1: Load Production Briefs
 
-Use Glob to find all production briefs: `pipeline/approved/*.md`
+Use Glob to find all production briefs: `pipeline/020_approved/*.md`
 
 Read each brief. Filter for `status: ready` — these are ready for production. Skip any with `status: in-production` or `status: produced`.
 
@@ -128,7 +128,7 @@ For each completed draft:
 ### Filename Convention
 `draft-{YYYY-MM-DD}-{NNN}.md` — sequential number for the day.
 
-Check existing files in `pipeline/drafts/` to determine the next number.
+Check existing files in `pipeline/030_drafts/` to determine the next number.
 
 ### Draft File Format
 
@@ -161,7 +161,7 @@ audience: [{audience segments}]
 {List of signal IDs used, for traceability}
 
 ### Brief Reference
-See `pipeline/approved/{brief-id}.md` for the full production brief.
+See `pipeline/020_approved/{brief-id}.md` for the full production brief.
 ```
 
 ### Update Brief Status
@@ -191,8 +191,8 @@ Run `/quality` to assess these drafts against the quality gate.
 ## Step 6: Git Commit
 
 Stage all new and modified files:
-- `pipeline/drafts/*.md` (new drafts)
-- `pipeline/approved/*.md` (updated brief status)
+- `pipeline/030_drafts/*.md` (new drafts)
+- `pipeline/020_approved/*.md` (updated brief status)
 - `pipeline/editorial-feedback.md` (if modified)
 
 ```

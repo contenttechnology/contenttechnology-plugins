@@ -337,7 +337,7 @@ If the draft is unsalvageable, inform the user and explain why.
 Write any new signals discovered during research to `knowledge-base/signals/` following the standard format. Update `knowledge-base/index.json`.
 
 ### Pitch Memo
-Write a pitch memo to `pipeline/pitches/` with `status: approved` (retroactive — rush pieces skip the normal pitch → validate → editorial flow):
+Write a pitch memo to `pipeline/010_pitches/` with `status: approved` (retroactive — rush pieces skip the normal pitch → validate → editorial flow):
 
 ```markdown
 ---
@@ -363,7 +363,7 @@ This angle was produced via the rush pipeline in response to: {original topic}
 ```
 
 ### Production Brief
-Write a brief to `pipeline/approved/` with `status: produced`:
+Write a brief to `pipeline/020_approved/` with `status: produced`:
 
 ```markdown
 ---
@@ -383,7 +383,7 @@ draft_id: {draft ID}
 ```
 
 ### Draft
-Write the draft to `pipeline/review/` (skipping `pipeline/drafts/` since it passed the quality check):
+Write the draft to `pipeline/040_review/` (skipping `pipeline/030_drafts/` since it passed the quality check):
 
 ```markdown
 ---
@@ -425,7 +425,7 @@ Output a clear summary for the user:
 ## Rush Complete: {Headline}
 
 ### Status: Ready for Human Review
-Draft is in `pipeline/review/{draft-id}.md`
+Draft is in `pipeline/040_review/{draft-id}.md`
 
 ### Confidence Flags
 {Any facts that need human verification before publication}
@@ -441,7 +441,7 @@ Draft is in `pipeline/review/{draft-id}.md`
 ### Time-Sensitivity: {how long this piece remains relevant}
 
 ### Next Steps
-1. Review the draft in `pipeline/review/`
+1. Review the draft in `pipeline/040_review/`
 2. Verify any flagged facts
 3. Approve, revise, or kill
 ```

@@ -22,10 +22,10 @@ Read the following to build full editorial context:
 ### Recent Publication History
 
 Use Glob and Read to review recent pipeline state:
-- `pipeline/published/*.md` — What's been published recently? Look at content types, topics, authors
-- `pipeline/review/*.md` — What's currently in human review?
-- `pipeline/drafts/*.md` — What's currently in production?
-- `pipeline/approved/*.md` — What's already approved and queued?
+- `pipeline/050_published/*.md` — What's been published recently? Look at content types, topics, authors
+- `pipeline/040_review/*.md` — What's currently in human review?
+- `pipeline/030_drafts/*.md` — What's currently in production?
+- `pipeline/020_approved/*.md` — What's already approved and queued?
 
 Build a picture of the current editorial mix:
 - Which content types have been covered recently?
@@ -45,7 +45,7 @@ Read `voice-models/brand-guidelines.md` for global constraints.
 
 ## Step 2: Load Validated Pitch Memos
 
-Use Glob to find all pitch memos: `pipeline/pitches/*.md`
+Use Glob to find all pitch memos: `pipeline/010_pitches/*.md`
 
 Read each and filter for `status: validated` — these have passed validation and are ready for editorial review. Skip `pending` (not yet validated), `approved`, and `rejected`.
 
@@ -136,7 +136,7 @@ For each approved angle:
 
 ## Step 6: Write Production Briefs
 
-For each approved angle, write a production brief to `pipeline/approved/`.
+For each approved angle, write a production brief to `pipeline/020_approved/`.
 
 ### Filename Convention
 `brief-{YYYY-MM-DD}-{NNN}.md` — sequential number for the day.
@@ -313,8 +313,8 @@ Do not write entries for routine decisions. Only write entries when there is spe
 ## Step 10: Git Commit
 
 Stage all new and modified files:
-- `pipeline/approved/*.md` (new production briefs)
-- `pipeline/pitches/*.md` (updated status)
+- `pipeline/020_approved/*.md` (new production briefs)
+- `pipeline/010_pitches/*.md` (updated status)
 - `pipeline/rejected/*.md` (moved rejected pitches)
 - `pipeline/editorial-feedback.md` (if modified)
 

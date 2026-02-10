@@ -16,8 +16,8 @@ Use this when editorial wants to test how a different author would handle the sa
 ## Step 1: Scan for Eligible Drafts
 
 Use Glob to find drafts in both locations:
-- `pipeline/review/*.md` — quality-approved drafts awaiting human review
-- `pipeline/published/*.md` — published drafts
+- `pipeline/040_review/*.md` — quality-approved drafts awaiting human review
+- `pipeline/050_published/*.md` — published drafts
 
 Read each file. Parse YAML frontmatter and filter for drafts with `status: passed` or `status: published`. Extract:
 - `id` (draft ID)
@@ -55,7 +55,7 @@ If the user selects "Other" with exit intent, exit the skill.
 
 ## Step 3: Load Original Production Brief
 
-Read the selected draft's metadata. Load its original production brief from `pipeline/approved/{brief_id}.md`.
+Read the selected draft's metadata. Load its original production brief from `pipeline/020_approved/{brief_id}.md`.
 
 If the brief file exists, extract:
 - Thesis
@@ -121,9 +121,9 @@ If the user selects "Add voice notes" or provides text via "Other", capture thos
 
 ## Step 6: Create Variant Production Brief
 
-Read existing briefs in `pipeline/approved/` to determine the next sequential number for today: `brief-{YYYY-MM-DD}-{NNN}.md`.
+Read existing briefs in `pipeline/020_approved/` to determine the next sequential number for today: `brief-{YYYY-MM-DD}-{NNN}.md`.
 
-Create a variant production brief in `pipeline/approved/` by copying the original brief's content with the following changes:
+Create a variant production brief in `pipeline/020_approved/` by copying the original brief's content with the following changes:
 
 ### Frontmatter
 ```yaml
@@ -265,7 +265,7 @@ If the production subagent fails, report the error, update the variant brief to 
 Parse the `---DRAFT_START---` / `---DRAFT_END---` block from the subagent response.
 
 ### Filename Convention
-`draft-{YYYY-MM-DD}-{NNN}.md` — check existing files in `pipeline/drafts/` to determine the next sequential number.
+`draft-{YYYY-MM-DD}-{NNN}.md` — check existing files in `pipeline/030_drafts/` to determine the next sequential number.
 
 ### Draft File Format
 
@@ -308,7 +308,7 @@ variant: true
 {List of signal IDs used, for traceability}
 
 ### Brief Reference
-See `pipeline/approved/{variant-brief-id}.md` for the variant production brief.
+See `pipeline/020_approved/{variant-brief-id}.md` for the variant production brief.
 ```
 
 ### Update Variant Brief Status
@@ -439,7 +439,7 @@ Return your assessment in this exact format:
 ---END_QUALITY_REPORT---
 ```
 
-If the quality subagent fails, report the error. Do not auto-pass. Keep the draft in `pipeline/drafts/` and exit.
+If the quality subagent fails, report the error. Do not auto-pass. Keep the draft in `pipeline/030_drafts/` and exit.
 
 ## Step 11: Process Quality Verdict
 
@@ -447,7 +447,7 @@ If the quality subagent fails, report the error. Do not auto-pass. Keep the draf
 
 1. Update draft frontmatter: `status: passed`, add `quality_passed_date: {YYYY-MM-DD}`
 2. Append the quality report to the draft file
-3. Rename and move to `pipeline/review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
+3. Rename and move to `pipeline/040_review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
 
 ### REVISE
 
@@ -517,7 +517,7 @@ If the quality subagent fails, report the error. Do not auto-pass. Keep the draf
 - **Author**: {new-author} / {new-style}
 - **Quality verdict**: {PASS / REVISE+PASS / KILLED}
 - **Revisions**: {count}
-- **Location**: `{pipeline/review/ or pipeline/rejected/}{filename}`
+- **Location**: `{pipeline/040_review/ or pipeline/rejected/}{filename}`
 
 ### Lineage
 - **Pitch**: {pitch_id}
@@ -526,15 +526,15 @@ If the quality subagent fails, report the error. Do not auto-pass. Keep the draf
 - Both drafts share the same pitch_id for editorial lineage tracking.
 
 ### Next Steps
-{If PASS: "The revoiced draft is in `pipeline/review/` — run /review to approve, revise, or kill."}
+{If PASS: "The revoiced draft is in `pipeline/040_review/` — run /review to approve, revise, or kill."}
 {If KILLED: "The revoiced draft did not pass quality. Review the quality report in `pipeline/rejected/{filename}` for details."}
 ```
 
 ## Step 13: Git Commit
 
 Stage all new and modified files:
-- `pipeline/approved/*.md` (variant brief)
-- `pipeline/drafts/*.md` or `pipeline/review/*.md` or `pipeline/rejected/*.md` (new draft)
+- `pipeline/020_approved/*.md` (variant brief)
+- `pipeline/030_drafts/*.md` or `pipeline/040_review/*.md` or `pipeline/rejected/*.md` (new draft)
 
 Commit with:
 ```
@@ -553,7 +553,7 @@ Revoice: "{headline}" as {new-author}/{new-style}
 - **Missing voice model files (baseline)**: Abort immediately. Do not substitute another author's voice — voice authenticity is critical.
 - **Missing source signal files**: Proceed with available sources. Flag the gap in production notes so the quality gate and human reviewer are aware.
 - **Production subagent failure**: Report the error. Update variant brief to `status: failed`. Do not auto-generate.
-- **Quality subagent failure**: Report the error. Do not auto-pass. Keep draft in `pipeline/drafts/` for manual review.
+- **Quality subagent failure**: Report the error. Do not auto-pass. Keep draft in `pipeline/030_drafts/` for manual review.
 - **No eligible drafts**: Report and exit cleanly.
 - **No alternative authors**: Report and exit — need at least 2 authors for revoicing.
 - **Git commit failure**: Log the error, report in summary. Do not fail the skill over a git issue.
