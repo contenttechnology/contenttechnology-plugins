@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+- README install instructions updated to use plugin marketplace
+- README license corrected to MIT
 
 ## [1.0.9] - 2026-02-10
 

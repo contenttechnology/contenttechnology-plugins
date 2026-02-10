@@ -38,10 +38,13 @@ Articles that pass land in `pipeline/040_review/` for a human to approve, revise
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and configured
 
-### Install the Plugin
+### Install the Marketplace
 
-```bash
-claude plugin add newsroom
+Inside Claude Code, run:
+
+```
+/plugin marketplace add https://github.com/contenttechnology/contenttechnology-plugins.git
+/plugin install newsroom
 ```
 
 ### Initialise a Project
@@ -267,4 +270,4 @@ Drop any file or note into `knowledge-base/sources/` at any time. It will be aut
 
 ## License
 
-Proprietary. All rights reserved.
+MIT
