@@ -167,16 +167,21 @@ After writing all pitch memos, output a summary:
 ## Angle Scan Summary — {date}
 
 ### Pitch Memos Written: {count}
-{For each pitch memo:}
-1. **{Working Headline}** ({pitch-id})
-   - Thesis: {one-line summary}
-   - Signals: {count} from {beat count} beats
-   - Timeliness: {durable/time-sensitive}
-   - Recommended: {author} / {style} / {content type}
+
+| Pitch | |  |
+|-------|-------|-------|
+| **{Working Headline}** ({pitch-id}) | | |
+| {Thesis — one-line summary} | | |
+| Signals: {count} from {beat count} beats | Timeliness: {durable/time-sensitive} | Recommended: {author} / {style} / {content type} |
+| | | |
+| **{Working Headline}** ({pitch-id}) | | |
+| ... | | |
 
 ### Angles Considered and Killed: {count}
-{For each killed angle:}
-- {Brief description}: Killed because {reason — which test failed}
+
+| Angle | Reason |
+|-------|--------|
+| {Brief description} | {Which test failed and why} |
 
 ### Knowledge Base Status
 - Total signals reviewed: {count}

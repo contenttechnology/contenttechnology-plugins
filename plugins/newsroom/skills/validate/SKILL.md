@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, WebFetch, WebSearch
 ---
 
 <objective>
-Run validation on all pending pitch memos in `pipeline/pitches/`. For each pitch, dispatch parallel validation subagents that independently seek supporting evidence, counter-evidence, scope assessment, and audience resonance. Synthesise results and update the pitch memo with a validation report. This is the adversarial layer that prevents weak angles from reaching production.
+Run validation on all pending pitch memos in `pipeline/pitches/`. For each pitch, dispatch parallel validation subagents that independently seek supporting evidence, counter-evidence, scope assessment, and audience resonance. Subagents write detailed reports to files and return only a compact summary to the parent context. Synthesise results and update the pitch memo with a validation report. This is the adversarial layer that prevents weak angles from reaching production.
 </objective>
 
 <process>
@@ -21,9 +21,16 @@ If no pending pitch memos are found, report "No pending pitch memos to validate.
 
 Read `config.md` for quality thresholds (min sources for angle, max revision cycles).
 
+For each pending pitch, create a validation output directory using Bash:
+```
+mkdir -p pipeline/validation/{pitch-id}
+```
+
 ## Step 2: Dispatch Validation Subagents
 
 For each pending pitch memo, dispatch **four parallel validation subagents** using the Task tool (subagent_type: "general-purpose", model: "sonnet").
+
+**Critical: File-based output pattern** — Each subagent MUST write its full detailed report to a file and return ONLY a compact summary line to the parent. This keeps the parent context lean. The detailed reports are available in `pipeline/validation/{pitch-id}/` for deep dives.
 
 ### Subagent 1: Supporting Evidence
 
@@ -52,26 +59,34 @@ Use WebSearch and WebFetch to find new evidence. Search for:
 - Recent news coverage of the topic
 - Expert analysis and commentary
 
-## Output Format
-Return your findings as:
+## Output Instructions
+Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/supporting-evidence.md
 
-SUPPORTING_EVIDENCE_REPORT
-strength: strong | moderate | weak
+The file should contain:
+
+# Supporting Evidence Report — {pitch-id}
+
+strength: {strong | moderate | weak}
 new_sources_found: {count}
 
-### New Evidence Found
+## New Evidence Found
 {For each piece of new evidence:}
 - **Source**: {URL or description}
   **Tier**: {1-4}
   **Finding**: {what this evidence shows}
   **Relevance**: {how it strengthens the thesis}
 
-### Assessment
+## Assessment
 {2-3 sentence assessment of how well the thesis is supported by available evidence}
 
-### Gaps Remaining
+## Gaps Remaining
 {What evidence would further strengthen this but wasn't found}
-END_REPORT
+
+---
+
+After writing the file, return ONLY this single summary line as your final response (nothing else):
+
+SUPPORTING: strength={strong|moderate|weak} new_sources={count} — {one sentence assessment}
 ```
 
 ### Subagent 2: Counter-Evidence
@@ -98,14 +113,18 @@ Use WebSearch and WebFetch to find counter-evidence. Search for:
 
 Be thorough and genuinely adversarial. Finding strong counter-evidence is VALUABLE — it either kills a weak angle (saving production effort) or adds nuance that improves the final piece.
 
-## Output Format
-Return your findings as:
+## Output Instructions
+Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/counter-evidence.md
 
-COUNTER_EVIDENCE_REPORT
-threat_level: fatal | significant | manageable | minimal
+The file should contain:
+
+# Counter-Evidence Report — {pitch-id}
+
+threat_level: {fatal | significant | manageable | minimal}
 counter_sources_found: {count}
+recommendation: {PROCEED | REFINE | KILL}
 
-### Counter-Evidence Found
+## Counter-Evidence Found
 {For each piece of counter-evidence:}
 - **Source**: {URL or description}
   **Tier**: {1-4}
@@ -113,15 +132,21 @@ counter_sources_found: {count}
   **Threat to thesis**: {how it weakens or contradicts the thesis}
   **Addressable**: {yes/no — can the piece acknowledge and address this?}
 
-### Assessment
+## Assessment
 {2-3 sentence assessment of how the counter-evidence affects the thesis}
 
-### Recommendation
-{One of:}
+## Recommendation
 - PROCEED: Counter-evidence is manageable and can be addressed in the piece
 - REFINE: Thesis needs adjustment to account for counter-evidence (suggest refinement)
 - KILL: Counter-evidence is too strong — thesis is fundamentally flawed
-END_REPORT
+
+{If REFINE, include a suggested refined thesis}
+
+---
+
+After writing the file, return ONLY this single summary line as your final response (nothing else):
+
+COUNTER: threat={fatal|significant|manageable|minimal} sources={count} recommendation={PROCEED|REFINE|KILL} — {one sentence assessment}
 ```
 
 ### Subagent 3: Scope Validation
@@ -145,25 +170,33 @@ Assess whether this angle is scoped correctly:
 
 Use WebSearch to check geographic scope, market size, and applicability.
 
-## Output Format
-Return your findings as:
+## Output Instructions
+Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/scope.md
 
-SCOPE_REPORT
-scope_assessment: appropriate | too-broad | too-narrow | geographic-mismatch
-audience_fit: strong | adequate | weak
+The file should contain:
 
-### Geographic Scope
+# Scope Report — {pitch-id}
+
+scope_assessment: {appropriate | too-broad | too-narrow | geographic-mismatch}
+audience_fit: {strong | adequate | weak}
+
+## Geographic Scope
 {Is this national, regional, or local? Evidence for the assessment.}
 
-### Audience Fit
+## Audience Fit
 {Does this match the target audience? Who would care and who wouldn't?}
 
-### Scope Recommendations
+## Scope Recommendations
 {If adjustment needed, suggest how to refine the scope}
 
-### Content Type Fit
+## Content Type Fit
 {Is the recommended content type right for this scope and depth?}
-END_REPORT
+
+---
+
+After writing the file, return ONLY this single summary line as your final response (nothing else):
+
+SCOPE: assessment={appropriate|too-broad|too-narrow|geographic-mismatch} audience_fit={strong|adequate|weak} — {one sentence assessment}
 ```
 
 ### Subagent 4: Audience Resonance
@@ -186,38 +219,48 @@ Determine how this thesis would land with the target audience:
 
 Use WebSearch to check industry forums, social media, trade publication comment sections, and community discussions.
 
-## Output Format
-Return your findings as:
+## Output Instructions
+Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/resonance.md
 
-RESONANCE_REPORT
-audience_awareness: high | moderate | low | none
-predicted_reception: high-value | useful | marginal | redundant
+The file should contain:
 
-### Current Discussion
+# Audience Resonance Report — {pitch-id}
+
+audience_awareness: {high | moderate | low | none}
+predicted_reception: {high-value | useful | marginal | redundant}
+
+## Current Discussion
 {What the audience is already saying about this topic, if anything}
 
-### Sentiment
+## Sentiment
 {How the audience currently feels about this topic — is there an appetite for analysis?}
 
-### Timeliness
+## Timeliness
 {Is this ahead of the conversation, in the middle of it, or behind it?}
 
-### Reception Prediction
+## Reception Prediction
 {How would the target audience likely receive this piece?}
-END_REPORT
+
+---
+
+After writing the file, return ONLY this single summary line as your final response (nothing else):
+
+RESONANCE: awareness={high|moderate|low|none} reception={high-value|useful|marginal|redundant} — {one sentence assessment}
 ```
 
 Launch all four subagents in parallel for each pitch memo. If there are multiple pitch memos, process them sequentially (to manage cost) or in parallel if step budget allows.
 
 ## Step 3: Synthesise Validation Results
 
-For each pitch memo, once all four subagent reports return:
+For each pitch memo, once all four subagent summaries return, parse the summary lines to extract the key metrics.
+
+If any synthesis decision requires more detail (e.g., understanding why counter-evidence is "significant" or what scope adjustment is needed), read the relevant detailed report from `pipeline/validation/{pitch-id}/`.
 
 ### Synthesis Logic
 
-1. **If counter-evidence threat_level is "fatal"**: Mark the pitch as `status: rejected` with the reason.
+1. **If counter-evidence threat_level is "fatal"**: Mark the pitch as `status: rejected` with the reason. Read `pipeline/validation/{pitch-id}/counter-evidence.md` for the specific reason.
 
-2. **If scope_assessment is "geographic-mismatch" AND audience_fit is "weak"**: Consider killing or flagging for significant revision.
+2. **If scope_assessment is "geographic-mismatch" AND audience_fit is "weak"**: Consider killing or flagging for significant revision. Read `pipeline/validation/{pitch-id}/scope.md` for details.
 
 3. **If supporting evidence strength is "weak" AND counter-evidence is "significant"**: The thesis doesn't have enough support. Kill or refine.
 
@@ -227,7 +270,7 @@ For each pitch memo, once all four subagent reports return:
 
 ### Thesis Refinement
 
-If counter-evidence suggests refinement (recommendation: REFINE), update the thesis in the pitch memo to account for the nuance. Strong counter-evidence that adds complexity often makes for a better piece.
+If counter-evidence suggests refinement (recommendation: REFINE), read `pipeline/validation/{pitch-id}/counter-evidence.md` for the suggested refinement and update the thesis in the pitch memo to account for the nuance. Strong counter-evidence that adds complexity often makes for a better piece.
 
 ## Step 4: Update Pitch Memos
 
@@ -248,22 +291,22 @@ _Validated: {date}_
 ### Supporting Evidence Assessment
 - **Strength**: {strong/moderate/weak}
 - **New sources found**: {count}
-{Key new evidence bullets}
+- [Full report](../validation/{pitch-id}/supporting-evidence.md)
 
 ### Counter-Evidence Assessment
 - **Threat level**: {fatal/significant/manageable/minimal}
-{Key counter-evidence bullets}
-- **Addressability**: {How the piece can address counter-arguments}
+- **Recommendation**: {PROCEED/REFINE/KILL}
+- [Full report](../validation/{pitch-id}/counter-evidence.md)
 
 ### Scope Assessment
 - **Scope**: {appropriate/too-broad/too-narrow}
 - **Audience fit**: {strong/adequate/weak}
-{Key scope notes}
+- [Full report](../validation/{pitch-id}/scope.md)
 
 ### Audience Resonance
 - **Audience awareness**: {high/moderate/low/none}
 - **Predicted reception**: {high-value/useful/marginal/redundant}
-{Key resonance notes}
+- [Full report](../validation/{pitch-id}/resonance.md)
 
 ### Validation Verdict
 {2-3 sentence synthesis: why this angle should proceed, with what caveats}
@@ -301,11 +344,13 @@ Use Bash `mv` to move rejected pitch files from `pipeline/pitches/` to `pipeline
 
 ### Deferred: {count}
 {Pitches that need more evidence before a decision}
+
+Detailed reports: pipeline/validation/
 ```
 
 ## Step 6: Git Commit
 
-Stage all modified pitch memos and any moved files:
+Stage all modified pitch memos, validation report files, and any moved files:
 
 ```
 Validate pitches: {N} validated, {M} rejected
