@@ -17,8 +17,7 @@ Read the following files to build full editorial context:
 
 1. **`PUBLICATION.md`** — Editorial mission and quality criteria
 2. **`config.md`** — Quality thresholds (min sources for angle: 2)
-3. **`editorial-calendar.md`** — Current calendar, recurring commitments, gaps to fill
-4. **`knowledge-base/index.json`** — Signal metadata, tags, dates, tiers
+3. **`knowledge-base/index.json`** — Signal metadata, tags, dates, tiers
 
 Use Glob to check for active campaigns in `campaigns/active/*.md` and read any found.
 

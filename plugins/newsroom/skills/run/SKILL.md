@@ -184,9 +184,6 @@ You are the Angle Stage agent of an autonomous editorial pipeline. Scan the know
 ## Quality Thresholds
 {Paste relevant config.md sections — min sources for angle: 2}
 
-## Editorial Calendar
-{Paste editorial-calendar.md content}
-
 ## Existing Coverage (avoid duplication)
 {List headlines from pipeline/010_pitches/, pipeline/020_approved/, pipeline/030_drafts/, pipeline/040_review/, pipeline/050_published/}
 
@@ -331,9 +328,6 @@ You are the Editorial Stage agent of an autonomous editorial pipeline. Act as ed
 ## Quality Thresholds and Content Mix Targets
 {Paste config.md content}
 
-## Editorial Calendar
-{Paste editorial-calendar.md content}
-
 ## Recent Publication History
 {List recent headlines, content types, authors from pipeline/050_published/, pipeline/040_review/, pipeline/030_drafts/, pipeline/020_approved/}
 
@@ -420,7 +414,7 @@ If the editorial subagent fails, log the error and continue to Step 7 (to proces
 
 If no ready briefs, skip to Step 8.
 
-If work exists, read brand guidelines from `voice-models/brand-guidelines.md`.
+If work exists, read brand guidelines from `voice-models/brand-guidelines.md` and formatting conventions from `FORMATTING.md` (if it exists).
 
 Dispatch a Task subagent (subagent_type: "general-purpose"):
 
@@ -432,6 +426,9 @@ You are the Produce Stage agent of an autonomous editorial pipeline. Write artic
 
 ## Brand Voice Constraints (Layer 1 — HARD RULES)
 {Paste brand-guidelines.md content}
+
+## Formatting Conventions
+{Paste FORMATTING.md content, or omit this section if FORMATTING.md does not exist}
 
 ## Ready Briefs
 {List ready brief file paths}

@@ -30,6 +30,7 @@ Read the following:
 1. **`PUBLICATION.md`** — Editorial mission and quality criteria
 2. **`config.md`** — Max revision cycles (default: 2)
 3. **`voice-models/brand-guidelines.md`** — Brand constraints to check against
+4. **`FORMATTING.md`** — Formatting conventions to check against (if it exists)
 
 For each draft, also read:
 - The corresponding production brief from `pipeline/020_approved/{brief_id}.md`
@@ -57,6 +58,9 @@ You are a quality gate assessor for the Newsroom. Your job is to ruthlessly eval
 
 ## Style Modifier
 {Paste the style modifier content, or "No style modifier — baseline voice only"}
+
+## Formatting Conventions
+{Paste FORMATTING.md content, or "No formatting conventions file found — assess readability using general best practices"}
 
 ## Revision History
 This is revision {N} of max {max_revisions}.
@@ -122,6 +126,7 @@ Would a busy professional read past the first 200 words? Look for:
 - Is the length appropriate for the content type?
 - Is the pacing right — does it maintain momentum?
 - Are there sections where a reader would lose interest?
+- Does the formatting follow the conventions in FORMATTING.md? (paragraph length, heading structure, list usage, emphasis, etc.)
 
 ## Output Format
 

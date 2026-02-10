@@ -25,6 +25,7 @@ Read the following once (shared across all drafts):
 
 1. **`PUBLICATION.md`** — Editorial mission and quality criteria
 2. **`voice-models/brand-guidelines.md`** — Global brand voice constraints (Layer 1)
+3. **`FORMATTING.md`** — Global formatting conventions (if it exists)
 
 ### Editorial Feedback
 
@@ -79,6 +80,9 @@ You are a production writer for the Newsroom. Your job is to write a complete ar
 ## Brand Voice Constraints (HARD RULES — cannot be violated)
 {Paste full brand-guidelines.md content}
 
+## Formatting Conventions (APPLY TO ALL CONTENT)
+{Paste full FORMATTING.md content, or omit this section if FORMATTING.md does not exist}
+
 ## Your Author Voice: {author name}
 {Paste full baseline.md content}
 
@@ -107,6 +111,7 @@ Write a complete article draft that:
 6. Addresses the counter-arguments identified in the brief
 7. Delivers a clear "so what?" for the target audience: {audience segments}
 8. Avoids everything on the do-not-include list
+9. Follows the formatting conventions from FORMATTING.md (paragraph length, heading structure, list usage, etc.)
 
 ## Output Format
 

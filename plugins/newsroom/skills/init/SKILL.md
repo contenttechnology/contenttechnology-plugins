@@ -116,6 +116,9 @@ See `config.md` for research modes, step budgets, and quality thresholds.
 ## Voice Models
 See `voice-models/` for brand guidelines and author voice definitions.
 
+## Formatting
+See `FORMATTING.md` for global formatting conventions applied to all content.
+
 ## Pipeline State
 The current state of the editorial pipeline is readable from the folder structure:
 - `pipeline/010_pitches/` — Angles awaiting editorial review
@@ -154,34 +157,57 @@ Write to `config.md` in the project root. Use this exact content:
 - Practitioner Insights: weekly
 - Market Pulse: bi-weekly
 
-## File 3: editorial-calendar.md
+## File 3: FORMATTING.md
 
-Write to `editorial-calendar.md` in the project root. Use this exact content:
+Write to `FORMATTING.md` in the project root. Use this exact content:
 
-# Editorial Calendar
+# Formatting Conventions
 
-## Current Month
+Global formatting rules applied to all content produced by this Newsroom. These conventions optimise for readability, SEO, and AI engine discoverability (AEO). Author voice and style modifiers take precedence where they conflict with these defaults.
 
-| Week | Content Type | Topic/Angle | Author | Status |
-|------|-------------|-------------|--------|--------|
-| | | | | |
+## Structure
 
-## Recurring Commitments
-- **Practitioner Insights**: Weekly
-- **Market Pulse**: Bi-weekly
-- **Deep Analysis**: 2-4 per month
-- **Data Intelligence**: Per data release calendar
-- **Regulatory Watch**: As warranted
+- **Heading hierarchy**: Use H2 (`##`) for major sections, H3 (`###`) for subsections. Never skip heading levels.
+- **Subheadings every 200–300 words**: Break up long runs of text. No reader should face a wall of prose without a signpost.
+- **Descriptive, keyword-rich headings**: Headings should tell the reader (and search engines) exactly what the section covers. "Q3 Revenue Fell 12% on Regulatory Costs" over "Financial Results".
+- **Front-load the answer**: The first 1–2 paragraphs should deliver the core thesis or finding. AI engines and impatient readers both need the answer up top.
 
-## Upcoming Events
-<!-- Add industry events, data release dates, regulatory deadlines that drive content -->
+## Paragraphs
 
-## Campaign Slots
-<!-- Reserve weeks for thematic campaigns -->
+- **Maximum ~50 words per paragraph**: Short paragraphs are easier to scan on screens. If a paragraph runs long, split it.
+- **One idea per paragraph**: Each paragraph should make a single point. If you're making two points, use two paragraphs.
+- **Lead with the key claim**: Open each paragraph with its most important sentence. Supporting detail follows.
 
-## Notes
-- Rapid response pieces override the calendar when timeliness demands it
-- Calendar is a guide, not a constraint — quality always trumps schedule
+## Lists
+
+- **Prefer bullet or numbered lists for scannable content**: When presenting 3+ parallel items, comparisons, steps, or takeaways, use a list instead of burying them in prose.
+- **Numbered lists for sequences or rankings**: Use numbered lists when order matters.
+- **Bullet lists for unordered items**: Use bullets when items are parallel but order is arbitrary.
+- **Keep list items concise**: Each item should be 1–2 sentences maximum.
+
+## Emphasis & Formatting
+
+- **Bold key terms on first use**: When introducing a term the reader needs to remember, bold it on first appearance.
+- **Bold for key takeaways**: Use bold sparingly within paragraphs to highlight the single most important phrase.
+- **No italic for emphasis**: Reserve italic for titles, technical terms, or definitions — not for stressing words.
+
+## SEO & Discoverability
+
+- **Keyword-rich opening paragraph**: The first paragraph should naturally include the primary topic keywords.
+- **Natural keyword placement in headings**: Headings should include relevant search terms without keyword-stuffing.
+- **Descriptive link text**: If linking, use descriptive anchor text — never "click here" or bare URLs.
+
+## AEO (AI Engine Optimisation)
+
+- **Direct answers near the top**: Structure the opening so an AI engine can extract a clear, concise answer to the article's central question.
+- **Definition-style sentences for key concepts**: When explaining a concept, include at least one crisp definitional sentence that could stand alone as an answer.
+- **Structured data patterns**: Use consistent heading + concise-answer patterns that AI engines can parse.
+
+## What These Rules Do NOT Override
+
+- Author voice and personality (baseline.md) — formatting shapes structure, not tone
+- Style modifier conventions (style-*.md) — if a style specifies "minimal section breaks", honour that
+- Brand guidelines (brand-guidelines.md) — brand rules always take precedence
 
 ## Output
 After creating all 3 files, confirm completion.
@@ -526,8 +552,9 @@ Initialise Newsroom project scaffold
 - Create full directory structure for editorial pipeline
 - Generate PUBLICATION.md with editorial mission and cycle instructions
 - Generate config.md with research settings and quality thresholds
+- Generate FORMATTING.md with default formatting conventions
 - Generate brand guidelines and example author voice models (Steve, Sarah)
-- Generate editorial calendar template and knowledge base index
+- Generate knowledge base index
 - Create {N} initial research beats (if any were added)
 ```
 
@@ -539,9 +566,12 @@ After the commit, inform the user:
 
 > **Sample voice models created.** Two example authors — Steve and Sarah — have been added to `voice-models/authors/`. These are generic templates. You should review and modify them to match your publication's tone of voice before running the editorial pipeline. Use `/add-author` to create new authors or edit the files in `voice-models/authors/` directly.
 >
+> **Formatting conventions created.** `FORMATTING.md` contains default formatting rules optimised for readability, SEO, and AI engine discoverability. Review and customise these to match your publication's style — for example, you might adjust paragraph length limits, heading conventions, or list preferences.
+>
 > **Next steps:**
 > 1. Run `/add-beat` to define the topics and sources your engine will monitor
 > 2. Run `/add-author` to create author voices that match your publication
-> 3. Run `/research` to scan your beats for signals and start the editorial pipeline
+> 3. Review `FORMATTING.md` and adjust formatting conventions to your preferences
+> 4. Run `/research` to scan your beats for signals and start the editorial pipeline
 
 </process>

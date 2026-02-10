@@ -184,20 +184,9 @@ Campaign pieces should be prioritised in the editorial mix, but never at the exp
 - {today's date}: Campaign created
 ```
 
-## Step 9: Update Editorial Calendar
+## Step 9: Git Commit
 
-Read `editorial-calendar.md` and append the campaign to the Campaign Slots section:
-
-```markdown
-### {Campaign Name} ({start date} — {end date or "ongoing"})
-- Type: {type}
-- Target: {piece count} pieces
-- Topics: {key topics}
-```
-
-## Step 10: Git Commit
-
-Stage the new campaign brief and updated editorial calendar:
+Stage the new campaign brief:
 
 ```
 Add campaign: {Campaign Name}

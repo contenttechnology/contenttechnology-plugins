@@ -17,7 +17,6 @@ Read the following to build full editorial context:
 
 1. **`PUBLICATION.md`** — Editorial mission and quality criteria
 2. **`config.md`** — Quality thresholds, content mix targets
-3. **`editorial-calendar.md`** — Current calendar, gaps, recurring commitments
 
 ### Recent Publication History
 
@@ -31,8 +30,6 @@ Build a picture of the current editorial mix:
 - Which content types have been covered recently?
 - Which authors have been assigned recently?
 - Which topics have been covered?
-- What gaps exist in the editorial calendar?
-
 ### Active Campaigns
 
 Use Glob to check `campaigns/active/*.md` and read any found. Campaigns influence prioritisation.
@@ -89,7 +86,7 @@ Has a similar angle been published recently?
 
 ### Timeliness
 - Time-sensitive angles get fast-tracked if they pass other criteria
-- Durable angles can wait for the right slot in the editorial calendar
+- Durable angles can wait for the right slot
 
 ## Step 4: Make Editorial Decisions
 
@@ -330,7 +327,6 @@ Killed:
 ## Error Handling
 
 - If no authors exist in `voice-models/`, approve the angle but set `author: unassigned` and note that an author must be created before production
-- If the editorial calendar is missing, proceed without mix analysis but note it in the summary
 - If campaign files can't be read, proceed without campaign alignment
 - It is expected and healthy for the editorial director to kill most pitches — a high approval rate indicates the quality bar is too low
 

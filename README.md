@@ -24,7 +24,7 @@ Research  →  Angle  →  Validate  →  Editorial  →  Produce  →  Quality 
 
 **4. Editorial** - Acts as editorial director. Evaluates surviving angles against value threshold, source strength, editorial mix, campaign fit, and redundancy. Assigns an author and writing style to approved angles.
 
-**5. Produce** - Writes drafts using a three-layer voice model: brand guidelines, author personality, and style modifier. Each article sounds like it was written by a specific person, not a machine.
+**5. Produce** - Writes drafts using a three-layer voice model (brand guidelines, author personality, style modifier) plus global formatting conventions. Each article sounds like it was written by a specific person, not a machine.
 
 **6. Quality** - Assesses drafts against seven criteria: insight density, source fidelity, thesis delivery, AI-tell scan, voice match, novelty, and readability. Drafts get up to two revision cycles before being killed.
 
@@ -62,7 +62,7 @@ Inside Claude Code, run:
 
 The init skill walks you through an interactive setup:
 1. Define your editorial mission - industry, audience, goals, publication name
-2. Generates your `PUBLICATION.md` (editorial brain), `config.md` (settings), and brand guidelines
+2. Generates your `PUBLICATION.md` (editorial brain), `config.md` (settings), brand guidelines, and `FORMATTING.md` (formatting conventions)
 3. Creates two example authors with full voice models
 4. Builds the complete folder structure
 5. Optionally creates your first research beats
@@ -138,7 +138,7 @@ An interactive session where you read quality-approved drafts and decide: **appr
 | `angle` | Scan the knowledge base for convergent patterns. Applies quality filters (So What?, Synthesis, Novelty, Durability). Writes pitch memos |
 | `validate` | Validate pitch memos with four parallel subagents: supporting evidence, counter-evidence, scope, and audience resonance |
 | `editorial` | Evaluate validated pitches. Make approve/kill/hold decisions. Assign authors and styles. Write production briefs |
-| `produce` | Write article drafts from production briefs using the three-layer voice model (brand + author + style) |
+| `produce` | Write article drafts from production briefs using the three-layer voice model (brand + author + style) and formatting conventions |
 | `quality` | Assess drafts against seven criteria. Pass, revise (up to 2 cycles), or kill |
 | `run` | Execute the full pipeline end-to-end with zero human interaction. Designed for cron |
 
@@ -159,8 +159,8 @@ After init, your project looks like this:
 ```
 my-publication/
 ├── PUBLICATION.md                       # Editorial mission and cycle instructions
+├── FORMATTING.md                        # Global formatting conventions (SEO, AEO, readability)
 ├── config.md                       # Research modes, budgets, quality thresholds
-├── editorial-calendar.md           # Publication schedule and content mix
 ├── voice-models/
 │   ├── brand-guidelines.md         # Global voice constraints
 │   └── authors/
@@ -207,6 +207,10 @@ Every article is produced through three composable layers:
 3. **Style Modifier** - Content-type adjustments: deep-analysis is measured and data-led; commentary is sharp and opinionated
 
 Two authors writing about the same topic produce noticeably different pieces.
+
+### Formatting Conventions
+
+`FORMATTING.md` defines global structural rules that apply to all content regardless of author or style: paragraph length limits, heading hierarchy, list usage, emphasis patterns, and optimisations for SEO and AI engine discoverability (AEO). The production and quality stages both reference this file — articles are written to the conventions, and the quality gate checks compliance.
 
 ### Quality Gate (7 Criteria)
 
