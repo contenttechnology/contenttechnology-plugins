@@ -26,6 +26,25 @@ if git rev-parse "v$VERSION" >/dev/null 2>&1; then
   exit 1
 fi
 
+# --- Changelog check ---
+
+echo ""
+echo "Current [Unreleased] section in CHANGELOG.md:"
+echo "---"
+sed -n '/^## \[Unreleased\]/,/^## \[/{/^## \[Unreleased\]/d;/^## \[/d;p;}' CHANGELOG.md
+echo "---"
+echo ""
+read -rp "Has the changelog been updated for v$VERSION? [y/N] " CHANGELOG_OK
+if [[ ! "$CHANGELOG_OK" =~ ^[Yy]$ ]]; then
+  echo "Update CHANGELOG.md and run again."
+  exit 1
+fi
+
+# --- Move [Unreleased] to new version ---
+
+TODAY=$(date +%Y-%m-%d)
+sed -i '' "s/^## \[Unreleased\]/## [Unreleased]\n\n## [$VERSION] - $TODAY/" CHANGELOG.md
+
 # --- Update plugin.json files ---
 
 PLUGIN_FILES=$(find plugins -path '*/\.claude-plugin/plugin.json' 2>/dev/null)
@@ -53,7 +72,7 @@ done
 
 # --- Commit and tag ---
 
-git add $PLUGIN_FILES $BANNER_FILES
+git add CHANGELOG.md $PLUGIN_FILES $BANNER_FILES
 git commit -m "release v$VERSION"
 git tag "v$VERSION"
 
