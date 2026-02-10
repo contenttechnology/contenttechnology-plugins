@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-02-10
+
 ### Added
 - `/revoice` skill — re-produce an existing draft with a different author's voice. Writes fresh from the original production brief (not a transformation), runs the full 7-criteria quality gate, and tracks lineage between variants via `revoice_of`, `original_brief`, and shared `pitch_id` metadata
 
