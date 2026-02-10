@@ -45,8 +45,8 @@ done
 
 BANNER_FILES=$(find plugins -name 'intro.md' -o -name 'SKILL.md' 2>/dev/null)
 for f in $BANNER_FILES; do
-  if grep -q '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' "$f"; then
-    sed -i '' "s/^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*/v$VERSION/" "$f"
+  if grep -q '(v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*)' "$f"; then
+    sed -i '' "s/(v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*)/(v$VERSION)/" "$f"
     echo "  $f"
   fi
 done
