@@ -112,6 +112,7 @@ Write a complete article draft that:
 7. Delivers a clear "so what?" for the target audience: {audience segments}
 8. Avoids everything on the do-not-include list
 9. Follows the formatting conventions from FORMATTING.md (paragraph length, heading structure, list usage, etc.)
+10. Ensures dates are relative to today's date
 
 ## Output Format
 
