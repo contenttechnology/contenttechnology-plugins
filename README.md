@@ -148,6 +148,7 @@ An interactive session where you read quality-approved drafts and decide: **appr
 |---|---|
 | `review` | Interactive review session - read drafts, approve, revise with feedback, or kill with reasoning |
 | `rush` | Rapid response for breaking news - compressed pipeline, abbreviated validation, draft ready in a single session |
+| `revoice` | Re-produce an existing draft with a different author's voice - fresh write from the original brief, full quality gate, lineage tracking |
 
 ---
 
