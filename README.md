@@ -12,6 +12,8 @@ Newsroom runs a six-stage pipeline. Each stage is a Claude Code skill that can r
 
 ```
 Research  →  Angle  →  Validate  →  Editorial  →  Produce  →  Quality  →  Human Review
+   ↑            ↑                       │            ↑
+   └────────────┴───── feedback ────────┘────────────┘
 ```
 
 **1. Research** - Scans your configured beats (topic areas) for new signals from web sources, filings, feeds, and forums. Only processes genuinely new content via change detection.
@@ -179,7 +181,9 @@ my-publication/
 │   ├── drafts/                     # Drafts in progress
 │   ├── review/                     # Ready for human review
 │   ├── published/                  # Approved final articles
-│   └── rejected/                   # Killed with reasoning
+│   ├── rejected/                   # Killed with reasoning
+│   ├── validation/                 # Detailed validation reports per pitch
+│   └── editorial-feedback.md       # Carry-forward notes between cycles
 └── metrics/                        # Cycle logs and health metrics
 ```
 
@@ -214,6 +218,19 @@ Two authors writing about the same topic produce noticeably different pieces.
 | Voice match | Reads authentically as the assigned author |
 | Novelty | Reader learns something they couldn't easily find elsewhere |
 | Readability | A busy professional would read past the first 200 words |
+
+### Editorial Feedback Loop
+
+The pipeline flows forward (research → quality), but editorial intelligence flows backward via `pipeline/editorial-feedback.md`. When the editorial stage makes decisions, it writes carry-forward notes for upstream stages:
+
+| Entry Type | Written by | Read by | Example |
+|---|---|---|---|
+| `production-note` | Editorial | Produce | "Briefs 002 and 003 share signals — differentiate framing" |
+| `angle-guidance` | Editorial | Angle | "Recycle pitch-003's deal data into a Market Pulse angle" |
+| `research-guidance` | Editorial | Research | "Practitioner Insights beat is underrepresented — prioritise" |
+| `held-pitch` | Editorial | Angle, Editorial | "Re-evaluate if regulatory pushback signals emerge" |
+
+Each entry has an `open` / `addressed` lifecycle. When a downstream skill acts on an entry, it marks it as addressed. Addressed entries are auto-pruned after 14 days.
 
 ### Source Tiers
 

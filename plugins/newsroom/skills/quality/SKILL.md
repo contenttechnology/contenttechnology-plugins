@@ -166,9 +166,9 @@ For each draft, based on the subagent's quality report:
 
 ### PASS
 
-1. Move the draft to `pipeline/review/` using Bash `mv`
-2. Update the draft frontmatter: `status: passed`, add `quality_passed_date`
-3. Append the quality report to the draft file (so human reviewers can see the assessment)
+1. Update the draft frontmatter: `status: passed`, add `quality_passed_date`
+2. Append the quality report to the draft file (so human reviewers can see the assessment)
+3. Rename and move the draft to `pipeline/review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
 4. The draft is now ready for human review
 
 ### REVISE

@@ -2,21 +2,19 @@
 
 ## [Unreleased]
 
-## [1.0.5] - 2026-02-10
-
-## [1.0.4] - 2026-02-10
+## [1.0.6] - 2026-02-10
 
 ### Added
 - Editorial feedback loop via `pipeline/editorial-feedback.md` — editorial skill writes carry-forward notes (production notes, angle guidance, research guidance, held pitch triggers) that research, angle, and produce skills read and act on in subsequent cycles
 - Entries have open/addressed lifecycle with 14-day auto-pruning of addressed entries
 - Run skill propagates feedback instructions to all stage subagents
-
-## [1.0.3] - 2026-02-10
+- README updated with feedback loop documentation, pipeline diagram, and project structure
 
 ### Changed
 - Validate skill: subagents now write detailed reports to `pipeline/validation/{pitch-id}/` files and return only a single summary line to the parent context, significantly reducing context window usage
 - Validate skill: pitches now processed sequentially (full validate-synthesise-update cycle per pitch) instead of launching all agents across all pitches at once
 - Validate skill: counter-evidence summary line now includes refined thesis and kill reason, eliminating need to read detail files during synthesis
+- Quality skill: drafts that pass are renamed from `draft-` to `for-review-` prefix when moved to `pipeline/review/`
 
 ## [1.0.2] - 2026-02-10
 

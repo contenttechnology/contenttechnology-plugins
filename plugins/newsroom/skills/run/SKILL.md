@@ -536,7 +536,7 @@ Output format: ---QUALITY_REPORT--- with Overall Verdict (PASS/REVISE/KILL), Cri
 
 ### 3. Process Verdicts
 
-**PASS**: Move draft to `pipeline/review/` (Bash mv). Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report.
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/review/`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` → `for-review-2026-02-10-001.md`).
 
 **REVISE**: If `revision < max_revisions`:
 - Increment revision count, set `status: revision`
