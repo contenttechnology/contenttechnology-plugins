@@ -4,6 +4,8 @@
 
 ## [1.0.9] - 2026-02-10
 
+## [1.0.9] - 2026-02-10
+
 ### Added
 - `FORMATTING.md` — global formatting conventions file generated during `/init` with sensible defaults for readability, SEO, and AI engine discoverability (AEO)
 - `/produce` and `/run` load and pass formatting conventions to production subagents
