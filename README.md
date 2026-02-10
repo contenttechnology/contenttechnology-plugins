@@ -1,14 +1,8 @@
-# Newsroom
+ ![Newsroom - Autonomous Editorial Pipeline](plugins/newsroom/resources/banner.png)
 
-```
-█▀▀▄ █▀▀ █░░░█ █▀▀ █▀▀█ █▀▀█ █▀▀█ █▀▄▀█
-█░░█ █▀▀ █▄█▄█ ▀▀█ █▄▄▀ █░░█ █░░█ █░▀░█
-▀░░▀ ▀▀▀ ░▀░▀░ ▀▀▀ ▀░▀▀ ▀▀▀▀ ▀▀▀▀ ▀░░░▀
-```
+Newsroom is an autonomous editorial pipeline built as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin. 
 
-**Editorial intelligence on autopilot.**
-
-Newsroom is an autonomous editorial pipeline built as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin. It researches, writes, and quality-checks articles — then hands polished drafts to a human for final review. No human touches the writing until it's ready.
+It researches, writes, and quality-checks articles - then hands polished drafts to a human for final review. No human touches the writing until it's ready.
 
 ---
 
@@ -20,17 +14,17 @@ Newsroom runs a six-stage pipeline. Each stage is a Claude Code skill that can r
 Research  →  Angle  →  Validate  →  Editorial  →  Produce  →  Quality  →  Human Review
 ```
 
-**1. Research** — Scans your configured beats (topic areas) for new signals from web sources, filings, feeds, and forums. Only processes genuinely new content via change detection.
+**1. Research** - Scans your configured beats (topic areas) for new signals from web sources, filings, feeds, and forums. Only processes genuinely new content via change detection.
 
-**2. Angle** — Reads the knowledge base and identifies convergent patterns across signals. Constructs falsifiable theses, not topic summaries. Single-source angles are killed automatically.
+**2. Angle** - Reads the knowledge base and identifies convergent patterns across signals. Constructs falsifiable theses, not topic summaries. Single-source angles are killed automatically.
 
-**3. Validate** — Stress-tests each angle with four parallel subagents: supporting evidence, counter-evidence (adversarial), scope validation, and audience resonance. Weak angles are killed or refined.
+**3. Validate** - Stress-tests each angle with four parallel subagents: supporting evidence, counter-evidence (adversarial), scope validation, and audience resonance. Weak angles are killed or refined.
 
-**4. Editorial** — Acts as editorial director. Evaluates surviving angles against value threshold, source strength, editorial mix, campaign fit, and redundancy. Assigns an author and writing style to approved angles.
+**4. Editorial** - Acts as editorial director. Evaluates surviving angles against value threshold, source strength, editorial mix, campaign fit, and redundancy. Assigns an author and writing style to approved angles.
 
-**5. Produce** — Writes drafts using a three-layer voice model: brand guidelines, author personality, and style modifier. Each article sounds like it was written by a specific person, not a machine.
+**5. Produce** - Writes drafts using a three-layer voice model: brand guidelines, author personality, and style modifier. Each article sounds like it was written by a specific person, not a machine.
 
-**6. Quality** — Assesses drafts against seven criteria: insight density, source fidelity, thesis delivery, AI-tell scan, voice match, novelty, and readability. Drafts get up to two revision cycles before being killed.
+**6. Quality** - Assesses drafts against seven criteria: insight density, source fidelity, thesis delivery, AI-tell scan, voice match, novelty, and readability. Drafts get up to two revision cycles before being killed.
 
 Articles that pass land in `pipeline/review/` for a human to approve, revise, or kill.
 
@@ -65,7 +59,7 @@ Inside Claude Code, run:
 ```
 
 The init skill walks you through an interactive setup:
-1. Define your editorial mission — industry, audience, goals, publication name
+1. Define your editorial mission - industry, audience, goals, publication name
 2. Generates your `PUBLICATION.md` (editorial brain), `config.md` (settings), and brand guidelines
 3. Creates two example authors with full voice models
 4. Builds the complete folder structure
@@ -86,7 +80,7 @@ You'll define the beat's scope, add sources (URLs, feeds, databases), set check 
 
 ### Add an Author
 
-Each author has a distinct voice — personality, vocabulary, rhythm, and style variations.
+Each author has a distinct voice - personality, vocabulary, rhythm, and style variations.
 
 ```
 /add-author
@@ -129,10 +123,10 @@ An interactive session where you read quality-approved drafts and decide: **appr
 
 | Skill | What it does |
 |---|---|
-| `init` | Create a new newsroom project — folder structure, editorial mission, config, example authors, and first beats |
+| `init` | Create a new newsroom project - folder structure, editorial mission, config, example authors, and first beats |
 | `add-author` | Interactively create a new author voice model with baseline personality and style modifiers |
 | `add-beat` | Define a new research beat with sources, schedule, scope, and methodology |
-| `add-campaign` | Launch an editorial campaign — seasonal, event-driven, thematic, or rapid response |
+| `add-campaign` | Launch an editorial campaign - seasonal, event-driven, thematic, or rapid response |
 
 ### Pipeline (run autonomously or manually)
 
@@ -150,8 +144,8 @@ An interactive session where you read quality-approved drafts and decide: **appr
 
 | Skill | What it does |
 |---|---|
-| `review` | Interactive review session — read drafts, approve, revise with feedback, or kill with reasoning |
-| `rush` | Rapid response for breaking news — compressed pipeline, abbreviated validation, draft ready in a single session |
+| `review` | Interactive review session - read drafts, approve, revise with feedback, or kill with reasoning |
+| `rush` | Rapid response for breaking news - compressed pipeline, abbreviated validation, draft ready in a single session |
 
 ---
 
@@ -172,7 +166,7 @@ my-publication/
 │           └── style-*.md          # Style modifiers per content type
 ├── knowledge-base/
 │   ├── signals/                    # Signal reports from research
-│   ├── sources/                    # Drop files here — auto-indexed as Tier 1
+│   ├── sources/                    # Drop files here - auto-indexed as Tier 1
 │   ├── index.json                  # Metadata index (processed URLs, signal tags)
 │   └── archive/                    # Decayed signals
 ├── beats/                          # Beat configs (scope, sources, schedule)
@@ -189,7 +183,7 @@ my-publication/
 └── metrics/                        # Cycle logs and health metrics
 ```
 
-The filesystem is the shared state. Every signal, pitch, brief, draft, and editorial decision is a file in the repo — fully version-controlled and inspectable.
+The filesystem is the shared state. Every signal, pitch, brief, draft, and editorial decision is a file in the repo - fully version-controlled and inspectable.
 
 ---
 
@@ -197,15 +191,15 @@ The filesystem is the shared state. Every signal, pitch, brief, draft, and edito
 
 ### Signals
 
-Raw intelligence extracted from research. Stored as markdown with YAML frontmatter tracking source tier, confidence, angle potential, and cross-references to related signals. Signals are never deleted — they compound over time as new connections emerge.
+Raw intelligence extracted from research. Stored as markdown with YAML frontmatter tracking source tier, confidence, angle potential, and cross-references to related signals. Signals are never deleted - they compound over time as new connections emerge.
 
 ### Three-Layer Voice Model
 
 Every article is produced through three composable layers:
 
-1. **Brand Guidelines** — Hard constraints: prohibited language, audience assumptions, editorial ethics
-2. **Author Baseline** — Core personality: vocabulary, sentence rhythm, perspective, opening/closing style
-3. **Style Modifier** — Content-type adjustments: deep-analysis is measured and data-led; commentary is sharp and opinionated
+1. **Brand Guidelines** - Hard constraints: prohibited language, audience assumptions, editorial ethics
+2. **Author Baseline** - Core personality: vocabulary, sentence rhythm, perspective, opening/closing style
+3. **Style Modifier** - Content-type adjustments: deep-analysis is measured and data-led; commentary is sharp and opinionated
 
 Two authors writing about the same topic produce noticeably different pieces.
 
@@ -213,7 +207,7 @@ Two authors writing about the same topic produce noticeably different pieces.
 
 | Criterion | What it checks |
 |---|---|
-| Insight density | Every section adds new information — no filler |
+| Insight density | Every section adds new information - no filler |
 | Source fidelity | All claims traceable to sources |
 | Thesis delivery | Piece delivers its promised thesis without drift |
 | AI-tell scan | No hedging, false balance, empty transitions, or formulaic structure |
@@ -228,18 +222,18 @@ Two authors writing about the same topic produce noticeably different pieces.
 | 1 (Gold) | SEC filings, earnings transcripts, government data, human-submitted sources | Can anchor a thesis |
 | 2 (Strong) | Industry publications, market data providers | Strong supporting evidence |
 | 3 (Context) | News articles, analyst commentary | Colour and context only |
-| 4 (Signal) | Social media, forums, vendor marketing | Sentiment indicators — must be validated |
+| 4 (Signal) | Social media, forums, vendor marketing | Sentiment indicators - must be validated |
 
 ---
 
 ## Design Principles
 
-- **Synthesis over summarisation** — Every piece combines multiple sources. Single-source articles are killed.
-- **Angle-first** — Content starts with a falsifiable thesis, not a topic. _"Remote work policies are hollowing out mid-tier commercial real estate"_ is an angle. _"Office vacancy rates in 2024"_ is not.
-- **Ruthless quality gates** — Most signals are unusable. Most angles are killed. This is by design.
-- **Human time for judgment, not labour** — Reviewers assess quality and strategic fit. They never fix grammar or restructure articles.
-- **Compounding knowledge** — The knowledge base gets smarter over time. Old signals resurface when new connections emerge.
-- **Git-native** — Every editorial decision is a commit. The full chain from signal to publication is reconstructable.
+- **Synthesis over summarisation** - Every piece combines multiple sources. Single-source articles are killed.
+- **Angle-first** - Content starts with a falsifiable thesis, not a topic. _"Remote work policies are hollowing out mid-tier commercial real estate"_ is an angle. _"Office vacancy rates in 2024"_ is not.
+- **Ruthless quality gates** - Most signals are unusable. Most angles are killed. This is by design.
+- **Human time for judgment, not labour** - Reviewers assess quality and strategic fit. They never fix grammar or restructure articles.
+- **Compounding knowledge** - The knowledge base gets smarter over time. Old signals resurface when new connections emerge.
+- **Git-native** - Every editorial decision is a commit. The full chain from signal to publication is reconstructable.
 
 ---
 
