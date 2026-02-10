@@ -25,6 +25,18 @@ Read `knowledge-base/index.json` to get:
 
 Store these in working memory for the duration of the research cycle.
 
+### Editorial Feedback
+
+Read `pipeline/editorial-feedback.md` if it exists. Filter for entries where `status: open` and `targets` includes `research`.
+
+For each relevant entry:
+- **research-guidance**: Use these to prioritise beats and search queries this cycle. If editorial identified coverage gaps in a specific beat or topic, prioritise that beat's sources and expand search queries in that direction.
+- **held-pitch**: Note what evidence is needed. When scanning beats, actively look for signals that could satisfy held pitch conditions.
+
+If the feedback file does not exist or contains no entries targeting research, proceed normally.
+
+After completing the research cycle: if your research produced signals that directly address an open entry, update the entry in `pipeline/editorial-feedback.md` — change `status` to `addressed`, add `addressed_by: research`, `addressed_date: {today}`, `resolution: {brief description}`, and move it from "Active Entries" to "Addressed Entries".
+
 ## Step 2: Identify Active Beats
 
 Use Glob to find all beat configs: `beats/*.md`
@@ -220,6 +232,7 @@ Stage all new and modified files:
 - `knowledge-base/signals/*.md` (new signal reports)
 - `knowledge-base/index.json` (updated index)
 - `metrics/cycle-*.md` (new cycle summary)
+- `pipeline/editorial-feedback.md` (if modified)
 
 Commit with message:
 ```

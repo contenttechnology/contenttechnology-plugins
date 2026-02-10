@@ -210,7 +210,72 @@ For each decision:
 
 **Held**: Edit the pitch memo frontmatter to set `status: held`, add `hold_reason` and `hold_date`.
 
-## Step 8: Summary Output
+## Step 8: Write Editorial Feedback
+
+After all decisions are made, write carry-forward notes to `pipeline/editorial-feedback.md` so downstream pipeline stages can act on editorial intelligence in subsequent cycles.
+
+### Read Existing Feedback File
+
+Read `pipeline/editorial-feedback.md` if it exists. If it does:
+1. Determine the next sequential entry ID for today (`EF-{YYYY-MM-DD}-{NNN}`)
+2. Review open entries — if your decisions this cycle addressed an open entry (e.g., a held-pitch entry whose conditions are now met, or a research-guidance entry that yielded the requested signals), move it from "Active Entries" to "Addressed Entries" with `status: addressed`, `addressed_by: editorial`, `addressed_date: {today}`, and a brief `resolution`.
+
+If the file does not exist, create it with:
+
+```markdown
+# Editorial Feedback
+
+Carry-forward notes from editorial review cycles. Consumed by downstream pipeline stages.
+
+## Active Entries
+
+## Addressed Entries
+```
+
+### Write New Entries
+
+Review your editorial decisions and write entries for any of the following:
+
+**Production notes** (`type: production-note`, `targets: produce`):
+- Approved briefs that share signals — note which brief should emphasise which angle
+- Briefs where framing requires specific care
+- Any "watch out for" notes the production agent needs
+
+**Angle guidance** (`type: angle-guidance`, `targets: angle`):
+- Data or signals from killed or held pitches that should be recycled into a different content type
+- Content types underrepresented in the current mix
+- Convergence patterns noticed but not yet strong enough
+
+**Research guidance** (`type: research-guidance`, `targets: research`):
+- Gaps in the signal inventory that prevented angles from being approved
+- Beats that are underperforming or overrepresented
+- Specific topics or data types the research stage should prioritise
+
+**Held pitch triggers** (`type: held-pitch`, `targets: editorial, angle`):
+- For each held pitch: what specific new evidence or conditions would trigger re-evaluation
+- Reference the held pitch ID and its `hold_reason`
+
+### Entry Format
+
+Each entry is a `###` heading under "Active Entries":
+
+```markdown
+### EF-{YYYY-MM-DD}-{NNN}
+- **date**: {YYYY-MM-DD}
+- **type**: {production-note | angle-guidance | research-guidance | held-pitch}
+- **targets**: {comma-separated skill names: research, angle, editorial, produce}
+- **context**: {related pitch IDs, brief IDs, signal IDs, or null}
+- **note**: {The actionable note. Be specific — reference IDs, signal data, content types, and beats by name.}
+- **status**: open
+```
+
+### Pruning
+
+If "Addressed Entries" contains entries where `addressed_date` is older than 14 days, delete them from the file entirely.
+
+Do not write entries for routine decisions. Only write entries when there is specific, actionable intelligence that a downstream skill needs. If no feedback entries are warranted this cycle, leave the file unchanged.
+
+## Step 9: Summary Output
 
 ```markdown
 ## Editorial Review Summary — {date}
@@ -238,14 +303,20 @@ For each decision:
 - Practitioner Insights: {published this week} / {target}
 - Market Pulse: {published this fortnight} / {target}
 - {Other types...}
+
+### Editorial Feedback
+- New entries written: {count} ({types breakdown})
+- Open entries addressed: {count}
+- See `pipeline/editorial-feedback.md`
 ```
 
-## Step 9: Git Commit
+## Step 10: Git Commit
 
 Stage all new and modified files:
 - `pipeline/approved/*.md` (new production briefs)
 - `pipeline/pitches/*.md` (updated status)
 - `pipeline/rejected/*.md` (moved rejected pitches)
+- `pipeline/editorial-feedback.md` (if modified)
 
 ```
 Editorial review: {N} approved, {M} killed, {K} held

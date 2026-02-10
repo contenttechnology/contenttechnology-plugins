@@ -31,6 +31,7 @@ Scan the full pipeline to count pending work at each stage:
 4. Use Glob for `pipeline/approved/*.md` — read each, count `status: ready`
 5. Use Glob for `pipeline/drafts/*.md` — read each, count `status: draft` or `status: revision`
 6. Use Glob for `pipeline/review/*.md` — count existing articles (for final report baseline)
+7. Read `pipeline/editorial-feedback.md` if it exists — count open entries by type for the run report
 
 Store all counts. You will use these for early-exit logic, stage skipping, and the final run report.
 
@@ -141,7 +142,10 @@ Scan `knowledge-base/sources/` for markdown files not in processed_files. For ea
 - Update `knowledge-base/index.json` with: updated last_updated, next_signal_id, processed_urls, processed_files, signals metadata
 - Write cycle summary to `metrics/cycle-{YYYY-MM-DD-HHmm}.md`
 
-### 4. Output Format
+### 4. Check Editorial Feedback
+Read `pipeline/editorial-feedback.md` if it exists. Any open entries targeting `research` should influence your beat prioritisation and search queries. If your research addresses an open entry, mark it as addressed (change status to `addressed`, add `addressed_by: research`, `addressed_date: {today}`, `resolution: {brief description}`, move from "Active Entries" to "Addressed Entries").
+
+### 5. Output Format
 Return:
 
 RESEARCH_COMPLETE
@@ -156,7 +160,7 @@ signal_highlights:
 After the subagent returns, parse the output to extract counts. Then commit:
 
 ```
-git add knowledge-base/signals/ knowledge-base/index.json metrics/
+git add knowledge-base/signals/ knowledge-base/index.json metrics/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Research cycle: {N} signals from {M} beats`
@@ -211,10 +215,13 @@ Kill any angle that fails "So What?", Synthesis, or Novelty.
 ### 4. Recommend Authors
 Read author baselines from `voice-models/authors/*/baseline.md`. Match topic to author expertise. Set recommended_author and recommended_style in pitch memo.
 
-### 5. Write Pitch Memos
+### 5. Check Editorial Feedback
+Read `pipeline/editorial-feedback.md` if it exists. Any open entries targeting `angle` should influence your convergence analysis and content type weighting. If your pitches address an open entry, mark it as addressed (change status to `addressed`, add `addressed_by: angle`, `addressed_date: {today}`, `resolution: {brief description}`, move from "Active Entries" to "Addressed Entries").
+
+### 6. Write Pitch Memos
 For each surviving angle, write to `pipeline/pitches/pitch-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: pending, signals, beats, tags, timeliness, campaign, recommended_author, recommended_style, recommended_type) and body (Working Headline, Thesis, Supporting Evidence, Counter-Evidence, Source Map, Recommended Treatment, Timeliness Assessment, Campaign Alignment).
 
-### 6. Output Format
+### 7. Output Format
 Return:
 
 ANGLE_COMPLETE
@@ -230,7 +237,7 @@ killed:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/pitches/
+git add pipeline/pitches/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Angle scan: {N} pitch memos from {M} signals`
@@ -381,7 +388,10 @@ For each approved angle, write to `pipeline/approved/brief-{YYYY-MM-DD}-{NNN}.md
 - Killed: set `status: rejected`, add `rejected_date`, `rejected_reason`, move to `pipeline/rejected/`
 - Held: set `status: held`, add `hold_reason`, `hold_date`
 
-### 7. Output Format
+### 7. Write Editorial Feedback
+Write carry-forward notes to `pipeline/editorial-feedback.md` for any production notes (overlap warnings, framing guidance), angle guidance (data to recycle, underrepresented content types), research guidance (coverage gaps, beats to prioritise), or held pitch triggers. Also review and address any open entries whose conditions have been met. See the editorial skill for the entry format. Only write entries when there is specific, actionable intelligence — not for routine decisions.
+
+### 8. Output Format
 Return:
 
 EDITORIAL_COMPLETE
@@ -397,7 +407,7 @@ killed_list:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/approved/ pipeline/pitches/ pipeline/rejected/
+git add pipeline/approved/ pipeline/pitches/ pipeline/rejected/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Editorial review: {N} approved, {M} killed, {K} held`
@@ -440,7 +450,10 @@ Edit the brief frontmatter: set `status: in-production`.
 ### 3. Load Source Material
 Read each signal file referenced in the brief's source inventory from `knowledge-base/signals/`.
 
-### 4. Dispatch Production Subagent (Task, model: "sonnet")
+### 4. Check Editorial Feedback
+Read `pipeline/editorial-feedback.md` if it exists. Filter for open `production-note` entries targeting `produce`. If a note's `context` references a brief you are about to produce, include the note in the production subagent's prompt as an "Editorial Director's Note" section. After producing, mark consumed entries as addressed.
+
+### 5. Dispatch Production Subagent (Task, model: "sonnet")
 Prompt the production subagent with:
 - CRITICAL RULES: synthesis not summarisation, no AI tells, specific over general, earned opinions
 - Full brand guidelines, author baseline, style modifier
@@ -449,13 +462,13 @@ Prompt the production subagent with:
 - Target word count from brief
 - Output format: ---DRAFT_START--- / ---DRAFT_END--- with WORD_COUNT and PRODUCTION_NOTES
 
-### 5. Save Draft
+### 6. Save Draft
 Write to `pipeline/drafts/draft-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, author, style, content_type, word_count, revision: 0, max_revisions: 2, audience) and body (article text, Production Metadata section with notes and source references).
 
-### 6. Update Brief
+### 7. Update Brief
 Edit brief frontmatter: set `status: produced`, add `draft_id`.
 
-### 7. Output Format
+### 8. Output Format
 Return:
 
 PRODUCE_COMPLETE
@@ -467,7 +480,7 @@ drafts:
 After the subagent returns, parse output and commit:
 
 ```
-git add pipeline/drafts/ pipeline/approved/
+git add pipeline/drafts/ pipeline/approved/ pipeline/editorial-feedback.md
 ```
 
 Commit message: `Produce drafts: {N} articles written`
@@ -620,6 +633,7 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 - Ready briefs: {count}
 - Drafts in progress: {count}
 - Articles awaiting review: {total count}
+- Editorial feedback: {open count} open entries ({breakdown by type})
 
 ## Errors
 {List any stage failures or subagent errors, or "None"}

@@ -26,6 +26,16 @@ Read the following once (shared across all drafts):
 1. **`PUBLICATION.md`** — Editorial mission and quality criteria
 2. **`voice-models/brand-guidelines.md`** — Global brand voice constraints (Layer 1)
 
+### Editorial Feedback
+
+Read `pipeline/editorial-feedback.md` if it exists. Filter for entries where `status: open`, `targets` includes `produce`, and `type` is `production-note`.
+
+For each relevant entry, check if the `context` field references any of the briefs you are about to produce. If so, include the note in the production subagent's prompt as an "Editorial Director's Note" section, placed after the production brief content and before the source material. This ensures the production agent is aware of overlap warnings, framing guidance, or other editorial constraints.
+
+After producing all drafts, mark any production-note entries you consumed as addressed in `pipeline/editorial-feedback.md` — change `status` to `addressed`, add `addressed_by: produce`, `addressed_date: {today}`, `resolution: {e.g., "Applied to draft-2026-02-10-001 — led with regulatory angle per editorial guidance"}`, and move from "Active Entries" to "Addressed Entries".
+
+If the feedback file does not exist or contains no entries targeting produce, proceed normally.
+
 ## Step 3: Produce Each Draft
 
 For each ready production brief, dispatch a Task subagent (subagent_type: "general-purpose") to write the draft.
@@ -183,6 +193,7 @@ Run `/quality` to assess these drafts against the quality gate.
 Stage all new and modified files:
 - `pipeline/drafts/*.md` (new drafts)
 - `pipeline/approved/*.md` (updated brief status)
+- `pipeline/editorial-feedback.md` (if modified)
 
 ```
 Produce drafts: {N} articles written

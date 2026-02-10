@@ -26,6 +26,18 @@ Use Glob to check for existing pitch memos in `pipeline/pitches/*.md` — read t
 
 Also check `pipeline/approved/*.md`, `pipeline/drafts/*.md`, `pipeline/review/*.md`, and `pipeline/published/*.md` for recently covered angles.
 
+### Editorial Feedback
+
+Read `pipeline/editorial-feedback.md` if it exists. Filter for entries where `status: open` and `targets` includes `angle`.
+
+For each relevant entry:
+- **angle-guidance**: Use these to shape convergence analysis. If editorial recommended recycling specific signal data into a different content type, actively look for that pattern. If editorial noted underrepresented content types, weight those higher in pitch recommendations.
+- **held-pitch**: Check whether new signals in the knowledge base satisfy the conditions noted in the entry. If so, consider constructing a new pitch that incorporates the held pitch's thesis with stronger supporting evidence, or note in the pitch memo that this revisits a previously held angle with new data.
+
+If the feedback file does not exist or contains no entries targeting angle, proceed normally.
+
+After completing the angle scan: if your pitch memos directly address an open entry (e.g., you created a pitch recycling the data editorial suggested, or produced pitches for underrepresented content types), update the entry in `pipeline/editorial-feedback.md` — change `status` to `addressed`, add `addressed_by: angle`, `addressed_date: {today}`, `resolution: {brief description}`, and move it from "Active Entries" to "Addressed Entries".
+
 ## Step 2: Load Recent Signals
 
 Use Glob to find all signal reports: `knowledge-base/signals/*.md`
@@ -191,7 +203,11 @@ After writing all pitch memos, output a summary:
 
 ## Step 8: Git Commit
 
-Stage all new pitch memos in `pipeline/pitches/` and commit:
+Stage all new and modified files:
+- `pipeline/pitches/*.md` (new pitch memos)
+- `pipeline/editorial-feedback.md` (if modified)
+
+Commit with message:
 
 ```
 Angle scan: {N} pitch memos from {M} signals
