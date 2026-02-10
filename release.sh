@@ -41,9 +41,19 @@ for f in $PLUGIN_FILES; do
   sed -i '' "s/\"version\": \"[^\"]*\"/\"version\": \"$VERSION\"/" "$f"
 done
 
+# --- Update version in banner files ---
+
+BANNER_FILES=$(find plugins -name 'intro.md' -o -name 'SKILL.md' 2>/dev/null)
+for f in $BANNER_FILES; do
+  if grep -q '^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' "$f"; then
+    sed -i '' "s/^v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*/v$VERSION/" "$f"
+    echo "  $f"
+  fi
+done
+
 # --- Commit and tag ---
 
-git add $PLUGIN_FILES
+git add $PLUGIN_FILES $BANNER_FILES
 git commit -m "release v$VERSION"
 git tag "v$VERSION"
 
