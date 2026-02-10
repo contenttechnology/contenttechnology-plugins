@@ -26,7 +26,9 @@ For each pending pitch, create a validation output directory using Bash:
 mkdir -p pipeline/validation/{pitch-id}
 ```
 
-## Step 2: Dispatch Validation Subagents
+## Step 2: Validate Each Pitch (Sequential)
+
+**Critical: Process one pitch at a time.** For each pending pitch, complete the FULL cycle — dispatch 4 agents, wait for results, synthesise, update the pitch memo — before moving on to the next pitch. Do NOT launch agents for multiple pitches at once. This prevents context window exhaustion.
 
 For each pending pitch memo, dispatch **four parallel validation subagents** using the Task tool (subagent_type: "general-purpose", model: "sonnet").
 
@@ -144,9 +146,15 @@ recommendation: {PROCEED | REFINE | KILL}
 
 ---
 
-After writing the file, return ONLY this single summary line as your final response (nothing else):
+After writing the file, return ONLY the following as your final response (nothing else):
 
 COUNTER: threat={fatal|significant|manageable|minimal} sources={count} recommendation={PROCEED|REFINE|KILL} — {one sentence assessment}
+
+If your recommendation is REFINE, add a second line:
+REFINED_THESIS: {the suggested refined thesis in a single sentence}
+
+If your recommendation is KILL, add a second line:
+KILL_REASON: {one sentence reason}
 ```
 
 ### Subagent 3: Scope Validation
@@ -248,33 +256,27 @@ After writing the file, return ONLY this single summary line as your final respo
 RESONANCE: awareness={high|moderate|low|none} reception={high-value|useful|marginal|redundant} — {one sentence assessment}
 ```
 
-Launch all four subagents in parallel for each pitch memo. If there are multiple pitch memos, process them sequentially (to manage cost) or in parallel if step budget allows.
+Launch all four subagents in parallel for the current pitch. Wait for all four to return before proceeding.
 
-## Step 3: Synthesise Validation Results
+### Synthesise and Update (Same Pitch)
 
-For each pitch memo, once all four subagent summaries return, parse the summary lines to extract the key metrics.
+Once all four subagent summaries return for this pitch, parse the summary lines to extract the key metrics. Do NOT read the detailed report files — the summary lines contain everything needed for synthesis decisions.
 
-If any synthesis decision requires more detail (e.g., understanding why counter-evidence is "significant" or what scope adjustment is needed), read the relevant detailed report from `pipeline/validation/{pitch-id}/`.
+**Synthesis Logic:**
 
-### Synthesis Logic
+1. **If counter-evidence threat_level is "fatal"**: Mark the pitch as `status: rejected` using the KILL_REASON from the summary.
 
-1. **If counter-evidence threat_level is "fatal"**: Mark the pitch as `status: rejected` with the reason. Read `pipeline/validation/{pitch-id}/counter-evidence.md` for the specific reason.
+2. **If scope_assessment is "geographic-mismatch" AND audience_fit is "weak"**: Reject the pitch.
 
-2. **If scope_assessment is "geographic-mismatch" AND audience_fit is "weak"**: Consider killing or flagging for significant revision. Read `pipeline/validation/{pitch-id}/scope.md` for details.
+3. **If supporting evidence strength is "weak" AND counter-evidence is "significant"**: The thesis doesn't have enough support. Reject.
 
-3. **If supporting evidence strength is "weak" AND counter-evidence is "significant"**: The thesis doesn't have enough support. Kill or refine.
+4. **If audience_awareness is "high" AND predicted_reception is "redundant"**: The audience has already seen this take. Reject.
 
-4. **If audience_awareness is "high" AND predicted_reception is "redundant"**: The audience has already seen this take. Kill unless our evidence is substantially stronger.
+5. **Otherwise**: The angle survives validation.
 
-5. **Otherwise**: The angle survives validation. Compile the results.
+**Thesis Refinement:** If counter-evidence recommendation is REFINE, use the REFINED_THESIS from the counter-evidence summary line. Do not read the detail file.
 
-### Thesis Refinement
-
-If counter-evidence suggests refinement (recommendation: REFINE), read `pipeline/validation/{pitch-id}/counter-evidence.md` for the suggested refinement and update the thesis in the pitch memo to account for the nuance. Strong counter-evidence that adds complexity often makes for a better piece.
-
-## Step 4: Update Pitch Memos
-
-Edit each pitch memo to add a validation section and update the status:
+**Update the pitch memo immediately** before moving to the next pitch:
 
 For surviving angles, update the frontmatter:
 ```yaml
@@ -324,7 +326,11 @@ rejected_reason: {brief reason}
 
 Use Bash `mv` to move rejected pitch files from `pipeline/pitches/` to `pipeline/rejected/`.
 
-## Step 5: Summary Output
+**Then move on to the next pending pitch and repeat Step 2.**
+
+## Step 3: Summary Output
+
+After all pitches have been processed:
 
 ```markdown
 ## Validation Summary — {date}
@@ -348,7 +354,7 @@ Use Bash `mv` to move rejected pitch files from `pipeline/pitches/` to `pipeline
 Detailed reports: pipeline/validation/
 ```
 
-## Step 6: Git Commit
+## Step 4: Git Commit
 
 Stage all modified pitch memos, validation report files, and any moved files:
 
