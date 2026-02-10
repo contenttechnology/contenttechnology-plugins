@@ -20,7 +20,7 @@ Output the following banner to the user before proceeding:
 █░░█ █▀▀ █▄█▄█ ▀▀█ █▄▄▀ █░░█ █░░█ █░▀░█
 ▀░░▀ ▀▀▀ ░▀░▀░ ▀▀▀ ▀░▀▀ ▀▀▀▀ ▀▀▀▀ ▀░░░▀
 
-Editorial intelligence on autopilot (v1.0.9)
+Editorial intelligence on autopilot (v1.0.10)
 ```
 
 ## Step 1: Create Directory Structure
