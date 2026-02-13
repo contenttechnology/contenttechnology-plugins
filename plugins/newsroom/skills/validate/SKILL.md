@@ -55,7 +55,9 @@ Search for additional data, reports, or commentary that SUPPORTS this thesis. Yo
 3. Historical precedent that supports the predicted outcome
 4. Quantitative data that backs qualitative claims
 
-Use WebSearch and WebFetch to find new evidence. Search for:
+Use WebSearch as your primary research tool. Run multiple searches and work from the search result snippets and summaries — these are usually sufficient to assess evidence strength. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
+
+Search for:
 - The specific companies, regulations, or trends mentioned
 - Industry data sources and reports
 - Recent news coverage of the topic
@@ -107,7 +109,9 @@ Search for data, reports, expert opinions, or arguments that CONTRADICT or WEAKE
 4. Historical cases where similar predictions were wrong
 5. Methodological problems with the underlying data
 
-Use WebSearch and WebFetch to find counter-evidence. Search for:
+Use WebSearch as your primary research tool. Run multiple searches and work from the search result snippets and summaries — these are usually sufficient to assess counter-evidence. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
+
+Search for:
 - Counter-arguments to the specific thesis
 - Alternative interpretations of the same data
 - Critics of the sources or methodology
@@ -176,7 +180,7 @@ Assess whether this angle is scoped correctly:
 4. Is the content type appropriate for the scope?
 5. Are there sub-segments of the audience this would not apply to?
 
-Use WebSearch to check geographic scope, market size, and applicability.
+Use WebSearch as your primary research tool to check geographic scope, market size, and applicability. Work from search result snippets and summaries. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
 
 ## Output Instructions
 Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/scope.md
@@ -225,7 +229,7 @@ Determine how this thesis would land with the target audience:
 3. Are there industry forums, social media threads, or community discussions about this?
 4. Would this be seen as timely insight or old news?
 
-Use WebSearch to check industry forums, social media, trade publication comment sections, and community discussions.
+Use WebSearch as your primary research tool to check industry forums, social media, trade publication comment sections, and community discussions. Work from search result snippets and summaries. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
 
 ## Output Instructions
 Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/resonance.md
