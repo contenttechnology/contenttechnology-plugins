@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.11] - 2026-02-13
+
 ### Fixed
 - `/angle` summary table: pitch title and description no longer render with empty cells — restructured from multi-row pseudo-colspan layout to a single-row-per-pitch table with proper columns
 
