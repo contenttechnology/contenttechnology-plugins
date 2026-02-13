@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.12] - 2026-02-13
+
 ### Changed
 - `/validate` subagents now favour `WebSearch` over `WebFetch` to prevent hangs on slow or unresponsive URLs — `WebFetch` is still available as optional enrichment but subagents are instructed to move on if a fetch stalls
 

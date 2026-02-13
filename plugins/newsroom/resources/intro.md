@@ -3,5 +3,5 @@
 █░░█ █▀▀ █▄█▄█ ▀▀█ █▄▄▀ █░░█ █░░█ █░▀░█ 
 ▀░░▀ ▀▀▀ ░▀░▀░ ▀▀▀ ▀░▀▀ ▀▀▀▀ ▀▀▀▀ ▀░░░▀
 
-Editorial intelligence on autopilot (v1.0.11)
+Editorial intelligence on autopilot (v1.0.12)
 
