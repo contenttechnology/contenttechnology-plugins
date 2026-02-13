@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- `/angle` summary table: pitch title and description no longer render with empty cells — restructured from multi-row pseudo-colspan layout to a single-row-per-pitch table with proper columns
+
 ## [1.0.10] - 2026-02-10
 - README install instructions updated to use plugin marketplace
 - README license corrected to MIT

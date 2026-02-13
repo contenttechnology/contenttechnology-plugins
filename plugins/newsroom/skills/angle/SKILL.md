@@ -179,14 +179,10 @@ After writing all pitch memos, output a summary:
 
 ### Pitch Memos Written: {count}
 
-| Pitch | |  |
-|-------|-------|-------|
-| **{Working Headline}** ({pitch-id}) | | |
-| {Thesis — one-line summary} | | |
-| Signals: {count} from {beat count} beats | Timeliness: {durable/time-sensitive} | Recommended: {author} / {style} / {content type} |
-| | | |
-| **{Working Headline}** ({pitch-id}) | | |
-| ... | | |
+| Pitch | Signals | Timeliness | Recommended |
+|-------|---------|------------|-------------|
+| **{Working Headline}** ({pitch-id}) — {Thesis one-line summary} | {count} from {beat count} beats | {durable/time-sensitive} | {author} / {style} / {content type} |
+| **{Working Headline}** ({pitch-id}) — {Thesis one-line summary} | ... | ... | ... |
 
 ### Angles Considered and Killed: {count}
 
@@ -198,6 +194,9 @@ After writing all pitch memos, output a summary:
 - Total signals reviewed: {count}
 - Signals with angle potential >= 3: {count}
 - Cross-beat convergences detected: {count}
+
+### Next Step
+Run `/validate` to stress-test these pitch memos with parallel validation subagents.
 ```
 
 ## Step 8: Git Commit
