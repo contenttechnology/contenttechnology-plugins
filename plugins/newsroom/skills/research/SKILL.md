@@ -85,6 +85,12 @@ The following URLs and content have already been processed — do NOT report on 
    - Note any connections to other topics or signals
 3. Skip sources that have no new content (compare against processed URLs list)
 
+## Inaccessible Sources
+If a source returns a 403, 404, timeout, or is otherwise inaccessible, report it as ---NO_NEW--- with the reason (e.g., "403 forbidden", "timeout") and move on to the next source immediately. Do NOT retry inaccessible sources with alternative URLs or workarounds. One attempt per source URL — if it fails, skip it.
+
+## Search Budget
+Stick to the step budget for your research mode. When using WebSearch, make at most 2-3 search attempts per source. Do not keep reformulating queries if initial searches return no relevant results — report ---NO_NEW--- and move on.
+
 ## Output Format
 Return your findings as a series of signal reports, each formatted as:
 

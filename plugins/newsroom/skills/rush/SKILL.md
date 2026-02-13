@@ -74,6 +74,8 @@ Use WebSearch and WebFetch to find primary sources. Prioritise:
 - Regulatory filings
 - Verified news reports from credible outlets
 
+**Search budget**: Make 3-5 WebSearch attempts max. If you cannot find primary sources, report what you have (even if nothing) and return. Do not keep searching indefinitely.
+
 ## Output Format
 Return findings as:
 
@@ -107,6 +109,8 @@ Find how the industry is reacting and provide context:
 5. Expert analysis or predictions
 
 Use WebSearch to find reactions, commentary, and context.
+
+**Search budget**: Make 3-5 WebSearch attempts max. If reactions haven't surfaced yet (common with very fresh news), report that and return. Do not keep searching indefinitely.
 
 ## Output Format
 Return findings as:
@@ -142,6 +146,8 @@ Assess the practical impact of this news:
 5. What's the timeline for impact?
 
 Use WebSearch to find impact analysis, affected parties, and operational guidance.
+
+**Search budget**: Make 3-5 WebSearch attempts max. If impact analysis hasn't been published yet, assess based on available information and return. Do not keep searching indefinitely.
 
 ## Output Format
 Return findings as:

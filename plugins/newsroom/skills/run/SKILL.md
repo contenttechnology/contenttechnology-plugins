@@ -130,6 +130,12 @@ related_topics:
 
 If no new content: report ---NO_NEW--- with source_url and reason.
 
+## Inaccessible Sources
+If a source returns 403, 404, timeout, or is otherwise inaccessible — report ---NO_NEW--- with the reason and move on immediately. Do NOT retry with alternative URLs. One attempt per source.
+
+## Search Budget
+At most 2-3 WebSearch attempts per source. If searches return nothing relevant, report ---NO_NEW--- and move on.
+
 ### 2. Process Local Source Files
 Scan `knowledge-base/sources/` for markdown files not in processed_files. For each unprocessed file:
 - Read content, parse any YAML frontmatter (beat, source_tier, title)

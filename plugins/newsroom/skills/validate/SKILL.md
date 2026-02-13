@@ -55,13 +55,13 @@ Search for additional data, reports, or commentary that SUPPORTS this thesis. Yo
 3. Historical precedent that supports the predicted outcome
 4. Quantitative data that backs qualitative claims
 
-Use WebSearch as your primary research tool. Run multiple searches and work from the search result snippets and summaries — these are usually sufficient to assess evidence strength. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
-
-Search for:
+Use WebSearch and WebFetch to find new evidence. Search for:
 - The specific companies, regulations, or trends mentioned
 - Industry data sources and reports
 - Recent news coverage of the topic
 - Expert analysis and commentary
+
+**Search budget**: Make 3-5 WebSearch attempts max. If searches return no relevant results, stop searching and report what you found (even if nothing). Finding zero new sources is a valid and informative result — do not keep searching indefinitely.
 
 ## Output Instructions
 Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/supporting-evidence.md
@@ -109,15 +109,15 @@ Search for data, reports, expert opinions, or arguments that CONTRADICT or WEAKE
 4. Historical cases where similar predictions were wrong
 5. Methodological problems with the underlying data
 
-Use WebSearch as your primary research tool. Run multiple searches and work from the search result snippets and summaries — these are usually sufficient to assess counter-evidence. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
-
-Search for:
+Use WebSearch and WebFetch to find counter-evidence. Search for:
 - Counter-arguments to the specific thesis
 - Alternative interpretations of the same data
 - Critics of the sources or methodology
 - Competing narratives about the same topic
 
 Be thorough and genuinely adversarial. Finding strong counter-evidence is VALUABLE — it either kills a weak angle (saving production effort) or adds nuance that improves the final piece.
+
+**Search budget**: Make 3-5 WebSearch attempts max. If searches return no relevant counter-evidence, that itself is a finding — report threat_level "minimal" and move on. Do not keep searching indefinitely.
 
 ## Output Instructions
 Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/counter-evidence.md
@@ -180,7 +180,9 @@ Assess whether this angle is scoped correctly:
 4. Is the content type appropriate for the scope?
 5. Are there sub-segments of the audience this would not apply to?
 
-Use WebSearch as your primary research tool to check geographic scope, market size, and applicability. Work from search result snippets and summaries. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
+Use WebSearch to check geographic scope, market size, and applicability.
+
+**Search budget**: Make 2-3 WebSearch attempts max. If you can assess scope from the thesis and existing evidence alone, you may skip searching entirely. Do not keep searching indefinitely.
 
 ## Output Instructions
 Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/scope.md
@@ -229,7 +231,9 @@ Determine how this thesis would land with the target audience:
 3. Are there industry forums, social media threads, or community discussions about this?
 4. Would this be seen as timely insight or old news?
 
-Use WebSearch as your primary research tool to check industry forums, social media, trade publication comment sections, and community discussions. Work from search result snippets and summaries. Only use WebFetch if a specific page looks critical and you need more detail than the search snippet provides. If a WebFetch call hangs or returns poorly, move on — do not let a single slow URL block your research.
+Use WebSearch to check industry forums, social media, trade publication comment sections, and community discussions.
+
+**Search budget**: Make 3-5 WebSearch attempts max. If the topic is niche and searches return no relevant discussion, report awareness as "none" and move on. Absence of discussion is itself a valid data point — do not keep searching indefinitely.
 
 ## Output Instructions
 Write your FULL detailed report to the file: pipeline/validation/{pitch-id}/resonance.md
