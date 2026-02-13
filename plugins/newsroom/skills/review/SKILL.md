@@ -468,6 +468,10 @@ Output a summary of all decisions made in this session:
 - In review: {count}
 - Published (total): {count in pipeline/050_published/}
 - Rejected (total): {count in pipeline/rejected/}
+
+### Next Steps
+{If remaining in review > 0: "Run `/review` again to continue reviewing remaining drafts."}
+{If remaining == 0 and published > 0: "All drafts reviewed. Run `/run` to start the next pipeline cycle."}
 ```
 
 ## Error Handling

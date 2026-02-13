@@ -305,6 +305,9 @@ Do not write entries for routine decisions. Only write entries when there is spe
 - New entries written: {count} ({types breakdown})
 - Open entries addressed: {count}
 - See `pipeline/editorial-feedback.md`
+
+### Next Step
+Run `/produce` to write article drafts from the approved production briefs.
 ```
 
 ## Step 10: Git Commit

@@ -199,4 +199,8 @@ Add campaign: {Campaign Name}
 
 Inform the user that the campaign is active and will influence the next research and editorial cycles.
 
+> **Next steps:**
+> 1. Run `/research` to start gathering signals aligned with this campaign
+> 2. Or run `/run` to execute the full pipeline with campaign priorities active
+
 </process>

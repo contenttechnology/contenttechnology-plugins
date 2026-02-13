@@ -270,6 +270,9 @@ This creates a loop: draft → quality check → revise → quality check → re
 - Revision success rate: {passed after revision / total revised}
 - Kill rate: {killed / total}
 - Most common issues: {list top 2-3 failing criteria}
+
+### Next Step
+Run `/review` to approve, revise, or kill the drafts that passed the quality gate.
 ```
 
 ## Step 7: Git Commit

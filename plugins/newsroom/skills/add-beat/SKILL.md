@@ -133,4 +133,8 @@ Add research beat: {Beat Name}
 
 Inform the user that the beat is active and will be included in the next research cycle.
 
+> **Next steps:**
+> 1. Run `/add-author` to create author voices (if not already configured)
+> 2. Run `/research` to scan this beat for signals immediately
+
 </process>

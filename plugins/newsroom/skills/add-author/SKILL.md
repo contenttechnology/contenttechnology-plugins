@@ -160,4 +160,8 @@ Add author voice model: {Name}
 
 Inform the user that the author has been created and is ready for assignment in editorial briefs.
 
+> **Next steps:**
+> 1. Run `/add-beat` to define research beats (if not already configured)
+> 2. Run `/research` to start gathering signals for this author to write about
+
 </process>
