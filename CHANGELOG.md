@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.13] - 2026-02-13
+
 ### Fixed
 - Added search budgets to `/validate`, `/research`, `/rush`, and `/run` subagent prompts to prevent indefinite hanging — subagents now have hard caps on WebSearch attempts (2-5 per source) and must report "nothing found" and move on rather than retrying endlessly
 - Research subagents now skip inaccessible sources (403, 404, timeout) immediately instead of retrying with alternative URLs
