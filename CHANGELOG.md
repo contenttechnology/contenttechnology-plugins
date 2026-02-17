@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+- `/init` no longer uses AskUserQuestion for free-text inputs (publication name, mission, beat description) — questions are now output as plain text so users type their answer directly instead of seeing a confusing "Enter name below" option
+
+### Changed
+- `/quality` summary now includes a review documents table linking each draft to its verdict and review/rejection file path
+
 ## [1.0.13] - 2026-02-13
 
 ### Fixed

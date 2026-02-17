@@ -271,6 +271,17 @@ This creates a loop: draft → quality check → revise → quality check → re
 - Kill rate: {killed / total}
 - Most common issues: {list top 2-3 failing criteria}
 
+### Review Documents
+
+| Draft | Verdict | Document |
+|-------|---------|----------|
+{For each passed draft (first-pass):}
+| {Headline} | PASS | `pipeline/040_review/for-review-{id}.md` |
+{For each revised-and-passed draft:}
+| {Headline} | REVISED → PASS | `pipeline/040_review/for-review-{id}.md` |
+{For each killed draft:}
+| {Headline} | KILLED | `pipeline/rejected/{id}.md` |
+
 ### Next Step
 Run `/review` to approve, revise, or kill the drafts that passed the quality gate.
 ```

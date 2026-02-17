@@ -50,11 +50,11 @@ Use Bash `mkdir -p` to create all directories in one command.
 
 Use AskUserQuestion to gather the editorial mission from the user. Ask these questions in order, using the answers to inform follow-up questions.
 
-**Question 1 — Publication Name**: "What is the name of your publication or brand?"
-- Free-text input. This grounds the conversation and gives the engine an identity.
+**Question 1 — Publication Name**: "What is the name of your publication or brand? Type your answer below."
+- This is a free-text question. Do NOT use AskUserQuestion for this — instead, simply output the question as text and wait for the user to reply with their publication name. This grounds the conversation and gives the engine an identity.
 
 **Question 2 — Mission**: "In a sentence or two, what is the high-level mission for {Publication Name}? What do you want this publication to be known for?"
-- Free-text input. The user should describe the purpose of their publication in their own words. Examples to show (not as options, but as placeholder guidance): "We explain complex climate policy so business leaders can act on it", "We give independent SaaS founders the strategic insight that's usually locked behind expensive analysts".
+- This is a free-text question. Do NOT use AskUserQuestion for this — simply output the question as text and wait for the user to reply. Include these examples as inspiration (not as options): "We explain complex climate policy so business leaders can act on it", "We give independent SaaS founders the strategic insight that's usually locked behind expensive analysts".
 
 **Question 3 — Audience**: Based on the mission, ask a targeted audience question. "Who is the primary reader of {Publication Name}?" — Offer 3-4 options inferred from the mission statement, plus an "Other" option. For example, if the mission mentions SaaS founders, offer options like "Founders and CEOs", "Product leaders", "Operators and practitioners". If the mission mentions policy, offer "Policy professionals", "Business leaders affected by regulation", etc. Use judgement to generate relevant options from the user's own words.
 
@@ -494,8 +494,7 @@ If the user chooses to add beats, enter a loop:
 **For each beat**, use AskUserQuestion to gather:
 
 **Question 1 — Beat description**: "Describe this beat in one line (e.g., 'Track AI regulation and policy developments across major markets')."
-- Options:
-  - "Enter description" — description: "Type a one-line description of what this beat covers"
+- This is a free-text question. Do NOT use AskUserQuestion for this — simply output the question as text and wait for the user to reply with their beat description.
 
 **Question 2 — Frequency**: "How often should this beat be checked?"
 - Options:
