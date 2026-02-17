@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.14] - 2026-02-17
+
 ### Fixed
 - `/init` no longer uses AskUserQuestion for free-text inputs (publication name, mission, beat description) — questions are now output as plain text so users type their answer directly instead of seeing a confusing "Enter name below" option
 
