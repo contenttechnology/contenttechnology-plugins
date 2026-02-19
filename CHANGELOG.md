@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.16] - 2026-02-19
+
 ### Changed
 - Removed slashes from skill names in next steps
 
