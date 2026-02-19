@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Removed slashes from skill names in next steps
+
 ## [1.0.15] - 2026-02-19
 
 ### Added
