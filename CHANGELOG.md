@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.15] - 2026-02-19
+
 ### Added
 - `/init --copy-to-codex` option — copies all skills to the local Codex skills directory by running `install-codex-skills.sh` and exits immediately without scaffolding a project
 

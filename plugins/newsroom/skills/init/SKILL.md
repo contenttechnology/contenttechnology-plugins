@@ -38,7 +38,7 @@ Output the following banner to the user before proceeding:
 █░░█ █▀▀ █▄█▄█ ▀▀█ █▄▄▀ █░░█ █░░█ █░▀░█
 ▀░░▀ ▀▀▀ ░▀░▀░ ▀▀▀ ▀░▀▀ ▀▀▀▀ ▀▀▀▀ ▀░░░▀
 
-Editorial intelligence on autopilot (v1.0.14)
+Editorial intelligence on autopilot (v1.0.15)
 ```
 
 ## Step 1: Create Directory Structure
