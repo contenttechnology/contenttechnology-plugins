@@ -11,6 +11,24 @@ Create the complete Newsroom project scaffold. This includes all directories, co
 
 <process>
 
+## Pre-check: --copy-to-codex Flag
+
+Before doing anything else, check whether the user invoked this skill with the `--copy-to-codex` argument.
+
+If the argument `--copy-to-codex` is present:
+
+1. Run the install script using Bash:
+   ```
+   bash /Users/adambarker/Development/cc/contenttechnology-plugins/install-codex-skills.sh --overwrite
+   ```
+2. Check the exit code of the script.
+   - If exit code is 0: Tell the user the skills were successfully copied to the Codex skills directory, include the output from the script, and **stop here — do not continue to any other steps**.
+   - If exit code is non-zero: Tell the user the copy failed, show the error output, and **stop here — do not continue to any other steps**.
+
+**This flag short-circuits the entire init process.** No banner, no scaffolding, no questions — just copy and exit.
+
+---
+
 ## Step 0: Display Banner
 
 Output the following banner to the user before proceeding:
