@@ -191,7 +191,7 @@ Edit the production brief frontmatter to set `status: produced` and add `draft_i
 {Any notable decisions, compromises, or flags from the production agents}
 
 ### Next Step
-Run `/quality` to assess these drafts against the quality gate.
+Run `quality` to assess these drafts against the quality gate.
 ```
 
 ## Step 6: Git Commit

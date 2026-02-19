@@ -586,9 +586,9 @@ After the commit, inform the user:
 > **Formatting conventions created.** `FORMATTING.md` contains default formatting rules optimised for readability, SEO, and AI engine discoverability. Review and customise these to match your publication's style — for example, you might adjust paragraph length limits, heading conventions, or list preferences.
 >
 > **Next steps:**
-> 1. Run `/add-beat` to define the topics and sources your engine will monitor
-> 2. Run `/add-author` to create author voices that match your publication
+> 1. Run `add-beat` to define the topics and sources your engine will monitor
+> 2. Run `add-author` to create author voices that match your publication
 > 3. Review `FORMATTING.md` and adjust formatting conventions to your preferences
-> 4. Run `/research` to scan your beats for signals and start the editorial pipeline
+> 4. Run `research` to scan your beats for signals and start the editorial pipeline
 
 </process>

@@ -362,7 +362,7 @@ After all pitches have been processed:
 Detailed reports: pipeline/validation/
 
 ### Next Step
-Run `/editorial` to evaluate validated pitches, assign authors, and produce production briefs.
+Run `editorial` to evaluate validated pitches, assign authors, and produce production briefs.
 ```
 
 ## Step 4: Git Commit

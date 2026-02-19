@@ -232,7 +232,7 @@ Write a cycle summary to `metrics/cycle-{YYYY-MM-DD-HHmm}.md`:
 {List all sources checked with status: new content / no changes}
 
 ### Next Step
-Run `/angle` to scan these signals for converging patterns and construct pitch memos.
+Run `angle` to scan these signals for converging patterns and construct pitch memos.
 ```
 
 ## Step 8: Git Commit

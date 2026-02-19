@@ -642,8 +642,8 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 {List any stage failures or subagent errors, or "None"}
 
 ## Next Step
-{If articles in review > 0: "Run `/review` to approve, revise, or kill the articles now awaiting human review."}
-{If no articles: "No articles to review. The next `/run` will check for new signals."}
+{If articles in review > 0: "Run `review` to approve, revise, or kill the articles now awaiting human review."}
+{If no articles: "No articles to review. The next `run` will check for new signals."}
 ```
 
 Output the summary to stdout. Then commit:

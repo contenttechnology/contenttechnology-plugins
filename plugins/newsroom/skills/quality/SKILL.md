@@ -283,7 +283,7 @@ This creates a loop: draft → quality check → revise → quality check → re
 | {Headline} | KILLED | `pipeline/rejected/{id}.md` |
 
 ### Next Step
-Run `/review` to approve, revise, or kill the drafts that passed the quality gate.
+Run `review` to approve, revise, or kill the drafts that passed the quality gate.
 ```
 
 ## Step 7: Git Commit

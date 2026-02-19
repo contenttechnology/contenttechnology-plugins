@@ -526,7 +526,7 @@ If the quality subagent fails, report the error. Do not auto-pass. Keep the draf
 - Both drafts share the same pitch_id for editorial lineage tracking.
 
 ### Next Steps
-{If PASS: "The revoiced draft is in `pipeline/040_review/` — run /review to approve, revise, or kill."}
+{If PASS: "The revoiced draft is in `pipeline/040_review/` — run `review` to approve, revise, or kill."}
 {If KILLED: "The revoiced draft did not pass quality. Review the quality report in `pipeline/rejected/{filename}` for details."}
 ```
 
