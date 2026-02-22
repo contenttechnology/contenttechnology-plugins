@@ -86,7 +86,10 @@ The following URLs and content have already been processed — do NOT report on 
 3. Skip sources that have no new content (compare against processed URLs list)
 
 ## Inaccessible Sources
-If a source returns a 403, 404, timeout, or is otherwise inaccessible, report it as ---NO_NEW--- with the reason (e.g., "403 forbidden", "timeout") and move on to the next source immediately. Do NOT retry inaccessible sources with alternative URLs or workarounds. One attempt per source URL — if it fails, skip it.
+If a source returns a 403, 404, timeout, empty content, or is otherwise inaccessible via WebFetch:
+1. **Browser fallback**: Before skipping, try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`). This can retrieve content from JavaScript-rendered pages, bot-protected sites, and cookie walls that block WebFetch.
+2. If no browser CLI is installed (command not found) or the browser attempt also fails, report as ---NO_NEW--- with the reason (e.g., "403 forbidden, browser fallback unavailable") and move on.
+3. Spend at most one browser attempt per failed URL. Do not retry with alternative URLs or other workarounds beyond the single browser fallback.
 
 ## Search Budget
 Stick to the step budget for your research mode. When using WebSearch, make at most 2-3 search attempts per source. Do not keep reformulating queries if initial searches return no relevant results — report ---NO_NEW--- and move on.

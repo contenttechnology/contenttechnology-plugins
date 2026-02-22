@@ -61,6 +61,8 @@ Use WebSearch and WebFetch to find new evidence. Search for:
 - Recent news coverage of the topic
 - Expert analysis and commentary
 
+**Browser fallback**: If WebFetch fails on a source (403, timeout, empty/JavaScript-only content), try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`) before skipping it. One browser attempt per failed URL. If no browser CLI is installed, skip the source.
+
 **Search budget**: Make 3-5 WebSearch attempts max. If searches return no relevant results, stop searching and report what you found (even if nothing). Finding zero new sources is a valid and informative result — do not keep searching indefinitely.
 
 ## Output Instructions
@@ -116,6 +118,8 @@ Use WebSearch and WebFetch to find counter-evidence. Search for:
 - Competing narratives about the same topic
 
 Be thorough and genuinely adversarial. Finding strong counter-evidence is VALUABLE — it either kills a weak angle (saving production effort) or adds nuance that improves the final piece.
+
+**Browser fallback**: If WebFetch fails on a source (403, timeout, empty/JavaScript-only content), try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`) before skipping it. One browser attempt per failed URL. If no browser CLI is installed, skip the source.
 
 **Search budget**: Make 3-5 WebSearch attempts max. If searches return no relevant counter-evidence, that itself is a finding — report threat_level "minimal" and move on. Do not keep searching indefinitely.
 

@@ -74,6 +74,8 @@ Use WebSearch and WebFetch to find primary sources. Prioritise:
 - Regulatory filings
 - Verified news reports from credible outlets
 
+**Browser fallback**: If WebFetch fails on a source (403, timeout, empty/JavaScript-only content), try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`) before skipping it. One browser attempt per failed URL. If no browser CLI is installed, skip the source.
+
 **Search budget**: Make 3-5 WebSearch attempts max. If you cannot find primary sources, report what you have (even if nothing) and return. Do not keep searching indefinitely.
 
 ## Output Format
@@ -108,7 +110,9 @@ Find how the industry is reacting and provide context:
 4. Competitor responses or related announcements
 5. Expert analysis or predictions
 
-Use WebSearch to find reactions, commentary, and context.
+Use WebSearch and WebFetch to find reactions, commentary, and context.
+
+**Browser fallback**: If WebFetch fails on a source (403, timeout, empty/JavaScript-only content), try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`) before skipping it. One browser attempt per failed URL. If no browser CLI is installed, skip the source.
 
 **Search budget**: Make 3-5 WebSearch attempts max. If reactions haven't surfaced yet (common with very fresh news), report that and return. Do not keep searching indefinitely.
 
@@ -145,7 +149,9 @@ Assess the practical impact of this news:
 4. What should practitioners do right now?
 5. What's the timeline for impact?
 
-Use WebSearch to find impact analysis, affected parties, and operational guidance.
+Use WebSearch and WebFetch to find impact analysis, affected parties, and operational guidance.
+
+**Browser fallback**: If WebFetch fails on a source (403, timeout, empty/JavaScript-only content), try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`) before skipping it. One browser attempt per failed URL. If no browser CLI is installed, skip the source.
 
 **Search budget**: Make 3-5 WebSearch attempts max. If impact analysis hasn't been published yet, assess based on available information and return. Do not keep searching indefinitely.
 
