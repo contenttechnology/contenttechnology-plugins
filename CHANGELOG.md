@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Browser fallback for inaccessible sources — `/research`, `/validate`, and `/rush` subagents now attempt to fetch pages via a browser automation CLI (`agent-browser` or `bb`) when WebFetch fails (403, timeout, JavaScript-rendered pages), gracefully skipping if no browser tool is installed
+
 ## [1.0.16] - 2026-02-19
 
 ### Changed
