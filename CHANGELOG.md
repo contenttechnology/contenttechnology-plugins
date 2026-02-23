@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.18] - 2026-02-23
+
 ### Removed
 - `/add-campaign` skill and all campaign references — campaigns removed from angle, editorial, run, rush, revoice, init, and README
 - Step budget concept removed from research, run, and init — research depth is controlled solely by research mode and per-source search budgets
