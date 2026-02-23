@@ -4,10 +4,10 @@
 
 ## [1.0.19] - 2026-02-23
 
-## [1.0.18] - 2026-02-23
-
 ### Added
 - Optional `tool` property on beat sources — set to `agent-browser` or `steel-browser` to use that tool as the primary access method for a source, with WebFetch/WebSearch as fallback. Sources without a `tool` property use WebFetch/WebSearch by default with browser fallback.
+
+## [1.0.18] - 2026-02-23
 
 ### Removed
 - `/add-campaign` skill and all campaign references — campaigns removed from angle, editorial, run, rush, revoice, init, and README
