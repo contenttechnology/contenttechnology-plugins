@@ -107,7 +107,12 @@ You are a research agent for the "{beat_name}" beat.
 - deep-dive: 20-30 steps per source
 
 ## Task
-Check each source for new content. For each new piece found, report:
+Check each source for new content. Choose the access method based on the source's `tool` property:
+- If the source has `tool: agent-browser`: Use the `agent-browser` CLI via Bash as the primary method.
+- If the source has `tool: steel-browser`: Use the `steel-browser` CLI via Bash as the primary method.
+- If the source has no `tool` property (default): Use WebFetch for web pages and RSS feeds, WebSearch for search-based sources.
+
+For each new piece found, report:
 
 ---SIGNAL---
 beat: {beat_slug}
@@ -131,7 +136,10 @@ related_topics:
 If no new content: report ---NO_NEW--- with source_url and reason.
 
 ## Inaccessible Sources
-If a source returns 403, 404, timeout, or is otherwise inaccessible — report ---NO_NEW--- with the reason and move on immediately. Do NOT retry with alternative URLs. One attempt per source.
+If a source's primary access method fails (403, 404, timeout, or otherwise inaccessible):
+- If the source has a `tool` property: fall back to WebFetch/WebSearch once.
+- If no `tool` property: try a browser CLI (`agent-browser` or `bb`) once as fallback.
+- If fallback also fails, report ---NO_NEW--- with the reason and move on. One fallback attempt per source.
 
 ## Search Budget
 At most 2-3 WebSearch attempts per source. If searches return nothing relevant, report ---NO_NEW--- and move on.

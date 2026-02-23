@@ -63,6 +63,14 @@ Start a source-adding loop. For each source, use AskUserQuestion:
 **Source Name**: "Give this source a human-readable name."
 - Free text via options like "Enter name" with description
 
+**Access Tool** (optional): "Does this source require a specific tool to access?"
+- Options:
+  - "Default (WebFetch / WebSearch)" — description: "Standard web fetching — works for most sources"
+  - "Browser automation (agent-browser)" — description: "For JavaScript-rendered pages, login walls, or bot-protected sites"
+  - "Steel cloud browser (steel-browser)" — description: "For pages requiring CAPTCHAs, proxies, or advanced browser features"
+
+If the user selects "Default", omit the `tool` property from the source config (no value needed). Otherwise, set `tool` to the selected value (`agent-browser` or `steel-browser`).
+
 After each source is defined, ask: "Add another source to this beat?"
 - Options: "Yes, add another source", "No, I'm done adding sources"
 
@@ -99,6 +107,7 @@ sources:
     frequency: {every-run | daily | weekly}
     tier: {1-4}
     name: {Human-readable name}
+    tool: {agent-browser | steel-browser}  # optional — omit for default WebFetch/WebSearch
   - url: ...
     ...
 ---

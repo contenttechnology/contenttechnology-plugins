@@ -71,10 +71,10 @@ The following URLs and content have already been processed — do NOT report on 
 - deep-dive: Exhaustive investigation. 20-30 steps per source.
 
 ## Your Task
-1. For each source in the beat config, check for new content:
-   - For web pages: Use WebFetch to load the page and identify new material
-   - For RSS-type sources: Use WebFetch to check the feed
-   - For search-based sources: Use WebSearch with relevant queries
+1. For each source in the beat config, check for new content. Choose the access method based on the source's `tool` property:
+   - If the source has `tool: agent-browser`: Use the `agent-browser` CLI via Bash as the primary method. Fall back to WebFetch/WebSearch only if the browser CLI is not installed.
+   - If the source has `tool: steel-browser`: Use the `steel-browser` CLI via Bash as the primary method. Fall back to WebFetch/WebSearch only if the browser CLI is not installed.
+   - If the source has no `tool` property (default): Use WebFetch for web pages and RSS feeds, WebSearch for search-based sources.
 2. For each piece of genuinely new content found:
    - Extract key data points, quotes, and facts
    - Assess the angle potential (1-5 scale)
@@ -83,10 +83,10 @@ The following URLs and content have already been processed — do NOT report on 
 3. Skip sources that have no new content (compare against processed URLs list)
 
 ## Inaccessible Sources
-If a source returns a 403, 404, timeout, empty content, or is otherwise inaccessible via WebFetch:
-1. **Browser fallback**: Before skipping, try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`). This can retrieve content from JavaScript-rendered pages, bot-protected sites, and cookie walls that block WebFetch.
-2. If no browser CLI is installed (command not found) or the browser attempt also fails, report as ---NO_NEW--- with the reason (e.g., "403 forbidden, browser fallback unavailable") and move on.
-3. Spend at most one browser attempt per failed URL. Do not retry with alternative URLs or other workarounds beyond the single browser fallback.
+If a source's primary access method fails (403, 404, timeout, empty content, or otherwise inaccessible):
+1. **If the source has a `tool` property**: The specified tool was already the primary method. Fall back to WebFetch/WebSearch once. If that also fails, report as ---NO_NEW--- with the reason and move on.
+2. **If the source has no `tool` property**: Try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`). If no browser CLI is installed or the browser attempt also fails, report as ---NO_NEW--- with the reason and move on.
+3. Spend at most one fallback attempt per failed URL. Do not retry with alternative URLs or other workarounds.
 
 ## Search Budget
 When using WebSearch, make at most 2-3 search attempts per source. Do not keep reformulating queries if initial searches return no relevant results — report ---NO_NEW--- and move on.
