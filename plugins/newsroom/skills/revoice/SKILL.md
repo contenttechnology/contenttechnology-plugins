@@ -137,7 +137,6 @@ style: {new-style}
 content_type: {same as original}
 target_length: {same as original}
 audience: [{same as original}]
-campaign: {same as original}
 timeliness: {same as original}
 revoice_of: {original-brief-id}
 variant: true

@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 <objective>
-Act as the editorial director. Evaluate all validated pitch memos against quality criteria, editorial mix, campaign priorities, and source strength. Approve the strongest angles with author and style assignments, kill marginal ones, and produce production briefs for approved pieces. This is the gatekeeper that ensures only genuinely valuable content enters production.
+Act as the editorial director. Evaluate all validated pitch memos against quality criteria, editorial mix, and source strength. Approve the strongest angles with author and style assignments, kill marginal ones, and produce production briefs for approved pieces. This is the gatekeeper that ensures only genuinely valuable content enters production.
 </objective>
 
 <process>
@@ -30,9 +30,6 @@ Build a picture of the current editorial mix:
 - Which content types have been covered recently?
 - Which authors have been assigned recently?
 - Which topics have been covered?
-### Active Campaigns
-
-Use Glob to check `campaigns/active/*.md` and read any found. Campaigns influence prioritisation.
 
 ### Available Authors
 
@@ -58,7 +55,7 @@ Is this genuinely valuable to the target audience? Would a busy professional sto
 - **Marginal**: Might be valuable but feels like filler
 - **Fail**: Not compelling enough to justify production effort
 
-If the answer is "Marginal" or "Fail", kill the angle unless it serves a critical campaign need.
+If the answer is "Marginal" or "Fail", kill the angle.
 
 ### Source Strength
 Does the pitch have enough high-tier sources to be credible?
@@ -72,11 +69,6 @@ How does this fit the current content portfolio?
 - Check against content mix targets in config.md: are we underserving any content type?
 - Prioritise content types that haven't been published recently
 - Consider audience segment balance
-
-### Campaign Fit
-Does this angle serve an active campaign?
-- Campaign-aligned angles get priority if quality is sufficient
-- Non-campaign angles are evaluated purely on merit
 
 ### Redundancy Check
 Has a similar angle been published recently?
@@ -151,7 +143,6 @@ style: {style-slug}
 content_type: {deep-analysis | data-intelligence | regulatory | practitioner-insights | market-pulse}
 target_length: {word range}
 audience: [{audience segments}]
-campaign: {campaign-slug or null}
 timeliness: {durable | time-sensitive}
 deadline: {date if time-sensitive, null otherwise}
 ---
@@ -330,7 +321,6 @@ Killed:
 ## Error Handling
 
 - If no authors exist in `voice-models/`, approve the angle but set `author: unassigned` and note that an author must be created before production
-- If campaign files can't be read, proceed without campaign alignment
 - It is expected and healthy for the editorial director to kill most pitches — a high approval rate indicates the quality bar is too low
 
 </process>

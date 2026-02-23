@@ -22,7 +22,7 @@ Research  →  Angle  →  Validate  →  Editorial  →  Produce  →  Quality 
 
 **3. Validate** - Stress-tests each angle with four parallel subagents: supporting evidence, counter-evidence (adversarial), scope validation, and audience resonance. Weak angles are killed or refined.
 
-**4. Editorial** - Acts as editorial director. Evaluates surviving angles against value threshold, source strength, editorial mix, campaign fit, and redundancy. Assigns an author and writing style to approved angles.
+**4. Editorial** - Acts as editorial director. Evaluates surviving angles against value threshold, source strength, editorial mix, and redundancy. Assigns an author and writing style to approved angles.
 
 **5. Produce** - Writes drafts using a three-layer voice model (brand guidelines, author personality, style modifier) plus global formatting conventions. Each article sounds like it was written by a specific person, not a machine.
 
@@ -133,7 +133,6 @@ This executes research through quality gate with zero human interaction and outp
 | `init` | Create a new newsroom project - folder structure, editorial mission, config, example authors, and first beats |
 | `add-author` | Interactively create a new author voice model with baseline personality and style modifiers |
 | `add-beat` | Define a new research beat with sources, schedule, scope, and methodology |
-| `add-campaign` | Launch an editorial campaign - seasonal, event-driven, thematic, or rapid response |
 
 ### Pipeline (run autonomously or manually)
 
@@ -178,9 +177,6 @@ my-publication/
 │   ├── index.json                  # Metadata index (processed URLs, signal tags)
 │   └── archive/                    # Decayed signals
 ├── beats/                          # Beat configs (scope, sources, schedule)
-├── campaigns/
-│   ├── active/                     # Current campaign briefs
-│   └── archive/                    # Completed campaigns
 ├── pipeline/
 │   ├── 010_pitches/                # Angle pitch memos
 │   ├── 020_approved/               # Production briefs

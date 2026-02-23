@@ -17,10 +17,10 @@ The pipeline stages execute sequentially: Research → Angle → Validate → Ed
 
 Read configuration files:
 1. **`PUBLICATION.md`** — Editorial mission and quality criteria
-2. **`config.md`** — Research mode, step budgets, quality thresholds, content mix targets
+2. **`config.md`** — Research mode, quality thresholds, content mix targets
 3. **`knowledge-base/index.json`** — Current signal count, processed URLs, processed files
 
-If `config.md` is missing, use defaults: scan mode, 80-step budget, max 2 revisions.
+If `config.md` is missing, use defaults: scan mode, max 2 revisions.
 If `knowledge-base/index.json` is missing or invalid, note it — research stage will create a fresh one.
 
 Scan the full pipeline to count pending work at each stage:
@@ -74,7 +74,7 @@ If work exists, dispatch a Task subagent (subagent_type: "general-purpose", mode
 You are the Research Stage agent of an autonomous editorial pipeline run. Execute the full research cycle with zero human interaction.
 
 ## Configuration
-{Paste config.md contents — research mode, step budget}
+{Paste config.md contents — research mode}
 
 ## Knowledge Base State
 {Paste knowledge-base/index.json contents — next_signal_id, processed_urls, processed_files}
@@ -193,9 +193,6 @@ You are the Angle Stage agent of an autonomous editorial pipeline. Scan the know
 ## Existing Coverage (avoid duplication)
 {List headlines from pipeline/010_pitches/, pipeline/020_approved/, pipeline/030_drafts/, pipeline/040_review/, pipeline/050_published/}
 
-## Active Campaigns
-{List active campaign slugs and theses from campaigns/active/}
-
 ## Your Task
 
 ### 1. Read All Signal Reports
@@ -205,7 +202,7 @@ Read all signal files from `knowledge-base/signals/*.md`. Prioritise:
 - source_tier 1 or 2
 
 ### 2. Identify Convergence Patterns
-Look for: cross-beat convergence, temporal convergence, contradiction signals, compounding signals, campaign-aligned signals.
+Look for: cross-beat convergence, temporal convergence, contradiction signals, compounding signals.
 
 ### 3. Apply Quality Filters to Each Candidate Angle
 - **"So What?" test**: Would a reader immediately understand why this matters? (pass/fail)
@@ -222,7 +219,7 @@ Read author baselines from `voice-models/authors/*/baseline.md`. Match topic to 
 Read `pipeline/editorial-feedback.md` if it exists. Any open entries targeting `angle` should influence your convergence analysis and content type weighting. If your pitches address an open entry, mark it as addressed (change status to `addressed`, add `addressed_by: angle`, `addressed_date: {today}`, `resolution: {brief description}`, move from "Active Entries" to "Addressed Entries").
 
 ### 6. Write Pitch Memos
-For each surviving angle, write to `pipeline/010_pitches/pitch-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: pending, signals, beats, tags, timeliness, campaign, recommended_author, recommended_style, recommended_type) and body (Working Headline, Thesis, Supporting Evidence, Counter-Evidence, Source Map, Recommended Treatment, Timeliness Assessment, Campaign Alignment).
+For each surviving angle, write to `pipeline/010_pitches/pitch-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: pending, signals, beats, tags, timeliness, recommended_author, recommended_style, recommended_type) and body (Working Headline, Thesis, Supporting Evidence, Counter-Evidence, Source Map, Recommended Treatment, Timeliness Assessment).
 
 ### 7. Output Format
 Return:
@@ -319,7 +316,6 @@ If no validated pitches, skip to Step 7.
 
 If work exists, read context needed for editorial decisions:
 - Recent publications from `pipeline/050_published/`, `pipeline/040_review/`, `pipeline/030_drafts/`
-- Active campaigns from `campaigns/active/`
 - Available author baselines from `voice-models/authors/*/baseline.md`
 - Brand guidelines from `voice-models/brand-guidelines.md`
 
@@ -336,9 +332,6 @@ You are the Editorial Stage agent of an autonomous editorial pipeline. Act as ed
 
 ## Recent Publication History
 {List recent headlines, content types, authors from pipeline/050_published/, pipeline/040_review/, pipeline/030_drafts/, pipeline/020_approved/}
-
-## Active Campaigns
-{Paste campaign details}
 
 ## Available Authors
 {For each author: name, expertise summary from baseline, available styles}
@@ -357,7 +350,6 @@ You are the Editorial Stage agent of an autonomous editorial pipeline. Act as ed
 - **Value threshold**: Would a busy professional stop scrolling?
 - **Source strength**: At least 1 Tier 1/2 source, 2+ total, supporting evidence "moderate" or better
 - **Editorial mix**: Avoid topic clustering, balance content types against targets
-- **Campaign fit**: Prioritise campaign-aligned if quality sufficient
 - **Redundancy**: Kill if recently published
 - **Timeliness**: Fast-track time-sensitive angles
 
@@ -381,7 +373,7 @@ For each approved piece:
 6. Document rationale in production brief.
 
 ### 5. Write Production Briefs
-For each approved angle, write to `pipeline/020_approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, author, style, content_type, target_length, audience, campaign, timeliness, deadline) and body (Approved Thesis, Source Inventory with primary/supporting/counter-arguments, Structure Guidance, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
+For each approved angle, write to `pipeline/020_approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, author, style, content_type, target_length, audience, timeliness, deadline) and body (Approved Thesis, Source Inventory with primary/supporting/counter-arguments, Structure Guidance, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
 
 ### 6. Update Pitch Memos
 - Approved: set `status: approved`, add `brief_id`
@@ -680,7 +672,7 @@ If no articles were produced and no errors occurred, the commit message should b
 - Report all commit failures in the final summary.
 
 ### Missing Files
-- Missing `config.md`: use defaults (scan mode, 80-step budget, 2 max revisions).
+- Missing `config.md`: use defaults (scan mode, 2 max revisions).
 - Missing `PUBLICATION.md`: this is critical — abort the run. The editorial mission is required.
 - Missing voice model files for an assigned author: skip that brief, report the error.
 - Missing signal files referenced in a brief: continue with available sources, flag the gap.

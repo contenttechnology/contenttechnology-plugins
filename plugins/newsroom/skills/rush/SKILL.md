@@ -45,8 +45,6 @@ Read:
 Use Grep to search existing signals for related content: `knowledge-base/signals/*.md`
 Search for keywords from the rush topic to find any prior coverage.
 
-Use Glob to check for active campaigns in `campaigns/active/*.md` — is this topic aligned with an active campaign?
-
 ## Step 3: Focused Research
 
 Dispatch 2-3 research subagents in parallel (Task, subagent_type: "general-purpose", model: "sonnet") focused specifically on the rush topic.

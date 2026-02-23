@@ -50,8 +50,6 @@ knowledge-base/signals/
 knowledge-base/sources/
 knowledge-base/archive/
 beats/
-campaigns/active/
-campaigns/archive/
 pipeline/010_pitches/
 pipeline/020_approved/
 pipeline/030_drafts/
@@ -129,7 +127,7 @@ Run all pipeline stages in order:
 6. `/quality` — Quality gate assessment
 
 ## Configuration
-See `config.md` for research modes, step budgets, and quality thresholds.
+See `config.md` for research modes and quality thresholds.
 
 ## Voice Models
 See `voice-models/` for brand guidelines and author voice definitions.
@@ -157,7 +155,6 @@ Write to `config.md` in the project root. Use this exact content:
   - `scan` — Check all sources for new material. Quick extraction, minimal thread-following. 2-3 steps per source.
   - `investigate` — Check priority sources. Follow threads when promising. 10-15 steps per source.
   - `deep-dive` — Single source or topic. Exhaustive investigation. 20-30 steps per source. Manual only.
-- **Step budget**: 80
 - **Source rotation**: Low-frequency sources checked every 3 days
 
 ## Quality Thresholds
@@ -284,7 +281,7 @@ Write to `knowledge-base/index.json`. Use this exact content:
 
 Use Bash to create .gitkeep files in all empty directories so git tracks them. Run a single command:
 
-touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep campaigns/active/.gitkeep campaigns/archive/.gitkeep pipeline/010_pitches/.gitkeep pipeline/020_approved/.gitkeep pipeline/030_drafts/.gitkeep pipeline/040_review/.gitkeep pipeline/050_published/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
+touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep pipeline/010_pitches/.gitkeep pipeline/020_approved/.gitkeep pipeline/030_drafts/.gitkeep pipeline/040_review/.gitkeep pipeline/050_published/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
 
 ## Output
 After creating all files, confirm completion.

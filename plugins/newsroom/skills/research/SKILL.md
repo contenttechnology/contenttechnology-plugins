@@ -15,7 +15,6 @@ Execute the research stage of the editorial pipeline. Scan all active beats for 
 
 Read `config.md` from the project root to determine:
 - Research mode (scan / investigate / deep-dive)
-- Step budget for this cycle
 - Source rotation settings
 
 Read `knowledge-base/index.json` to get:
@@ -54,8 +53,6 @@ If no active beats are found, report this to the user and skip to Step 5 (local 
 
 For each active beat, dispatch a Task subagent (subagent_type: "general-purpose") with a detailed prompt.
 
-**Calculate step budget per beat**: Divide the total step budget across active beats, weighted by number of sources. Beats with more sources get proportionally more budget.
-
 **Subagent prompt template** (customise per beat):
 
 ```
@@ -92,7 +89,7 @@ If a source returns a 403, 404, timeout, empty content, or is otherwise inaccess
 3. Spend at most one browser attempt per failed URL. Do not retry with alternative URLs or other workarounds beyond the single browser fallback.
 
 ## Search Budget
-Stick to the step budget for your research mode. When using WebSearch, make at most 2-3 search attempts per source. Do not keep reformulating queries if initial searches return no relevant results — report ---NO_NEW--- and move on.
+When using WebSearch, make at most 2-3 search attempts per source. Do not keep reformulating queries if initial searches return no relevant results — report ---NO_NEW--- and move on.
 
 ## Output Format
 Return your findings as a series of signal reports, each formatted as:
@@ -217,7 +214,6 @@ Write a cycle summary to `metrics/cycle-{YYYY-MM-DD-HHmm}.md`:
 
 ## Configuration
 - Mode: {research mode}
-- Step budget: {budget used}
 - Beats processed: {count}
 
 ## Results
@@ -261,7 +257,7 @@ Research cycle: {N} signals from {M} beats
 - If a subagent fails or returns no parseable signals, log it in the cycle summary and continue with other beats
 - If WebFetch or WebSearch fails for a specific source, note the failure in the cycle summary and skip that source
 - If `knowledge-base/index.json` is missing or corrupted, create a fresh index with `next_signal_id: 1`
-- If `config.md` is missing, use defaults: scan mode, 80-step budget
+- If `config.md` is missing, use defaults: scan mode
 - Never crash the entire research cycle because of a single source or beat failure
 
 </process>

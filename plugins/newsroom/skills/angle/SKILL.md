@@ -19,8 +19,6 @@ Read the following files to build full editorial context:
 2. **`config.md`** — Quality thresholds (min sources for angle: 2)
 3. **`knowledge-base/index.json`** — Signal metadata, tags, dates, tiers
 
-Use Glob to check for active campaigns in `campaigns/active/*.md` and read any found.
-
 Use Glob to check for existing pitch memos in `pipeline/010_pitches/*.md` — read these to avoid proposing duplicate angles.
 
 Also check `pipeline/020_approved/*.md`, `pipeline/030_drafts/*.md`, `pipeline/040_review/*.md`, and `pipeline/050_published/*.md` for recently covered angles.
@@ -65,8 +63,6 @@ This is the core analytical step. Look for convergences across the signal invent
 3. **Contradiction signals**: Signals that directly contradict each other or challenge conventional wisdom. Example: Official data says one thing but industry forums report the opposite.
 
 4. **Compounding signals**: New signals that connect to older signals in the knowledge base, creating a richer picture than either alone. Use the `related_signals` field and shared tags to find these.
-
-5. **Campaign-aligned signals**: Signals that directly serve an active campaign's thesis or topic area.
 
 ### Convergence Scoring
 
@@ -115,7 +111,6 @@ signals: [{signal-id-1}, {signal-id-2}, ...]
 beats: [{beat-1}, {beat-2}]
 tags: [{tag1}, {tag2}]
 timeliness: durable | time-sensitive
-campaign: {campaign-slug or null}
 recommended_author: {author-name or null}
 recommended_style: {style-slug or null}
 recommended_type: {deep-analysis | commentary | regulatory | practitioner-insights | market-pulse}
@@ -148,9 +143,6 @@ recommended_type: {deep-analysis | commentary | regulatory | practitioner-insigh
 
 ## Timeliness Assessment
 {Why this is or isn't time-sensitive. If time-sensitive: what's the window? If durable: what makes it evergreen?}
-
-## Campaign Alignment
-{If this serves an active campaign, explain how. If not: "No active campaign alignment."}
 ```
 
 ## Step 6: Determine Author Recommendations
