@@ -70,11 +70,29 @@ The following URLs and content have already been processed — do NOT report on 
 - investigate: Follow promising threads. 10-15 steps per source.
 - deep-dive: Exhaustive investigation. 20-30 steps per source.
 
-## Your Task
+## Your Task — IMPORTANT: Tool Selection
+
+**CRITICAL**: Each source may have a `tool` property that specifies which tool to use. You MUST respect this property. Do NOT default to WebFetch/Fetch for sources that specify a different tool.
+
 1. For each source in the beat config, check for new content. Choose the access method based on the source's `tool` property:
-   - If the source has `tool: agent-browser`: Use the `agent-browser` CLI via Bash as the primary method. Fall back to WebFetch/WebSearch only if the browser CLI is not installed.
-   - If the source has `tool: steel-browser`: Use the `steel-browser` CLI via Bash as the primary method. Fall back to WebFetch/WebSearch only if the browser CLI is not installed.
-   - If the source has no `tool` property (default): Use WebFetch for web pages and RSS feeds, WebSearch for search-based sources.
+
+   **If the source has `tool: steel-browser` or `tool: steel-browser with playwright`:**
+   You MUST use the Skill tool to invoke steel-browser. Do NOT use WebFetch/Fetch for these sources.
+   ```
+   Skill(skill: "steel-browser", args: "<url>")
+   ```
+   Only fall back to WebFetch if the Skill tool call fails or steel-browser is unavailable.
+
+   **If the source has `tool: agent-browser`:**
+   You MUST use the Skill tool to invoke agent-browser. Do NOT use WebFetch/Fetch for these sources.
+   ```
+   Skill(skill: "agent-browser", args: "<url>")
+   ```
+   Only fall back to WebFetch if the Skill tool call fails or agent-browser is unavailable.
+
+   **If the source has no `tool` property (default):**
+   Use WebFetch for web pages and RSS feeds, WebSearch for search-based sources.
+
 2. For each piece of genuinely new content found:
    - Extract key data points, quotes, and facts
    - Assess the angle potential (1-5 scale)
@@ -84,8 +102,8 @@ The following URLs and content have already been processed — do NOT report on 
 
 ## Inaccessible Sources
 If a source's primary access method fails (403, 404, timeout, empty content, or otherwise inaccessible):
-1. **If the source has a `tool` property**: The specified tool was already the primary method. Fall back to WebFetch/WebSearch once. If that also fails, report as ---NO_NEW--- with the reason and move on.
-2. **If the source has no `tool` property**: Try fetching the page using a browser automation CLI via Bash (e.g., `agent-browser` or `bb`). If no browser CLI is installed or the browser attempt also fails, report as ---NO_NEW--- with the reason and move on.
+1. **If the source has a `tool` property**: The specified tool (via Skill) was already the primary method. Fall back to WebFetch/WebSearch once. If that also fails, report as ---NO_NEW--- with the reason and move on.
+2. **If the source has no `tool` property**: Try fetching the page using the Skill tool with `steel-browser` or `agent-browser`. If neither is available or the attempt also fails, report as ---NO_NEW--- with the reason and move on.
 3. Spend at most one fallback attempt per failed URL. Do not retry with alternative URLs or other workarounds.
 
 ## Search Budget
@@ -228,10 +246,7 @@ Write a cycle summary to `metrics/cycle-{YYYY-MM-DD-HHmm}.md`:
 {List the top 3-5 signals by angle_potential, with their IDs and one-line summaries}
 
 ## Sources Checked
-{List all sources checked with status: new content / no changes}
-
-### Next Step
-Run `angle` to scan these signals for converging patterns and construct pitch memos.
+{List all sources checked with status and access method, e.g.: new content (WebFetch) / no changes (agent-browser) / inaccessible (steel-browser → WebFetch fallback)}
 ```
 
 ## Step 8: Git Commit
