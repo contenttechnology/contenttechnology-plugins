@@ -35,6 +35,13 @@ Build a picture of the current editorial mix:
 
 Use Glob to list `voice-models/authors/*/baseline.md`. Read each baseline to understand author strengths and available styles. For each author, also check available style modifiers: `voice-models/authors/{name}/style-*.md`.
 
+For each author, also read `voice-models/authors/{name}/config.md` if it exists. This file contains:
+- `output_modes` — what the author can produce: `[article]`, `[package]`, or `[article, package]`
+- `default_package_tier` — light | full | thread-only (used when assigning package briefs)
+- `primary_platform` — linkedin | x (used when assigning package briefs)
+
+If `config.md` does not exist for an author, default to `output_modes: [article]` (article only, backward-compatible).
+
 Read `voice-models/brand-guidelines.md` for global constraints.
 
 ## Step 2: Load Validated Pitch Memos
@@ -93,9 +100,11 @@ The angle is marginal, redundant, insufficiently sourced, or doesn't serve the a
 ### HOLD
 The angle has potential but isn't ready — needs more evidence, better timing, or should wait for a related development. Keep in pitches with `status: held` and a note explaining what's needed.
 
-## Step 5: Assign Authors and Styles
+## Step 5: Assign Authors and Determine Output Mode
 
 For each approved angle:
+
+### 5a. Select the Author
 
 1. **Select the author** best suited to this angle:
    - Match author expertise and perspective to the topic
@@ -103,14 +112,23 @@ For each approved angle:
    - Consider the recommended author from the pitch memo, but override if a better fit exists
    - Rationale must be documented
 
-2. **Select the style modifier**:
+### 5b. Determine Output Mode from Author Config
+
+After selecting the author, read their `config.md` to determine `output_modes`:
+- `[article]` → write an **article brief only** (current behaviour, unchanged)
+- `[package]` → write a **package brief only** (new behaviour)
+- `[article, package]` → write **both** an article brief and a package brief for the same angle (dual output)
+
+### 5c. Article-Specific Decisions (when writing an article brief)
+
+1. **Select the style modifier**:
    - Match the content type to an available style for the chosen author
    - Deep Analysis → `style-deep-analysis.md`
    - Commentary → `style-commentary.md`
    - Regulatory → `style-regulatory.md`
    - Practitioner Insights / Market Pulse → author's baseline (no modifier needed for shorter formats)
 
-3. **Determine content type, length, and format**:
+2. **Determine content type, length, and format**:
    - Content type from the pitch memo recommendation (may override)
    - Length range from content type definitions:
      - Deep Analysis: 1,500-2,500 words
@@ -119,18 +137,40 @@ For each approved angle:
      - Practitioner Insights: 400-800 words
      - Market Pulse: 300-600 words
 
-4. **Identify the target audience segment**:
-   - Tailor to the audience segments defined during project init
-   - May be multiple segments
+### 5d. Package-Specific Decisions (when writing a package brief)
+
+1. **Determine package tier**: Use the author's `default_package_tier` from config.md as the starting point. Override per-angle when warranted:
+   - **Light** (default for most angles): Single observation, thesis expressible in <250 words. Produces: LinkedIn post + standalone tweets + reusable lines.
+   - **Full**: Enough depth for extended treatment, multiple evidence points. Produces: LinkedIn long post + X thread + standalone tweets + reusable lines + LinkedIn comment version.
+   - **Thread-only**: Analytically complex, layered argument. Reserve for the strongest 1-2 angles per week. Produces: X thread + LinkedIn long post + tweet extractions + reusable lines.
+
+2. **Determine primary platform**: Use the author's `primary_platform` from config.md as the starting point. Override per-angle when warranted:
+   - **LinkedIn** (default for most angles): Professional context, allows more nuance
+   - **X**: Sharp compressed observations, analytical threads
+
+3. **Select the style for the primary format**: The editorial director may optionally specify per-format style modifier overrides. Default mapping:
+   - LinkedIn post/long post → observational or analytical (depending on length)
+   - X thread → analytical
+   - Standalone tweets → observational (compressed)
+   - Reusable lines → voice baseline only (no modifier)
+   - LinkedIn comment → responsive
+
+4. **Optional: Reusable line guidance**: If the angle has particular relevance for ongoing conversations or threads, note guidance on how reusable lines might be deployed (e.g., "good for responding to migration threads").
+
+### 5e. Identify Target Audience Segment
+
+- Tailor to the audience segments defined during project init
+- May be multiple segments
+- Applies to both article and package briefs
 
 ## Step 6: Write Production Briefs
 
-For each approved angle, write a production brief to `pipeline/020_approved/`.
+For each approved angle, write one or two production briefs to `pipeline/020_approved/` depending on the author's output mode (article, package, or both).
 
 ### Filename Convention
-`brief-{YYYY-MM-DD}-{NNN}.md` — sequential number for the day.
+`brief-{YYYY-MM-DD}-{NNN}.md` — sequential number for the day. For dual-output angles, the article brief and package brief get separate sequential numbers.
 
-### Production Brief Format
+### Article Production Brief Format (when output mode includes article)
 
 ```markdown
 ---
@@ -188,11 +228,86 @@ deadline: {date if time-sensitive, null otherwise}
 {2-3 sentences on why this was approved and what makes it worth producing}
 ```
 
+### Package Production Brief Format (when output mode includes package)
+
+```markdown
+---
+id: brief-{YYYY-MM-DD}-{NNN}
+date: {YYYY-MM-DD}
+status: ready
+pitch_id: {original pitch memo ID}
+related_brief_id: {article brief ID if dual output, null otherwise}
+author: {author-name}
+style: {style-slug for primary format}
+package_tier: {light | full | thread-only}
+primary_platform: {linkedin | x}
+audience: [{audience segments}]
+timeliness: {durable | time-sensitive}
+deadline: {date if time-sensitive, null otherwise}
+---
+
+# Package Brief: {Working Headline}
+
+## Approved Thesis
+{The thesis — same as article brief if dual output. This is the core insight all formats must express.}
+
+## Source Inventory
+
+### Primary Sources (must inform all formats)
+{For each primary source:}
+- **{signal-id}**: {what this source contributes}
+
+### Supporting Sources (use for context)
+{For each supporting source:}
+- **{signal-id}**: {what this adds}
+
+### Counter-Arguments to Address
+{From the validation report:}
+- {counter-argument}: {how to address it}
+
+## Structure Guidance
+{Guidance for the primary format's structure — NOT article structure:}
+- **Hook**: {the opening observation or data point — must work in the first line}
+- **Core insight**: {the 1-2 key points that deliver the thesis}
+- **Evidence**: {how to weave in supporting data without overwhelming the format}
+- **Landing**: {how to close — implication, question, or call to think}
+
+## Voice Notes
+- **Author**: {author name} — {brief note on why this author}
+- **Style**: {primary format style} — {brief note on format-voice fit}
+- **Specific guidance**: {any piece-specific voice notes for social formats}
+
+## Format-Specific Style Overrides (optional)
+{Only include this section when the editorial director wants to override default style mappings for specific formats within the package. If omitted, the production agent uses embedded defaults.}
+- LinkedIn post: {style modifier name, or "default"}
+- X thread: {style modifier name, or "default"}
+- Standalone tweets: {style modifier name, or "default"}
+
+## Reusable Line Guidance (optional)
+{Context for how reusable lines might be deployed — e.g., "good for responding to migration threads" or "useful for commenting on vendor announcements". Omit if no specific guidance.}
+
+## Do-Not-Include List
+- {Any topics, claims, or framings to avoid}
+- {Brand guideline constraints particularly relevant to this piece}
+- {Information that's unverified or Tier 4 only}
+
+## Editorial Decision Rationale
+{2-3 sentences on why this was approved as a package and what makes it suitable for social formats}
+```
+
+### Dual Output Notes
+
+When an author has `output_modes: [article, package]`, write **both** briefs for the same angle:
+1. Write the article brief first — assign it a sequential ID
+2. Write the package brief second — assign it the next sequential ID and set `related_brief_id` to the article brief's ID
+3. Both briefs reference the same `pitch_id`
+4. The package brief's `related_brief_id` tells the production agent that a companion article exists
+
 ## Step 7: Update Pitch Memo Status
 
 For each decision:
 
-**Approved**: Edit the pitch memo frontmatter to set `status: approved` and add `brief_id: {brief-id}`.
+**Approved**: Edit the pitch memo frontmatter to set `status: approved` and add `brief_id: {brief-id}`. For dual-output angles (both article and package briefs), add `brief_ids: [{article-brief-id}, {package-brief-id}]` instead.
 
 **Killed**: Edit the pitch memo frontmatter to set `status: rejected`, add `rejected_date` and `rejected_reason`. Move the file to `pipeline/rejected/` using Bash `mv`.
 
@@ -268,11 +383,13 @@ Do not write entries for routine decisions. Only write entries when there is spe
 ```markdown
 ## Editorial Review Summary — {date}
 
-### Approved for Production: {count}
+### Approved for Production: {count angles} ({count briefs} briefs)
 {For each approved piece:}
 1. **{Headline}** ({brief-id})
    - Author: {author} / Style: {style}
-   - Content type: {type} / Length: {range}
+   - Output mode: {article | package | article + package}
+   - Content type: {type} / Length: {range} (articles only)
+   - Package tier: {light | full | thread-only} / Platform: {linkedin | x} (packages only)
    - Audience: {segments}
    - Priority: {normal | fast-track}
 
@@ -298,7 +415,7 @@ Do not write entries for routine decisions. Only write entries when there is spe
 - See `pipeline/editorial-feedback.md`
 
 ### Next Step
-Run `/produce` to write article drafts from the approved production briefs.
+Run `/produce` to write drafts from the approved production briefs (articles and packages).
 ```
 
 ## Step 10: Git Commit

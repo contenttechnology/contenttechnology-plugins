@@ -1,12 +1,12 @@
 ---
 name: run
-description: Execute the full autonomous editorial pipeline — research through quality gate — with no human interaction. Outputs a list of articles for review or 'nothing to do'.
+description: Execute the full autonomous editorial pipeline — research through quality gate — with no human interaction. Outputs a list of articles and packages for review or 'nothing to do'.
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep
 ---
 
 <objective>
-Execute the complete Newsroom editorial pipeline autonomously, from research through quality gate, with zero human interaction. This skill is designed for scheduled/cron execution. It processes all pending work at every stage — both new work generated in this run and leftovers from previous runs. The final output is either "nothing to do" or a list of articles now in `pipeline/040_review/` awaiting human review.
+Execute the complete Newsroom editorial pipeline autonomously, from research through quality gate, with zero human interaction. This skill is designed for scheduled/cron execution. It processes all pending work at every stage — both new work generated in this run and leftovers from previous runs. The final output is either "nothing to do" or a list of articles and content packages now in `pipeline/040_review/` awaiting human review.
 
 The pipeline stages execute sequentially: Research → Angle → Validate → Editorial → Produce → Quality. Each stage is dispatched as a Task subagent. Between stages, the orchestrator checks the filesystem for pending work. If a stage has no work, it is skipped (not aborted — later stages may have pending work from prior runs).
 </objective>
@@ -328,6 +328,7 @@ If no validated pitches, skip to Step 7.
 If work exists, read context needed for editorial decisions:
 - Recent publications from `pipeline/050_published/`, `pipeline/040_review/`, `pipeline/030_drafts/`
 - Available author baselines from `voice-models/authors/*/baseline.md`
+- Available author configs from `voice-models/authors/*/config.md` (output_modes, default_package_tier, primary_platform)
 - Brand guidelines from `voice-models/brand-guidelines.md`
 
 Dispatch a Task subagent (subagent_type: "general-purpose", model: "sonnet"):
@@ -345,7 +346,7 @@ You are the Editorial Stage agent of an autonomous editorial pipeline. Act as ed
 {List recent headlines, content types, authors from pipeline/050_published/, pipeline/040_review/, pipeline/030_drafts/, pipeline/020_approved/}
 
 ## Available Authors
-{For each author: name, expertise summary from baseline, available styles}
+{For each author: name, expertise summary from baseline, available styles, output_modes from config.md (default to [article] if no config.md)}
 
 ## Brand Guidelines
 {Paste brand-guidelines.md content}
@@ -366,28 +367,40 @@ You are the Editorial Stage agent of an autonomous editorial pipeline. Act as ed
 
 ### 3. Render Decisions: APPROVE, KILL, or HOLD
 
-### 4. Assign Authors (NON-INTERACTIVE)
+### 4. Assign Authors and Determine Output Mode (NON-INTERACTIVE)
 For each approved piece:
 1. Read all author baselines — extract expertise, tone, strengths
-2. Score each author for this pitch:
+2. Read all author config.md files — extract output_modes, default_package_tier, primary_platform
+3. Score each author for this pitch:
    - Expertise match to topic: 0-4 points
    - Tone/style fit: 0-3 points
    - Workload balance (penalise if already assigned in this run): 0-2 points
    - Pitch memo recommended_author match: +1 bonus
-3. Select highest scorer. If tied, prefer pitch memo's recommended_author.
-4. Select style modifier based on content type:
+4. Select highest scorer. If tied, prefer pitch memo's recommended_author.
+5. Check the selected author's `output_modes`:
+   - `[article]` → write an article brief only
+   - `[package]` → write a package brief only
+   - `[article, package]` → write BOTH an article brief and a package brief (dual output)
+6. For article briefs: Select style modifier based on content type:
    - Deep Analysis → style-deep-analysis
    - Commentary → style-commentary
    - Regulatory → style-regulatory
    - Practitioner Insights / Market Pulse → baseline (no modifier)
-5. Verify the style file exists: `voice-models/authors/{author}/style-{style}.md`. If missing, fall back to baseline.
-6. Document rationale in production brief.
+7. For package briefs: Determine package_tier (use author's default, override if warranted) and primary_platform (use author's default, override if warranted). Tier decision criteria:
+   - Light: single observation, thesis expressible in <250 words
+   - Full: enough depth for extended treatment, multiple evidence points
+   - Thread-only: analytically complex, layered argument (strongest 1-2 per week)
+8. Verify the style file exists: `voice-models/authors/{author}/style-{style}.md`. If missing, fall back to baseline.
+9. Document rationale in production brief.
 
 ### 5. Write Production Briefs
-For each approved angle, write to `pipeline/020_approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, author, style, content_type, target_length, audience, timeliness, deadline) and body (Approved Thesis, Source Inventory with primary/supporting/counter-arguments, Structure Guidance, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
+For each approved angle:
+- **Article brief** (if output_modes includes article): Write to `pipeline/020_approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, author, style, content_type, target_length, audience, timeliness, deadline) and body (Approved Thesis, Source Inventory, Structure Guidance, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
+- **Package brief** (if output_modes includes package): Write to `pipeline/020_approved/brief-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: ready, pitch_id, related_brief_id, author, style, package_tier, primary_platform, audience, timeliness, deadline) and body (Approved Thesis, Source Inventory, Structure Guidance for social formats, Voice Notes, Do-Not-Include List, Editorial Decision Rationale).
+- For dual output: article brief first, then package brief with `related_brief_id` pointing to the article brief.
 
 ### 6. Update Pitch Memos
-- Approved: set `status: approved`, add `brief_id`
+- Approved: set `status: approved`, add `brief_id` (or `brief_ids` if dual output)
 - Killed: set `status: rejected`, add `rejected_date`, `rejected_reason`, move to `pipeline/rejected/`
 - Held: set `status: held`, add `hold_reason`, `hold_date`
 
@@ -398,11 +411,11 @@ Write carry-forward notes to `pipeline/editorial-feedback.md` for any production
 Return:
 
 EDITORIAL_COMPLETE
-approved: {count}
+approved: {count angles} ({count briefs} briefs)
 killed: {count}
 held: {count}
 approved_list:
-- {brief-id}: {headline} — {author}/{style} — {content type}
+- {brief-id}: {headline} — {author}/{style} — {article | package | article+package}
 killed_list:
 - {pitch-id}: {headline} — {reason}
 ```
@@ -428,7 +441,7 @@ If work exists, read brand guidelines from `voice-models/brand-guidelines.md` an
 Dispatch a Task subagent (subagent_type: "general-purpose"):
 
 ```
-You are the Produce Stage agent of an autonomous editorial pipeline. Write article drafts from production briefs using the three-layer voice model.
+You are the Produce Stage agent of an autonomous editorial pipeline. Write article drafts and content packages from production briefs using the three-layer voice model.
 
 ## Editorial Mission
 {Paste PUBLICATION.md content}
@@ -444,7 +457,11 @@ You are the Produce Stage agent of an autonomous editorial pipeline. Write artic
 
 ## Your Task
 
-For each ready brief:
+For each ready brief, detect the brief type from frontmatter:
+- Has `content_type` → article brief (produce an article draft)
+- Has `package_tier` → package brief (produce a content package)
+
+### For Article Briefs:
 
 ### 1. Mark Brief Status
 Edit the brief frontmatter: set `status: in-production`.
@@ -459,7 +476,7 @@ Read each signal file referenced in the brief's source inventory from `knowledge
 ### 4. Check Editorial Feedback
 Read `pipeline/editorial-feedback.md` if it exists. Filter for open `production-note` entries targeting `produce`. If a note's `context` references a brief you are about to produce, include the note in the production subagent's prompt as an "Editorial Director's Note" section. After producing, mark consumed entries as addressed.
 
-### 5. Dispatch Production Subagent (Task, model: "sonnet")
+### 5. Dispatch Article Production Subagent (Task, model: "sonnet")
 Prompt the production subagent with:
 - CRITICAL RULES: synthesis not summarisation, no AI tells, specific over general, earned opinions
 - Full brand guidelines, author baseline, style modifier
@@ -468,19 +485,56 @@ Prompt the production subagent with:
 - Target word count from brief
 - Output format: ---DRAFT_START--- / ---DRAFT_END--- with WORD_COUNT and PRODUCTION_NOTES
 
-### 6. Save Draft
+### 6. Save Article Draft
 Write to `pipeline/030_drafts/draft-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, author, style, content_type, word_count, revision: 0, max_revisions: 2, audience) and body (article text, Production Metadata section with notes and source references).
 
-### 7. Update Brief
+### 7. Update Article Brief
 Edit brief frontmatter: set `status: produced`, add `draft_id`.
 
-### 8. Output Format
+### For Package Briefs:
+
+### 1. Mark Brief Status
+Edit the brief frontmatter: set `status: in-production`.
+
+### 2. Load Voice Model
+- Layer 1: Read `voice-models/brand-guidelines.md` (already loaded)
+- Layer 2: Read `voice-models/authors/{author}/baseline.md`
+- Layer 3: Read `voice-models/authors/{author}/style-{style}.md` (if specified)
+- If brief has Format-Specific Style Overrides section, read any referenced override files
+
+### 3. Load Source Material
+Read each signal file referenced in the brief's source inventory from `knowledge-base/signals/`.
+
+### 4. Check Editorial Feedback (same as articles)
+
+### 5. Dispatch Package Production Subagent (Task, model: "sonnet")
+Prompt the production subagent with:
+- CRITICAL RULES: synthesis not summarisation, no AI tells, specific over general, format independence, no copy-paste between formats
+- Format-specific writing rules (standalone tweets: <280 chars, work without context; X threads: each tweet independently interesting, no numbering; LinkedIn posts: front-load insight, 120-250 words light / 300-500 words full; reusable lines: one sentence, "text to colleague" test; LinkedIn comment: 40-80 words, reference original)
+- Full brand guidelines, author baseline, style modifier
+- Full production brief (thesis, sources, structure guidance, voice notes, do-not-include list)
+- Full source material from signal reports
+- Package tier and primary platform from brief
+- Production sequence: primary format first → remaining formats → reusable lines last
+- Tier-specific output requirements (light/full/thread-only)
+- Output format: ---PACKAGE_START--- / ---PACKAGE_END--- with PRODUCTION_NOTES
+
+### 6. Save Package
+Write to `pipeline/030_drafts/pkg-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, related_brief_id, author, style, package_tier, primary_platform, revision: 0, max_revisions: 1, audience) and body (Thesis section, format sections as returned by subagent, Production Metadata).
+
+### 7. Update Package Brief
+Edit brief frontmatter: set `status: produced`, add `package_id`.
+
+### Output Format
 Return:
 
 PRODUCE_COMPLETE
-drafts_written: {count}
-drafts:
+articles_written: {count}
+packages_written: {count}
+articles:
 - {draft-id}: {headline} — {author} — {word count} words
+packages:
+- {pkg-id}: {headline} — {author} — {tier} package — {platform}
 ```
 
 After the subagent returns, parse output and commit:
@@ -489,7 +543,7 @@ After the subagent returns, parse output and commit:
 git add pipeline/030_drafts/ pipeline/020_approved/ pipeline/editorial-feedback.md
 ```
 
-Commit message: `Produce drafts: {N} articles written`
+Commit message: `Produce drafts: {N} articles, {M} packages written`
 
 If the produce subagent fails, log the error and continue to Step 8 (to process any already-existing drafts).
 
@@ -504,23 +558,25 @@ If work exists, read brand guidelines and config (max revisions).
 Dispatch a Task subagent (subagent_type: "general-purpose"):
 
 ```
-You are the Quality Stage agent of an autonomous editorial pipeline. Assess all drafts against the 7-criteria quality gate. Pass drafts to human review, return for revision (max 2 cycles), or kill.
+You are the Quality Stage agent of an autonomous editorial pipeline. Assess all drafts and content packages against the quality gate. Pass items to human review, return for revision, or kill.
 
 ## Quality Criteria
 {Paste PUBLICATION.md quality criteria}
 
 ## Configuration
-Max revisions: {from config.md, default 2}
+Max revisions for articles: {from config.md, default 2}
+Max revisions for packages: 1
 
 ## Brand Guidelines
 {Paste brand-guidelines.md content}
 
-## Drafts for Review
-{List draft file paths with current revision count}
+## Items for Review
+{List all draft and package file paths with current revision count}
+- Detect type: files with `content_type` → article, files with `package_tier` → package
 
 ## Your Task
 
-For each draft:
+### For Article Drafts:
 
 ### 1. Load Context
 - Read the draft file
@@ -528,7 +584,7 @@ For each draft:
 - Read the author baseline from `voice-models/authors/{author}/baseline.md`
 - Read the style modifier from `voice-models/authors/{author}/style-{style}.md` (if any)
 
-### 2. Dispatch Quality Assessment Subagent (Task, model: "sonnet")
+### 2. Dispatch Article Quality Assessment Subagent (Task, model: "sonnet")
 The assessor evaluates 7 criteria, each scored PASS/REVISE/FAIL:
 1. **Insight Density** — no filler paragraphs, no repetition, no generic observations
 2. **Source Fidelity** — all claims traceable, no misrepresentation, no over-extrapolation
@@ -538,9 +594,9 @@ The assessor evaluates 7 criteria, each scored PASS/REVISE/FAIL:
 6. **Novelty** — combines sources in new ways, informed readers learn something
 7. **Readability** — opening hooks, structured for scanning, appropriate length, maintains momentum
 
-Output format: ---QUALITY_REPORT--- with Overall Verdict (PASS/REVISE/KILL), Criterion Scores table, Detailed Feedback (what works, what needs improvement), Specific Revision Instructions ---END_QUALITY_REPORT---
+Output format: ---QUALITY_REPORT--- with Overall Verdict (PASS/REVISE/KILL), Criterion Scores table, Detailed Feedback, Specific Revision Instructions ---END_QUALITY_REPORT---
 
-### 3. Process Verdicts
+### 3. Process Article Verdicts
 
 **PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/040_review/`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` → `for-review-2026-02-10-001.md`).
 
@@ -552,18 +608,51 @@ If `revision >= max_revisions`: KILL the draft.
 
 **KILL**: Set `status: killed`, add `killed_reason`. Move to `pipeline/rejected/` (Bash mv). Update corresponding brief status.
 
-### 4. Output Format
+### For Content Packages:
+
+### 1. Load Context
+- Read the package file
+- Read the corresponding production brief from `pipeline/020_approved/{brief_id}.md`
+- Read the author baseline from `voice-models/authors/{author}/baseline.md`
+- Read the style modifier from `voice-models/authors/{author}/style-{style}.md` (if any)
+
+### 2. Dispatch Package Quality Assessment Subagent (Task, model: "sonnet")
+The assessor evaluates:
+- **Package-level** (4 checks): Thesis Coherence, Format Independence, No Copy-Paste, Reusable Line Quality
+- **Format-level** (7 criteria per format): Insight Density, Source Fidelity, Thesis Delivery, AI-Tell Scan, Voice Match, Novelty, Readability — applied with format-appropriate interpretation (lighter source fidelity bar for tweets, different readability standard per format)
+
+Output format: ---QUALITY_REPORT--- with Overall Verdict, Package-Level Assessment table, Format-Level Assessment tables per format, Detailed Feedback ---END_QUALITY_REPORT---
+
+### 3. Process Package Verdicts
+
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/040_review/`, changing `pkg-` prefix to `for-review-pkg-`.
+
+**REVISE**: If `revision < max_revisions` (1 for packages):
+- Identify which formats need revision from the quality report
+- Dispatch a package revision subagent — revises ONLY flagged formats, preserves passing formats
+- Save revised package, re-run quality assessment
+If `revision >= max_revisions`:
+- Primary format failed → KILL entire package
+- Non-primary format failed → drop that format, keep the rest if they pass
+
+**KILL**: Set `status: killed`, add `killed_reason`. Move to `pipeline/rejected/`. Update corresponding brief status.
+
+### Output Format
 Return:
 
 QUALITY_COMPLETE
-passed: {count}
-revised_and_passed: {count}
-killed: {count}
-first_pass_rate: {percentage}
+articles_passed: {count}
+articles_revised_and_passed: {count}
+articles_killed: {count}
+packages_passed: {count}
+packages_revised_and_passed: {count}
+packages_killed: {count}
+article_first_pass_rate: {percentage}
+package_first_pass_rate: {percentage}
 passed_list:
-- {draft-id}: {headline} — pipeline/040_review/{filename}
+- {id}: {headline} — {type} — pipeline/040_review/{filename}
 killed_list:
-- {draft-id}: {headline} — {reason}
+- {id}: {headline} — {type} — {reason}
 ```
 
 After the subagent returns, parse output and commit:
@@ -588,7 +677,7 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 # Newsroom Run Summary — {date} {time}
 
 ## Result
-{N} articles moved to human review this run.
+{N} items moved to human review this run ({A} articles, {P} packages).
 
 ## Stage Results
 
@@ -609,23 +698,25 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 {Or: "Skipped — no pending pitches"}
 
 ### Editorial
-- Approved: {count}
+- Approved: {count angles} ({count briefs} briefs — {A} article, {P} package)
+- Output mode decisions: {count article-only}, {count package-only}, {count dual-output}
 - Killed: {count}
 - Held: {count}
 {Or: "Skipped — no validated pitches"}
 
 ### Produce
-- Drafts written: {count}
+- Article drafts written: {count}
+- Content packages written: {count}
 {Or: "Skipped — no ready briefs"}
 
 ### Quality
-- Passed: {count}
-- Revised and passed: {count}
-- Killed: {count}
-- First-pass rate: {percentage}
-{Or: "Skipped — no drafts to review"}
+- Articles: {passed} passed, {revised} revised, {killed} killed (first-pass rate: {percentage})
+- Packages: {passed} passed, {revised} revised, {killed} killed (first-pass rate: {percentage})
+{Or: "Skipped — no drafts or packages to review"}
 
-## Articles Ready for Human Review
+## Items Ready for Human Review
+
+### Articles
 {For each article now in pipeline/040_review/:}
 1. **{Headline}** ({draft-id})
    - Author: {author} / Style: {style}
@@ -633,20 +724,28 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
    - Word count: {count}
    - Path: pipeline/040_review/{filename}
 
+### Packages
+{For each package now in pipeline/040_review/:}
+1. **{Headline}** ({pkg-id})
+   - Author: {author} / Tier: {tier} / Platform: {platform}
+   - Formats: {count}
+   - Related article: {related_brief_id or "None"}
+   - Path: pipeline/040_review/{filename}
+
 ## Pipeline Status
 - Pending pitches: {count}
 - Held pitches: {count}
-- Ready briefs: {count}
-- Drafts in progress: {count}
-- Articles awaiting review: {total count}
+- Ready briefs: {count} ({A} article, {P} package)
+- Drafts/packages in progress: {count}
+- Items awaiting review: {total count} ({A} articles, {P} packages)
 - Editorial feedback: {open count} open entries ({breakdown by type})
 
 ## Errors
 {List any stage failures or subagent errors, or "None"}
 
 ## Next Step
-{If articles in review > 0: "Run `review` to approve, revise, or kill the articles now awaiting human review."}
-{If no articles: "No articles to review. The next `run` will check for new signals."}
+{If items in review > 0: "Run `review` to approve, revise, or kill the articles and packages now awaiting human review."}
+{If no items: "No items to review. The next `run` will check for new signals."}
 ```
 
 Output the summary to stdout. Then commit:
@@ -655,9 +754,9 @@ Output the summary to stdout. Then commit:
 git add metrics/run-*.md
 ```
 
-Commit message: `Run complete: {N} articles to review`
+Commit message: `Run complete: {N} items to review ({A} articles, {P} packages)`
 
-If no articles were produced and no errors occurred, the commit message should be: `Run complete: no new articles this cycle`
+If no items were produced and no errors occurred, the commit message should be: `Run complete: no new items this cycle`
 
 ## Error Handling
 

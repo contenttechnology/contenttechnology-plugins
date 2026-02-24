@@ -1,21 +1,23 @@
 ---
 name: review
-description: Interactive human review of quality-approved drafts — approve, revise with feedback, or kill with reasoning.
+description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, or kill with reasoning.
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 ---
 
 <objective>
-Interactive skill for human review of quality-approved drafts in `pipeline/040_review/`. The human selects a draft, reads it, and decides: approve (publish), revise (send back with feedback), or kill (reject with reasoning). Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
+Interactive skill for human review of quality-approved drafts and content packages in `pipeline/040_review/`. The human selects an item, reads it, and decides: approve, revise, or kill. For content packages, additional options include selective approval (keep some formats, drop others) and format-specific revision. Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
 </objective>
 
 <process>
 
-## Step 1: Load Drafts for Review
+## Step 1: Load Items for Review
 
 Use Glob to find all files: `pipeline/040_review/*.md`
 
-Read each draft file. Parse YAML frontmatter to extract:
+Read each file. Parse YAML frontmatter and detect the item type:
+
+**Article drafts** (has `content_type` field, or filename starts with `for-review-draft-` or `for-review-`):
 - `id` (draft ID)
 - `date` (production date)
 - `author` (author name)
@@ -28,11 +30,24 @@ Read each draft file. Parse YAML frontmatter to extract:
 - `human_revision` (human revision count — may not exist yet, default 0)
 - `rush` (boolean, if present)
 
-Also extract the headline from the first `#` heading in the markdown body (after frontmatter).
+**Content packages** (has `package_tier` field, or filename starts with `for-review-pkg-`):
+- `id` (package ID)
+- `date` (production date)
+- `author` (author name)
+- `style` (style slug)
+- `package_tier` (light | full | thread-only)
+- `primary_platform` (linkedin | x)
+- `related_brief_id` (companion article brief ID, if dual output)
+- `brief_id` (production brief ID)
+- `pitch_id` (original pitch ID)
+- `revision` (automated quality revision count)
+- `human_revision` (human revision count — may not exist yet, default 0)
 
-If no drafts are found, report:
+Also extract the headline from the first `#` heading in the markdown body (after frontmatter). Count the number of format sections (## headings) in packages.
+
+If no items are found, report:
 ```
-No drafts awaiting review. The pipeline has not produced any quality-approved drafts.
+No drafts or packages awaiting review. The pipeline has not produced any quality-approved items.
 Run /run or /quality first.
 ```
 And exit.
@@ -41,24 +56,35 @@ And exit.
 
 Use AskUserQuestion to show the review queue.
 
-**Question**: "These drafts are ready for review. Which would you like to review?"
+**Question**: "These items are ready for review. Which would you like to review?"
 
-**Options**: One option per draft (max 4 — if more exist, show the 4 oldest first), formatted as:
+**Options**: One option per item (max 4 — if more exist, show the 4 oldest first), formatted as:
 
+For **article drafts**:
 - **Label**: `{Headline}` (truncated to fit)
-- **Description**: `{author}/{style} — {word_count} words — {content_type} — {date}` plus any flags:
+- **Description**: `[Article] {author}/{style} — {word_count} words — {content_type} — {date}` plus any flags:
   - If `rush: true`: append `[RUSH]`
   - If `human_revision > 0`: append `[Revised {N}x]`
 
-If there are more than 4 drafts, note in the question text how many total are waiting.
+For **content packages**:
+- **Label**: `{Headline}` (truncated to fit)
+- **Description**: `[Package] {author} — {package_tier} — {primary_platform} — {N} formats — {date}` plus any flags:
+  - If `related_brief_id` is not null: append `[Dual output]`
+  - If `human_revision > 0`: append `[Revised {N}x]`
+
+If there are more than 4 items, note in the question text how many total are waiting.
 
 The user can select "Other" to exit the review session.
 
 If the user selects "Other" with exit intent, proceed to Step 6 (session summary).
 
-## Step 3: Present the Selected Draft
+## Step 3: Present the Selected Item
 
-Read the full content of the selected draft file. Present to the human:
+Read the full content of the selected file. The presentation and decision options differ based on whether it's an article draft or a content package.
+
+### 3a. Article Draft Presentation
+
+Present to the human:
 
 1. **Metadata summary**:
    ```
@@ -84,9 +110,39 @@ Then use AskUserQuestion:
 - **Label**: "Revise" — **Description**: "Send back with feedback for revision and quality re-assessment"
 - **Label**: "Kill" — **Description**: "Reject this draft — move to pipeline/rejected/ with reasoning"
 
-## Step 4a: Approve Path
+### 3b. Content Package Presentation
 
-When the human selects "Approve":
+Present to the human:
+
+1. **Metadata summary**:
+   ```
+   Package: {id}
+   Date: {date}
+   Author: {author} / Style: {style}
+   Package Tier: {package_tier}
+   Primary Platform: {primary_platform}
+   Related Article Brief: {related_brief_id or "None (standalone package)"}
+   Revisions: {revision} automated, {human_revision} human
+   Brief: {brief_id}
+   ```
+
+2. **Quality report**: If a quality report is appended, display both the package-level assessment table and the per-format scores tables.
+
+3. **Full package content**: Display the entire package with all formats clearly separated. Show each format section with its heading.
+
+Then use AskUserQuestion:
+
+**Question**: "What is your decision for this package?"
+
+**Options**:
+- **Label**: "Approve all" — **Description**: "Approve the entire package — all formats move to pipeline/050_published/"
+- **Label**: "Approve selectively" — **Description**: "Pick which formats to keep, drop the rest"
+- **Label**: "Revise formats" — **Description**: "Send specific formats back for revision with targeted feedback"
+- **Label**: "Kill package" — **Description**: "Reject the entire package — move to pipeline/rejected/"
+
+## Step 4a: Approve Path (Articles)
+
+When the human selects "Approve" for an article draft:
 
 1. **Optional notes**: Use AskUserQuestion:
    - **Question**: "Any notes to log with the approval? (Recorded for calibration, won't change the draft.)"
@@ -134,9 +190,104 @@ Review: approve "{headline}"
 - {word_count} words
 ```
 
-## Step 4b: Revise Path
+## Step 4a-pkg: Approve Path (Packages)
 
-When the human selects "Revise":
+### Approve All
+
+When the human selects "Approve all" for a content package:
+
+1. **Per-format publication timing**: Use AskUserQuestion:
+   - **Question**: "How should the formats be published? You can stagger timing."
+   - **Options**:
+     - **Label**: "Publish all now" — **Description**: "All formats ready for immediate publication"
+     - **Label**: "Stagger timing" — **Description**: "Specify timing per format (use Other to describe)"
+     - **Label**: "Bank for later" — **Description**: "Approve but hold all formats for strategic timing"
+
+2. **Update frontmatter** via Edit:
+   - Set `status: published`
+   - Add `published_date: {YYYY-MM-DD}`
+   - Add `approved_by: human`
+   - Add `formats_published` metadata tracking per-format publish status:
+     ```yaml
+     formats_published:
+       linkedin_post:
+         published: false
+       tweet_1:
+         published: false
+       tweet_2:
+         published: false
+       reusable_lines:
+         published: false
+     ```
+   - If timing notes provided, add `publication_timing: {notes}`
+
+3. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/050_published/{filename}`
+
+4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{pkg-id}.md`:
+
+```markdown
+---
+type: review-decision
+package_id: {pkg-id}
+date: {YYYY-MM-DDTHH:mm}
+decision: approved
+author: {author}
+style: {style}
+package_tier: {tier}
+primary_platform: {platform}
+format_count: {count}
+quality_revisions: {revision}
+human_revisions: {human_revision}
+---
+
+## Review Decision: Package Approved
+
+**Package**: {headline}
+**Decision**: All formats approved for publication
+**Timing**: {publication timing or "Immediate"}
+**Notes**: {approval notes or "None"}
+```
+
+5. **Git commit** via Bash:
+```
+Review: approve package "{headline}"
+
+- Published to pipeline/050_published/
+- Author: {author} / Tier: {tier} / Platform: {platform}
+- {format_count} formats approved
+```
+
+### Approve Selectively
+
+When the human selects "Approve selectively":
+
+1. **Format selection**: Use AskUserQuestion (multiSelect: true):
+   - **Question**: "Which formats do you want to keep? Unselected formats will be dropped."
+   - **Options**: One option per format section found in the package:
+     - **Label**: "LinkedIn Post" — **Description**: First line preview
+     - **Label**: "X Thread" — **Description**: "{N} tweets"
+     - **Label**: "Standalone Tweets" — **Description**: "{N} tweets"
+     - **Label**: "Reusable Lines" — **Description**: "{N} lines"
+     - **Label**: "LinkedIn Comment" — **Description**: First line preview
+   (Only show formats that exist in the package)
+
+2. **Remove dropped formats** from the package body via Edit. Add `formats_dropped: [{list of dropped format names}]` to frontmatter.
+
+3. **Update frontmatter and move** — same as "Approve all" flow above, with `formats_published` only listing kept formats.
+
+4. **Write decision log** noting which formats were kept and which were dropped.
+
+5. **Git commit**:
+```
+Review: selectively approve package "{headline}"
+
+- Kept: {list of kept formats}
+- Dropped: {list of dropped formats}
+```
+
+## Step 4b: Revise Path (Articles)
+
+When the human selects "Revise" for an article draft:
 
 1. **Capture revision notes**: Use AskUserQuestion:
    - **Question**: "What needs to change? Be as specific as possible — cite paragraphs, sentences, or sections. (Use Other to type your feedback.)"
@@ -372,12 +523,110 @@ If the revision subagent fails, report the error, keep the draft in `pipeline/04
 
 If the quality re-assessment subagent fails, move the revised draft back to `pipeline/040_review/` without a quality report. Note that quality was not re-assessed. Let the human decide.
 
+## Step 4b-pkg: Revise Path (Packages)
+
+When the human selects "Revise formats" for a content package:
+
+1. **Select formats to revise**: Use AskUserQuestion (multiSelect: true):
+   - **Question**: "Which formats need revision? Select all that apply."
+   - **Options**: One option per format section found in the package (same as selective approve list)
+
+2. **Capture per-format feedback**: For each selected format, use AskUserQuestion:
+   - **Question**: "What needs to change in the {format name}? Be as specific as possible."
+   - **Options**:
+     - **Label**: "Stronger hook" — **Description**: "The opening doesn't grab attention"
+     - **Label**: "Voice issues" — **Description**: "Doesn't sound like this author"
+     - **Label**: "Too generic" — **Description**: "Needs more specific data or insight"
+     - **Label**: "Restructure" — **Description**: "The flow or structure needs reworking"
+   - The user will typically use "Other" for detailed notes.
+
+3. **Update frontmatter** via Edit:
+   - Set `status: human-revision`
+   - Add or increment `human_revision`
+   - Add `human_revision_notes: {combined per-format feedback}`
+   - Add `formats_flagged: [{list of formats being revised}]`
+
+4. **Load voice model context** (same as article revise path — brand guidelines, author baseline, style modifier, production brief).
+
+5. **Dispatch package revision subagent** via Task (subagent_type: "general-purpose", model: "sonnet"):
+
+```
+You are revising specific formats in a content package that received human review feedback. Revise ONLY the formats specified below. Do NOT modify formats that were not flagged. Preserve the author's voice exactly.
+
+## Complete Current Package
+{Paste the complete package content — all format sections. The reviewer needs to see the full context.}
+
+## Formats to Revise (ONLY modify these)
+{For each flagged format:}
+### {Format Name}
+**Feedback**: {human's per-format revision notes}
+
+## Formats to KEEP UNCHANGED (do NOT modify)
+{List all formats NOT flagged for revision}
+
+## Voice Model (maintain this voice exactly)
+
+### Brand Guidelines
+{Paste brand-guidelines.md}
+
+### Author Baseline: {author}
+{Paste baseline.md}
+
+### Style Modifier: {style}
+{Paste style modifier content, or "No style modifier — baseline voice only"}
+
+## Production Brief (for reference)
+{Paste the thesis and structure guidance from the brief}
+
+## Instructions
+1. Address every point in the human reviewer's feedback for each flagged format
+2. Do NOT rewrite formats that were not flagged
+3. Preserve the author's voice and style throughout
+4. Maintain thesis coherence across all formats
+5. Return the COMPLETE package including both revised and unchanged formats
+
+## Output Format
+---REVISED_PACKAGE---
+
+## LinkedIn Post
+{content — revised or unchanged}
+
+## X Thread
+{content — revised or unchanged}
+
+## Standalone Tweets
+{content — revised or unchanged}
+
+## Reusable Lines
+{content — revised or unchanged}
+
+## LinkedIn Comment Version
+{content — revised or unchanged, if applicable}
+
+---END_REVISED_PACKAGE---
+
+CHANGES_MADE:
+{List each change you made, referencing which format and which feedback point it addresses}
+```
+
+6. **Save revised package**: Parse the `---REVISED_PACKAGE---` block. Overwrite the format sections in the package file (preserve frontmatter and production metadata). Update frontmatter:
+   - Set `status: revision`
+   - Increment `revision` count
+
+7. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/030_drafts/{filename}`
+
+8. **Dispatch quality re-assessment** — use the same package quality assessment prompt from the quality skill (Step 3b). The full package-level + format-level assessment is re-run.
+
+9. **Process quality verdict**: Same as article revise path — move back to `pipeline/040_review/` regardless of quality verdict so the human sees the result on their next pass.
+
+10. **Write decision log** and **git commit** (similar to article revise path, noting format-specific revisions).
+
 ## Step 4c: Kill Path
 
-When the human selects "Kill":
+When the human selects "Kill" (for articles) or "Kill package" (for packages):
 
 1. **Capture kill reason**: Use AskUserQuestion:
-   - **Question**: "Why are you killing this draft?"
+   - **Question**: "Why are you killing this?" (applies to both articles and packages)
    - **Options**:
      - **Label**: "Thesis wrong" — **Description**: "The thesis is incorrect, outdated, or no longer relevant"
      - **Label**: "Not interesting" — **Description**: "Not valuable enough for our audience"
@@ -395,8 +644,9 @@ When the human selects "Kill":
 
 4. **Update corresponding production brief**: Read `brief_id` from the draft frontmatter. Edit the brief in `pipeline/020_approved/{brief_id}.md` to set `status: killed`. If the brief file is not found, log the gap and continue.
 
-5. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{draft-id}.md`:
+5. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{id}.md`:
 
+For **article drafts**:
 ```markdown
 ---
 type: review-decision
@@ -419,6 +669,31 @@ human_revisions: {human_revision}
 **Revisions before kill**: {revision} automated, {human_revision} human
 ```
 
+For **content packages**:
+```markdown
+---
+type: review-decision
+package_id: {pkg-id}
+date: {YYYY-MM-DDTHH:mm}
+decision: killed
+author: {author}
+style: {style}
+package_tier: {tier}
+primary_platform: {platform}
+killed_reason: {reason}
+quality_revisions: {revision}
+human_revisions: {human_revision}
+---
+
+## Review Decision: Package Killed
+
+**Package**: {headline}
+**Decision**: Killed
+**Reason**: {kill reason}
+**Formats**: {list of formats in the package}
+**Revisions before kill**: {revision} automated, {human_revision} human
+```
+
 6. **Git commit** via Bash:
 ```
 Review: kill "{headline}"
@@ -429,12 +704,12 @@ Review: kill "{headline}"
 
 ## Step 5: Loop Behaviour
 
-After processing one draft, re-scan `pipeline/040_review/` using Glob to get a fresh count (revision processing may have added a draft back).
+After processing one item, re-scan `pipeline/040_review/` using Glob to get a fresh count (revision processing may have added an item back).
 
-If more drafts remain, use AskUserQuestion:
-- **Question**: "{N} more draft(s) waiting for review. Continue?"
+If more items remain, use AskUserQuestion:
+- **Question**: "{N} more item(s) waiting for review ({A} articles, {P} packages). Continue?"
 - **Options**:
-  - **Label**: "Yes" — **Description**: "Review the next draft"
+  - **Label**: "Yes" — **Description**: "Review the next item"
   - **Label**: "No" — **Description**: "Done for now — exit review session"
 
 If "Yes", return to Step 2 (re-scan and present fresh queue).
@@ -449,29 +724,35 @@ Output a summary of all decisions made in this session:
 
 ### Decisions Made: {total count}
 
-#### Approved: {count}
-{For each approved draft:}
+#### Articles Approved: {count}
+{For each approved article draft:}
 1. **{Headline}** ({draft-id}) — Published to pipeline/050_published/
 
+#### Packages Approved: {count}
+{For each approved package:}
+1. **{Headline}** ({pkg-id}) — {approval type: all/selective} — {format_count} formats
+   {If selective: "Kept: {list}, Dropped: {list}"}
+
 #### Revised: {count}
-{For each revised draft:}
-1. **{Headline}** ({draft-id}) — Human revision {N}, quality re-assessment: {verdict}
+{For each revised item:}
+1. **{Headline}** ({id}) — [{Article|Package}] Human revision {N}, quality re-assessment: {verdict}
+   {If package: "Formats revised: {list}"}
 
 #### Killed: {count}
-{For each killed draft:}
-1. **{Headline}** ({draft-id}) — Reason: {reason}
+{For each killed item:}
+1. **{Headline}** ({id}) — [{Article|Package}] Reason: {reason}
 
 ### Remaining in Review: {count}
-{List any unreviewed drafts still in pipeline/040_review/}
+{List any unreviewed items still in pipeline/040_review/ with type indicator}
 
 ### Pipeline Status
-- In review: {count}
+- In review: {count} ({A} articles, {P} packages)
 - Published (total): {count in pipeline/050_published/}
 - Rejected (total): {count in pipeline/rejected/}
 
 ### Next Steps
-{If remaining in review > 0: "Run `review` again to continue reviewing remaining drafts."}
-{If remaining == 0 and published > 0: "All drafts reviewed. Run `run` to start the next pipeline cycle."}
+{If remaining in review > 0: "Run `review` again to continue reviewing remaining items."}
+{If remaining == 0 and published > 0: "All items reviewed. Run `run` to start the next pipeline cycle."}
 ```
 
 ## Error Handling

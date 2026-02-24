@@ -172,6 +172,11 @@ Write to `config.md` in the project root. Use this exact content:
 - Practitioner Insights: weekly
 - Market Pulse: bi-weekly
 
+## Package Mix (optional — only applies to authors with package output mode)
+- Default package tier: light
+- Max thread-only per week: 2
+- Max full packages per week: 5
+
 ## File 3: FORMATTING.md
 
 Write to `FORMATTING.md` in the project root. Use this exact content:
@@ -290,7 +295,7 @@ After creating all files, confirm completion.
 ### Task C: Steve Voice Model
 
 ```
-You are a file scaffolding agent. Create the following 4 files using the Write tool. All files go under voice-models/authors/steve/.
+You are a file scaffolding agent. Create the following 5 files using the Write tool. All files go under voice-models/authors/steve/.
 
 ## File 1: voice-models/authors/steve/baseline.md
 
@@ -408,14 +413,24 @@ Steve's humorous mode is the industry newsletter you actually look forward to re
 - Quick and punchy
 - Short paragraphs — almost conversational rhythm
 
+## File 5: voice-models/authors/steve/config.md
+
+Write this exact content:
+
+---
+output_modes: [article]
+default_package_tier: null
+primary_platform: null
+---
+
 ## Output
-After creating all 4 files, confirm completion.
+After creating all 5 files, confirm completion.
 ```
 
 ### Task D: Sarah Voice Model
 
 ```
-You are a file scaffolding agent. Create the following 2 files using the Write tool. All files go under voice-models/authors/sarah/.
+You are a file scaffolding agent. Create the following 3 files using the Write tool. All files go under voice-models/authors/sarah/.
 
 ## File 1: voice-models/authors/sarah/baseline.md
 
@@ -487,8 +502,18 @@ In regulatory analysis mode, Sarah becomes even more precise and structured. Eve
 - Structured for scanning — readers should be able to jump to the section they need
 - Heavy use of headers, bullets, and bold text for key dates/amounts
 
+## File 3: voice-models/authors/sarah/config.md
+
+Write this exact content:
+
+---
+output_modes: [article]
+default_package_tier: null
+primary_platform: null
+---
+
 ## Output
-After creating all 2 files, confirm completion.
+After creating all 3 files, confirm completion.
 ```
 
 ### Wait for Completion
@@ -579,6 +604,8 @@ If no beats were created, omit the beats line from the commit message.
 After the commit, inform the user:
 
 > **Sample voice models created.** Two example authors — Steve and Sarah — have been added to `voice-models/authors/`. These are generic templates. You should review and modify them to match your publication's tone of voice before running the editorial pipeline. Use `/add-author` to create new authors or edit the files in `voice-models/authors/` directly.
+>
+> **Output modes.** Each author has a `config.md` that controls whether they produce articles, social content packages, or both. The example authors default to article-only. Use `/add-author` to configure output modes when creating new authors, or edit `voice-models/authors/{name}/config.md` directly.
 >
 > **Formatting conventions created.** `FORMATTING.md` contains default formatting rules optimised for readability, SEO, and AI engine discoverability. Review and customise these to match your publication's style — for example, you might adjust paragraph length limits, heading conventions, or list preferences.
 >

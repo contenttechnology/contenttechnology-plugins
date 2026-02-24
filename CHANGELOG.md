@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+### Added
+- Content package support — authors can now produce multi-format social content packages (LinkedIn posts, tweets, X threads, reusable lines) alongside traditional articles
+- Per-author `config.md` at `voice-models/authors/{name}/config.md` — controls `output_modes` (article, package, or both), `default_package_tier`, and `primary_platform`
+- `/add-author` now asks about output mode preferences and writes `config.md` during author creation
+- `/editorial` detects author output modes and writes package briefs with `package_tier`, `primary_platform`, and `related_brief_id` frontmatter — dual-output angles produce both an article brief and a package brief
+- `/produce` detects brief type from frontmatter (`content_type` → article, `package_tier` → package) and dispatches format-specific production subagents with embedded writing rules per format
+- `/quality` adds package-level checks (thesis coherence, format independence, no copy-paste, reusable line quality) and per-format quality assessment with format-appropriate interpretation of the 7 criteria
+- `/review` adds package-specific decision options: approve all, approve selectively (pick formats), revise specific formats, kill package — with per-format publication timing on approve
+- Package draft files use `pkg-` prefix and `max_revisions: 1` (one revision cycle; primary format failure kills the package)
+- Three package tiers: light (LinkedIn post + tweets + reusable lines), full (LinkedIn long post + X thread + tweets + reusable lines + LinkedIn comment), thread-only (X thread + LinkedIn long post + tweet extractions + reusable lines)
+- Package mix settings in `config.md`: default tier, max thread-only per week, max full packages per week
+- `/init` generates `config.md` for example authors (Steve, Sarah) with article-only defaults
+
+### Changed
+- `/run` editorial stage now loads author configs to determine output modes and writes dual briefs for authors with `[article, package]`
+- `/run` produce and quality stages handle both article drafts and content packages, with separate reporting per type
+- `/run` summary distinguishes articles and packages at every stage
+
 ## [1.0.20] - 2026-02-24
 
 ### Fixed

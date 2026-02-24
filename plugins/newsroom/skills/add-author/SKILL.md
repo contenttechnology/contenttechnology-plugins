@@ -139,7 +139,43 @@ Use these slugs for style files:
 - Regulatory/Policy → `style-regulatory.md`
 - Humorous/Light → `style-humorous.md`
 
-## Step 10: Validate Against Brand Guidelines
+## Step 10: Output Mode Preferences
+
+Ask the user about this author's production capabilities for content packages.
+
+**Question 1 — Output modes**: "What output modes should {author name} support?"
+- Options:
+  - "Article only" — description: "Traditional long-form articles (deep analysis, commentary, regulatory, etc.)"
+  - "Package only" — description: "Social content packages (LinkedIn posts, tweets, threads, reusable lines)"
+  - "Both article and package" — description: "Can produce both articles and social content packages"
+
+**Question 2 — Default package tier** (skip if output mode is "Article only"): "What is {author name}'s default package tier?"
+- Options:
+  - "Light (Recommended)" — description: "LinkedIn post + standalone tweets + reusable lines. Best for most angles."
+  - "Full" — description: "LinkedIn long post + X thread + standalone tweets + reusable lines + LinkedIn comment. For angles with depth."
+  - "Thread-only" — description: "X thread + LinkedIn long post + tweet extractions + reusable lines. For analytically complex angles."
+
+**Question 3 — Primary platform** (skip if output mode is "Article only"): "What is {author name}'s default primary platform?"
+- Options:
+  - "LinkedIn (Recommended)" — description: "Most angles start as LinkedIn posts. Professional audience, more context allowed."
+  - "X (Twitter)" — description: "Sharp, compressed observations. Best for authors with a strong X presence."
+
+Write the output mode configuration to `voice-models/authors/{name}/config.md`:
+
+```yaml
+---
+output_modes: [{modes based on answer — article, package, or both as array}]
+default_package_tier: {light | full | thread-only — null if article-only}
+primary_platform: {linkedin | x — null if article-only}
+---
+```
+
+Examples:
+- Article only: `output_modes: [article]`, `default_package_tier: null`, `primary_platform: null`
+- Package only: `output_modes: [package]`, `default_package_tier: light`, `primary_platform: linkedin`
+- Both: `output_modes: [article, package]`, `default_package_tier: light`, `primary_platform: linkedin`
+
+## Step 11: Validate Against Brand Guidelines
 
 Read `voice-models/brand-guidelines.md` and check that the new author's voice model doesn't conflict with brand constraints. Specifically verify:
 - No prohibited language appears in the author's vocabulary preferences
@@ -148,14 +184,15 @@ Read `voice-models/brand-guidelines.md` and check that the new author's voice mo
 
 If conflicts are found, flag them to the user and adjust the voice model accordingly.
 
-## Step 11: Git Commit
+## Step 12: Git Commit
 
-Stage all new files in `voice-models/authors/{name}/` and commit with message:
+Stage all new files in `voice-models/authors/{name}/` (including `config.md`) and commit with message:
 ```
 Add author voice model: {Name}
 
 - Baseline personality and writing style
 - Style modifiers: {list of styles created}
+- Output modes: {output_modes list}
 ```
 
 Inform the user that the author has been created and is ready for assignment in editorial briefs.
