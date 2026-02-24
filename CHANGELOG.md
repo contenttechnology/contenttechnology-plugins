@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-02-24
+
 ### Added
 - Content package support — authors can now produce multi-format social content packages (LinkedIn posts, tweets, X threads, reusable lines) alongside traditional articles
 - Per-author `config.md` at `voice-models/authors/{name}/config.md` — controls `output_modes` (article, package, or both), `default_package_tier`, and `primary_platform`
