@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.20] - 2026-02-24
+
 ### Fixed
 - Research subagents now correctly use the Skill tool to invoke `steel-browser` and `agent-browser` when sources specify a `tool` property, instead of ignoring the hint and defaulting to WebFetch
 
