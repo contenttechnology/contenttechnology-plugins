@@ -17,7 +17,7 @@ Use Glob to find all files: `pipeline/040_review/*.md`
 
 Read each file. Parse YAML frontmatter and detect the item type:
 
-**Article drafts** (has `content_type` field, or filename starts with `for-review-draft-` or `for-review-`):
+**Article drafts** (has `content_type` field, or filename starts with `draft-article-`):
 - `id` (draft ID)
 - `date` (production date)
 - `author` (author name)
@@ -30,7 +30,7 @@ Read each file. Parse YAML frontmatter and detect the item type:
 - `human_revision` (human revision count — may not exist yet, default 0)
 - `rush` (boolean, if present)
 
-**Content packages** (has `package_tier` field, or filename starts with `for-review-pkg-`):
+**Content packages** (has `package_tier` field, or filename starts with `draft-package-`):
 - `id` (package ID)
 - `date` (production date)
 - `author` (author name)
@@ -152,13 +152,14 @@ When the human selects "Approve" for an article draft:
 
 2. **Update frontmatter** via Edit:
    - Set `status: published`
+   - Update `id`: strip the `draft-` prefix (e.g., `draft-article-2026-02-10-001` becomes `article-2026-02-10-001`)
    - Add `published_date: {YYYY-MM-DD}`
    - Add `approved_by: human`
    - If notes provided, add `approval_notes: {notes}`
 
-3. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/050_published/{filename}`
+3. **Move and rename file** via Bash: strip the `draft-` prefix from the filename (e.g., `mv pipeline/040_review/draft-article-2026-02-10-001.md pipeline/050_published/article-2026-02-10-001.md`)
 
-4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{draft-id}.md`:
+4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{article-id}.md`:
 
 ```markdown
 ---
@@ -205,6 +206,7 @@ When the human selects "Approve all" for a content package:
 
 2. **Update frontmatter** via Edit:
    - Set `status: published`
+   - Update `id`: strip the `draft-` prefix (e.g., `draft-package-2026-02-10-001` becomes `package-2026-02-10-001`)
    - Add `published_date: {YYYY-MM-DD}`
    - Add `approved_by: human`
    - Add `formats_published` metadata tracking per-format publish status:
@@ -221,14 +223,14 @@ When the human selects "Approve all" for a content package:
      ```
    - If timing notes provided, add `publication_timing: {notes}`
 
-3. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/050_published/{filename}`
+3. **Move and rename file** via Bash: strip the `draft-` prefix from the filename (e.g., `mv pipeline/040_review/draft-package-2026-02-10-001.md pipeline/050_published/package-2026-02-10-001.md`)
 
-4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{pkg-id}.md`:
+4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{package-id}.md`:
 
 ```markdown
 ---
 type: review-decision
-package_id: {pkg-id}
+package_id: {package-id}
 date: {YYYY-MM-DDTHH:mm}
 decision: approved
 author: {author}
@@ -636,11 +638,12 @@ When the human selects "Kill" (for articles) or "Kill package" (for packages):
 
 2. **Update frontmatter** via Edit:
    - Set `status: killed`
+   - Update `id`: strip the `draft-` prefix (e.g., `draft-article-2026-02-10-001` becomes `article-2026-02-10-001`, or `draft-package-2026-02-10-001` becomes `package-2026-02-10-001`)
    - Add `killed_by: human`
    - Add `killed_date: {YYYY-MM-DD}`
    - Add `killed_reason: {reason}`
 
-3. **Move file** via Bash: `mv pipeline/040_review/{filename} pipeline/rejected/{filename}`
+3. **Move and rename file** via Bash: strip the `draft-` prefix from the filename (e.g., `mv pipeline/040_review/draft-article-2026-02-10-001.md pipeline/rejected/article-2026-02-10-001.md`)
 
 4. **Update corresponding production brief**: Read `brief_id` from the draft frontmatter. Edit the brief in `pipeline/020_approved/{brief_id}.md` to set `status: killed`. If the brief file is not found, log the gap and continue.
 
@@ -673,7 +676,7 @@ For **content packages**:
 ```markdown
 ---
 type: review-decision
-package_id: {pkg-id}
+package_id: {package-id}
 date: {YYYY-MM-DDTHH:mm}
 decision: killed
 author: {author}
@@ -726,11 +729,11 @@ Output a summary of all decisions made in this session:
 
 #### Articles Approved: {count}
 {For each approved article draft:}
-1. **{Headline}** ({draft-id}) — Published to pipeline/050_published/
+1. **{Headline}** ({article-id}) — Published to pipeline/050_published/
 
 #### Packages Approved: {count}
 {For each approved package:}
-1. **{Headline}** ({pkg-id}) — {approval type: all/selective} — {format_count} formats
+1. **{Headline}** ({package-id}) — {approval type: all/selective} — {format_count} formats
    {If selective: "Kept: {list}, Dropped: {list}"}
 
 #### Revised: {count}

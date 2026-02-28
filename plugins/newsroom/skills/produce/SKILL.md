@@ -39,7 +39,7 @@ Read `pipeline/editorial-feedback.md` if it exists. Filter for entries where `st
 
 For each relevant entry, check if the `context` field references any of the briefs you are about to produce. If so, include the note in the production subagent's prompt as an "Editorial Director's Note" section, placed after the production brief content and before the source material. This ensures the production agent is aware of overlap warnings, framing guidance, or other editorial constraints.
 
-After producing all drafts, mark any production-note entries you consumed as addressed in `pipeline/editorial-feedback.md` — change `status` to `addressed`, add `addressed_by: produce`, `addressed_date: {today}`, `resolution: {e.g., "Applied to draft-2026-02-10-001 — led with regulatory angle per editorial guidance"}`, and move from "Active Entries" to "Addressed Entries".
+After producing all drafts, mark any production-note entries you consumed as addressed in `pipeline/editorial-feedback.md` — change `status` to `addressed`, add `addressed_by: produce`, `addressed_date: {today}`, `resolution: {e.g., "Applied to draft-article-2026-02-10-001 — led with regulatory angle per editorial guidance"}`, and move from "Active Entries" to "Addressed Entries".
 
 If the feedback file does not exist or contains no entries targeting produce, proceed normally.
 
@@ -319,11 +319,11 @@ For each completed draft, save to `pipeline/030_drafts/`. Check existing files t
 
 For each completed article draft:
 
-**Filename**: `draft-{YYYY-MM-DD}-{NNN}.md`
+**Filename**: `draft-article-{YYYY-MM-DD}-{NNN}.md`
 
 ```markdown
 ---
-id: draft-{YYYY-MM-DD}-{NNN}
+id: draft-article-{YYYY-MM-DD}-{NNN}
 date: {YYYY-MM-DD}
 status: draft
 brief_id: {production brief ID}
@@ -357,11 +357,11 @@ See `pipeline/020_approved/{brief-id}.md` for the full production brief.
 
 For each completed content package:
 
-**Filename**: `pkg-{YYYY-MM-DD}-{NNN}.md`
+**Filename**: `draft-package-{YYYY-MM-DD}-{NNN}.md`
 
 ```markdown
 ---
-id: pkg-{YYYY-MM-DD}-{NNN}
+id: draft-package-{YYYY-MM-DD}-{NNN}
 date: {YYYY-MM-DD}
 status: draft
 brief_id: {production brief ID}
@@ -421,7 +421,7 @@ Note: `max_revisions: 1` for packages (one revision cycle per format; primary fo
 
 ### Update Brief Status
 
-Edit the production brief frontmatter to set `status: produced` and add `draft_id: {draft-id}` (for articles) or `package_id: {pkg-id}` (for packages).
+Edit the production brief frontmatter to set `status: produced` and add `draft_id: {draft-article-id}` (for articles) or `package_id: {draft-package-id}` (for packages).
 
 ## Step 5: Summary Output
 
@@ -438,7 +438,7 @@ Edit the production brief frontmatter to set `status: produced` and add `draft_i
 
 ### Content Packages Produced: {count}
 {For each package:}
-1. **{Headline}** ({pkg-id})
+1. **{Headline}** ({draft-package-id})
    - Author: {author} / Style: {style}
    - Package tier: {light | full | thread-only}
    - Primary platform: {linkedin | x}
@@ -462,8 +462,8 @@ Stage all new and modified files:
 ```
 Produce drafts: {N} articles, {M} packages written
 
-- {draft-1}: "{headline}" by {author} ({word count} words)
-- {pkg-1}: "{headline}" by {author} ({tier} package, {platform})
+- {draft-article-1}: "{headline}" by {author} ({word count} words)
+- {draft-package-1}: "{headline}" by {author} ({tier} package, {platform})
 ```
 
 ## Error Handling

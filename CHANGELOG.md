@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+- Standardised pipeline filename and ID conventions — article drafts now use `draft-article-{date}-{NNN}` and package drafts use `draft-package-{date}-{NNN}`, with filenames and frontmatter IDs always in sync
+- Removed the `draft-` → `for-review-` and `pkg-` → `for-review-pkg-` filename renames in `/quality` and `/revoice` — files now keep their name as they move through the pipeline, with the directory indicating the stage
+- `/review` approve and kill paths now strip the `draft-` prefix (e.g., `draft-article-2026-02-10-001` becomes `article-2026-02-10-001`) and update the frontmatter ID to match, marking the human decision as a lifecycle transition
+- Fixed type detection overlap in `/review` and `/quality` — articles detected by `draft-article-` prefix, packages by `draft-package-` prefix, eliminating ambiguity from the previous `for-review-` pattern
+
 ## [1.1.0] - 2026-02-24
 
 ### Added

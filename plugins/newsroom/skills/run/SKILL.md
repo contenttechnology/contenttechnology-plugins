@@ -486,7 +486,7 @@ Prompt the production subagent with:
 - Output format: ---DRAFT_START--- / ---DRAFT_END--- with WORD_COUNT and PRODUCTION_NOTES
 
 ### 6. Save Article Draft
-Write to `pipeline/030_drafts/draft-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, author, style, content_type, word_count, revision: 0, max_revisions: 2, audience) and body (article text, Production Metadata section with notes and source references).
+Write to `pipeline/030_drafts/draft-article-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, author, style, content_type, word_count, revision: 0, max_revisions: 2, audience) and body (article text, Production Metadata section with notes and source references).
 
 ### 7. Update Article Brief
 Edit brief frontmatter: set `status: produced`, add `draft_id`.
@@ -520,7 +520,7 @@ Prompt the production subagent with:
 - Output format: ---PACKAGE_START--- / ---PACKAGE_END--- with PRODUCTION_NOTES
 
 ### 6. Save Package
-Write to `pipeline/030_drafts/pkg-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, related_brief_id, author, style, package_tier, primary_platform, revision: 0, max_revisions: 1, audience) and body (Thesis section, format sections as returned by subagent, Production Metadata).
+Write to `pipeline/030_drafts/draft-package-{YYYY-MM-DD}-{NNN}.md` with YAML frontmatter (id, date, status: draft, brief_id, pitch_id, related_brief_id, author, style, package_tier, primary_platform, revision: 0, max_revisions: 1, audience) and body (Thesis section, format sections as returned by subagent, Production Metadata).
 
 ### 7. Update Package Brief
 Edit brief frontmatter: set `status: produced`, add `package_id`.
@@ -532,9 +532,9 @@ PRODUCE_COMPLETE
 articles_written: {count}
 packages_written: {count}
 articles:
-- {draft-id}: {headline} — {author} — {word count} words
+- {draft-article-id}: {headline} — {author} — {word count} words
 packages:
-- {pkg-id}: {headline} — {author} — {tier} package — {platform}
+- {draft-package-id}: {headline} — {author} — {tier} package — {platform}
 ```
 
 After the subagent returns, parse output and commit:
@@ -598,7 +598,7 @@ Output format: ---QUALITY_REPORT--- with Overall Verdict (PASS/REVISE/KILL), Cri
 
 ### 3. Process Article Verdicts
 
-**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/040_review/`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` → `for-review-2026-02-10-001.md`).
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Move to `pipeline/040_review/` (filename stays the same, e.g., `draft-article-2026-02-10-001.md`).
 
 **REVISE**: If `revision < max_revisions`:
 - Increment revision count, set `status: revision`
@@ -625,7 +625,7 @@ Output format: ---QUALITY_REPORT--- with Overall Verdict, Package-Level Assessme
 
 ### 3. Process Package Verdicts
 
-**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Rename and move to `pipeline/040_review/`, changing `pkg-` prefix to `for-review-pkg-`.
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Move to `pipeline/040_review/` (filename stays the same, e.g., `draft-package-2026-02-10-001.md`).
 
 **REVISE**: If `revision < max_revisions` (1 for packages):
 - Identify which formats need revision from the quality report
@@ -718,7 +718,7 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 
 ### Articles
 {For each article now in pipeline/040_review/:}
-1. **{Headline}** ({draft-id})
+1. **{Headline}** ({draft-article-id})
    - Author: {author} / Style: {style}
    - Content type: {type}
    - Word count: {count}
@@ -726,7 +726,7 @@ Write the run report to `metrics/run-{YYYY-MM-DD-HHmm}.md`:
 
 ### Packages
 {For each package now in pipeline/040_review/:}
-1. **{Headline}** ({pkg-id})
+1. **{Headline}** ({draft-package-id})
    - Author: {author} / Tier: {tier} / Platform: {platform}
    - Formats: {count}
    - Related article: {related_brief_id or "None"}

@@ -264,13 +264,13 @@ If the production subagent fails, report the error, update the variant brief to 
 Parse the `---DRAFT_START---` / `---DRAFT_END---` block from the subagent response.
 
 ### Filename Convention
-`draft-{YYYY-MM-DD}-{NNN}.md` — check existing files in `pipeline/030_drafts/` to determine the next sequential number.
+`draft-article-{YYYY-MM-DD}-{NNN}.md` — check existing files in `pipeline/030_drafts/` to determine the next sequential number.
 
 ### Draft File Format
 
 ```markdown
 ---
-id: draft-{YYYY-MM-DD}-{NNN}
+id: draft-article-{YYYY-MM-DD}-{NNN}
 date: {YYYY-MM-DD}
 status: draft
 brief_id: {variant-brief-id}
@@ -446,7 +446,7 @@ If the quality subagent fails, report the error. Do not auto-pass. Keep the draf
 
 1. Update draft frontmatter: `status: passed`, add `quality_passed_date: {YYYY-MM-DD}`
 2. Append the quality report to the draft file
-3. Rename and move to `pipeline/040_review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
+3. Move to `pipeline/040_review/` using Bash `mv` (filename stays the same, e.g., `draft-article-2026-02-10-001.md`)
 
 ### REVISE
 

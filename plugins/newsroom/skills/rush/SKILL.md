@@ -397,7 +397,7 @@ Write the draft to `pipeline/040_review/` (skipping `pipeline/030_drafts/` since
 
 ```markdown
 ---
-id: draft-{YYYY-MM-DD}-rush-{NNN}
+id: draft-article-{YYYY-MM-DD}-rush-{NNN}
 date: {YYYY-MM-DD}
 status: passed
 rush: true
@@ -435,7 +435,7 @@ Output a clear summary for the user:
 ## Rush Complete: {Headline}
 
 ### Status: Ready for Human Review
-Draft is in `pipeline/040_review/{draft-id}.md`
+Draft is in `pipeline/040_review/draft-article-{YYYY-MM-DD}-rush-{NNN}.md`
 
 ### Confidence Flags
 {Any facts that need human verification before publication}

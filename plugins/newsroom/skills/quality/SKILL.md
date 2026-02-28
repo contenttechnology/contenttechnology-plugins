@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep
 ---
 
 <objective>
-Assess every draft and content package in `pipeline/030_drafts/` against the quality gate. Article drafts (files starting with `draft-`) are evaluated on the existing 7 criteria. Content packages (files starting with `pkg-`) are evaluated at both package-level and per-format level. Passing items move to `pipeline/040_review/` for human review. Failing items are returned for revision or killed. This is the final automated checkpoint before human eyes.
+Assess every draft and content package in `pipeline/030_drafts/` against the quality gate. Article drafts (files starting with `draft-article-`) are evaluated on the existing 7 criteria. Content packages (files starting with `draft-package-`) are evaluated at both package-level and per-format level. Passing items move to `pipeline/040_review/` for human review. Failing items are returned for revision or killed. This is the final automated checkpoint before human eyes.
 </objective>
 
 <process>
@@ -22,8 +22,8 @@ Read each file. Filter for:
 Skip `status: passed` and `status: killed`.
 
 **Detect file type from frontmatter or filename:**
-- Has `content_type` field (or filename starts with `draft-`) → **article draft** (existing quality flow)
-- Has `package_tier` field (or filename starts with `pkg-`) → **content package** (new package quality flow)
+- Has `content_type` field (or filename starts with `draft-article-`) → **article draft** (existing quality flow)
+- Has `package_tier` field (or filename starts with `draft-package-`) → **content package** (new package quality flow)
 
 Separate into two lists: article drafts and content packages.
 
@@ -339,7 +339,7 @@ For each article draft, based on the subagent's quality report:
 **PASS:**
 1. Update the draft frontmatter: `status: passed`, add `quality_passed_date`
 2. Append the quality report to the draft file (so human reviewers can see the assessment)
-3. Rename and move the draft to `pipeline/040_review/` using Bash `mv`, changing the `draft-` prefix to `for-review-` (e.g., `draft-2026-02-10-001.md` becomes `for-review-2026-02-10-001.md`)
+3. Move the draft to `pipeline/040_review/` using Bash `mv` (filename stays the same, e.g., `draft-article-2026-02-10-001.md`)
 4. The draft is now ready for human review
 
 **REVISE:**
@@ -367,7 +367,7 @@ For each content package, based on the subagent's quality report:
 **PASS:**
 1. Update the package frontmatter: `status: passed`, add `quality_passed_date`
 2. Append the quality report to the package file
-3. Rename and move to `pipeline/040_review/` using Bash `mv`, changing the `pkg-` prefix to `for-review-pkg-` (e.g., `pkg-2026-02-10-001.md` becomes `for-review-pkg-2026-02-10-001.md`)
+3. Move the package to `pipeline/040_review/` using Bash `mv` (filename stays the same, e.g., `draft-package-2026-02-10-001.md`)
 4. The package is now ready for human review
 
 **REVISE:**
@@ -537,9 +537,9 @@ CHANGES_MADE:
 | Item | Type | Verdict | Document |
 |------|------|---------|----------|
 {For each passed article (first-pass):}
-| {Headline} | Article | PASS | `pipeline/040_review/for-review-{id}.md` |
+| {Headline} | Article | PASS | `pipeline/040_review/draft-article-{id}.md` |
 {For each passed package (first-pass):}
-| {Headline} | Package | PASS | `pipeline/040_review/for-review-pkg-{id}.md` |
+| {Headline} | Package | PASS | `pipeline/040_review/draft-package-{id}.md` |
 {For each revised-and-passed item:}
 | {Headline} | {Type} | REVISED → PASS | `pipeline/040_review/{filename}` |
 {For each killed item:}
