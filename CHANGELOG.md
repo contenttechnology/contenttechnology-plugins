@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-02-28
+
 ### Changed
 - Standardised pipeline filename and ID conventions — article drafts now use `draft-article-{date}-{NNN}` and package drafts use `draft-package-{date}-{NNN}`, with filenames and frontmatter IDs always in sync
 - Removed the `draft-` → `for-review-` and `pkg-` → `for-review-pkg-` filename renames in `/quality` and `/revoice` — files now keep their name as they move through the pipeline, with the directory indicating the stage
