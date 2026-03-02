@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Added explicit "do NOT rename" instructions with full `mv` command examples to `/quality`, `/revoice`, and `/run` — agents were still inferring the old `for-review-` rename behaviour
+
 ## [1.1.1] - 2026-02-28
 
 ### Changed
