@@ -339,7 +339,7 @@ For each article draft, based on the subagent's quality report:
 **PASS:**
 1. Update the draft frontmatter: `status: passed`, add `quality_passed_date`
 2. Append the quality report to the draft file (so human reviewers can see the assessment)
-3. Move the draft to `pipeline/040_review/` using Bash `mv` (filename stays the same, e.g., `draft-article-2026-02-10-001.md`)
+3. Move the draft to `pipeline/040_review/` using Bash `mv`. **Do NOT rename the file** — the filename must stay exactly the same (e.g., `mv pipeline/030_drafts/draft-article-2026-02-10-001.md pipeline/040_review/draft-article-2026-02-10-001.md`)
 4. The draft is now ready for human review
 
 **REVISE:**
@@ -367,7 +367,7 @@ For each content package, based on the subagent's quality report:
 **PASS:**
 1. Update the package frontmatter: `status: passed`, add `quality_passed_date`
 2. Append the quality report to the package file
-3. Move the package to `pipeline/040_review/` using Bash `mv` (filename stays the same, e.g., `draft-package-2026-02-10-001.md`)
+3. Move the package to `pipeline/040_review/` using Bash `mv`. **Do NOT rename the file** — the filename must stay exactly the same (e.g., `mv pipeline/030_drafts/draft-package-2026-02-10-001.md pipeline/040_review/draft-package-2026-02-10-001.md`)
 4. The package is now ready for human review
 
 **REVISE:**

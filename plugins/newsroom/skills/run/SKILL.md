@@ -598,7 +598,7 @@ Output format: ---QUALITY_REPORT--- with Overall Verdict (PASS/REVISE/KILL), Cri
 
 ### 3. Process Article Verdicts
 
-**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Move to `pipeline/040_review/` (filename stays the same, e.g., `draft-article-2026-02-10-001.md`).
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Move to `pipeline/040_review/` — **do NOT rename the file**, the filename must stay exactly the same (e.g., `mv pipeline/030_drafts/draft-article-2026-02-10-001.md pipeline/040_review/draft-article-2026-02-10-001.md`).
 
 **REVISE**: If `revision < max_revisions`:
 - Increment revision count, set `status: revision`
@@ -625,7 +625,7 @@ Output format: ---QUALITY_REPORT--- with Overall Verdict, Package-Level Assessme
 
 ### 3. Process Package Verdicts
 
-**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Move to `pipeline/040_review/` (filename stays the same, e.g., `draft-package-2026-02-10-001.md`).
+**PASS**: Update frontmatter: `status: passed`, add `quality_passed_date`. Append quality report. Move to `pipeline/040_review/` — **do NOT rename the file**, the filename must stay exactly the same (e.g., `mv pipeline/030_drafts/draft-package-2026-02-10-001.md pipeline/040_review/draft-package-2026-02-10-001.md`).
 
 **REVISE**: If `revision < max_revisions` (1 for packages):
 - Identify which formats need revision from the quality report

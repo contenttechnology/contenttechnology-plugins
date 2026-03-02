@@ -446,7 +446,7 @@ If the quality subagent fails, report the error. Do not auto-pass. Keep the draf
 
 1. Update draft frontmatter: `status: passed`, add `quality_passed_date: {YYYY-MM-DD}`
 2. Append the quality report to the draft file
-3. Move to `pipeline/040_review/` using Bash `mv` (filename stays the same, e.g., `draft-article-2026-02-10-001.md`)
+3. Move to `pipeline/040_review/` using Bash `mv`. **Do NOT rename the file** — the filename must stay exactly the same (e.g., `mv pipeline/030_drafts/draft-article-2026-02-10-001.md pipeline/040_review/draft-article-2026-02-10-001.md`)
 
 ### REVISE
 
