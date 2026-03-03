@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- `/run` skill is now model-invocable — removed `disable-model-invocation` flag so the pipeline can be triggered programmatically by the model
+
 ## [1.1.2] - 2026-03-02
 
 ### Fixed

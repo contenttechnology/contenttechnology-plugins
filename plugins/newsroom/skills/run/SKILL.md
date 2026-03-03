@@ -1,7 +1,6 @@
 ---
 name: run
 description: Execute the full autonomous editorial pipeline — research through quality gate — with no human interaction. Outputs a list of articles and packages for review or 'nothing to do'.
-disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep
 ---
 
