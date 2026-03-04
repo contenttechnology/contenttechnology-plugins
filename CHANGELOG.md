@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- `/review --approve-all` and `/review --reject-all` batch mode flags — bulk approve or reject all items in `040_review/` without interactive prompts
+
 ## [1.1.4] - 2026-03-04
 
 ### Fixed

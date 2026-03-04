@@ -1,7 +1,8 @@
 ---
 name: review
-description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, or kill with reasoning.
+description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, or kill with reasoning. Supports --approve-all and --reject-all for batch processing.
 disable-model-invocation: true
+argument-hint: "[--approve-all | --reject-all]"
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 ---
 
@@ -22,6 +23,45 @@ You must NEVER select options, provide feedback, or make approve/revise/kill dec
 </critical-rule>
 
 <process>
+
+## Step 0: Check for Batch Mode
+
+If the user's argument contains `--approve-all` or `--reject-all`, run in batch mode. Do NOT use AskUserQuestion at any point during batch mode — process all items automatically.
+
+### --approve-all
+
+1. Load all items from `pipeline/040_review/*.md` (same as Step 1).
+2. If no items found, report "No drafts or packages awaiting review." and exit.
+3. For each item, apply the appropriate approve flow:
+
+   **For article drafts** — apply Step 4a without AskUserQuestion:
+   - Update frontmatter: `status: published`, strip `draft-` from `id`, add `published_date: {YYYY-MM-DD}`, add `approved_by: human`, add `approval_notes: "Batch approved"`
+   - Move and rename: `mv pipeline/040_review/draft-{type}-{date}-{NNN}.md pipeline/050_published/{type}-{date}-{NNN}.md`
+   - Write decision log to `metrics/review-{YYYY-MM-DD-HHmm}-{id}.md` (same format as Step 4a, with notes "Batch approved")
+   - Git commit: `Review: batch approve "{headline}"`
+
+   **For content packages** — apply Step 4a-pkg "Approve All" without AskUserQuestion:
+   - Update frontmatter: `status: published`, strip `draft-` from `id`, add `published_date: {YYYY-MM-DD}`, add `approved_by: human`, add `publication_timing: "Immediate"`, add `formats_published` with all formats listed (all `published: false`)
+   - Move and rename: same pattern as articles
+   - Write decision log (same format as Step 4a-pkg, with timing "Immediate")
+   - Git commit: `Review: batch approve package "{headline}"`
+
+4. Output session summary (Step 6 format) showing all batch-approved items.
+
+### --reject-all
+
+1. Load all items from `pipeline/040_review/*.md` (same as Step 1).
+2. If no items found, report "No drafts or packages awaiting review." and exit.
+3. For each item, apply the kill flow — Step 4c without AskUserQuestion:
+   - Update frontmatter: `status: killed`, strip `draft-` from `id`, add `killed_by: human`, add `killed_date: {YYYY-MM-DD}`, add `killed_reason: "Batch rejected"`
+   - Move and rename: `mv pipeline/040_review/draft-{type}-{date}-{NNN}.md pipeline/rejected/{type}-{date}-{NNN}.md`
+   - Update corresponding production brief: set `status: killed` in `pipeline/020_approved/{brief_id}.md` (if found)
+   - Write decision log to `metrics/review-{YYYY-MM-DD-HHmm}-{id}.md` (same format as Step 4c, with reason "Batch rejected")
+   - Git commit: `Review: batch reject "{headline}"`
+
+4. Output session summary (Step 6 format) showing all batch-rejected items.
+
+If no batch flag is provided, continue to Step 1 for the normal interactive flow.
 
 ## Step 1: Load Items for Review
 
