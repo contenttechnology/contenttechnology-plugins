@@ -9,6 +9,18 @@ allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 Interactive skill for human review of quality-approved drafts and content packages in `pipeline/040_review/`. The human selects an item, reads it, and decides: approve, revise, or kill. For content packages, additional options include selective approval (keep some formats, drop others) and format-specific revision. Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
 </objective>
 
+<critical-rule>
+## MANDATORY: Validate Every AskUserQuestion Response
+
+This is a HUMAN-IN-THE-LOOP skill. Every decision MUST come from the human reviewer. After EVERY AskUserQuestion call, you MUST check that the response is non-empty and contains a real selection. If the response is blank, empty, or appears to have been auto-dismissed:
+
+1. Do NOT proceed with any default or inferred action
+2. Do NOT make editorial decisions yourself
+3. Re-ask the same question immediately using AskUserQuestion
+
+You must NEVER select options, provide feedback, or make approve/revise/kill decisions on behalf of the human. If you cannot get a real human response after 2 retries, STOP and explain the issue to the user.
+</critical-rule>
+
 <process>
 
 ## Step 1: Load Items for Review
