@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-03-04
+
 ### Fixed
 - `/review` skill now validates every `AskUserQuestion` response is non-empty before proceeding — prevents race condition where prompts could be auto-dismissed, causing the model to make editorial decisions on behalf of the human reviewer
 
