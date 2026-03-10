@@ -1,13 +1,13 @@
 ---
 name: review
-description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, archive, or kill with reasoning. Supports --approve-all, --reject-all, and --archive-all for batch processing.
+description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, archive, or kill with reasoning. Supports batch processing for all or specific drafts.
 disable-model-invocation: true
-argument-hint: "[--approve-all | --reject-all | --archive-all]"
+argument-hint: "[--approve-all | --reject-all | --archive-all | --approve <file>... | --reject <file>... | --archive <file>...]"
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 ---
 
 <objective>
-Interactive skill for human review of quality-approved drafts and content packages in `pipeline/040_review/`. The human selects an item, reads it, and decides: approve, revise, archive, or kill. For content packages, additional options include selective approval (keep some formats, drop others) and format-specific revision. Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
+Interactive skill for human review of quality-approved drafts and content packages in `pipeline/040_review/`. The human selects an item, reads it, and decides: approve, revise, archive, or kill. For content packages, additional options include selective approval (keep some formats, drop others) and format-specific revision. Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed. Batch flags (`--approve-all`, `--reject-all`, `--archive-all`) process all items; selective flags (`--approve`, `--reject`, `--archive`) process only the specified draft file(s).
 </objective>
 
 <critical-rule>
@@ -26,7 +26,9 @@ You must NEVER select options, provide feedback, or make approve/revise/kill dec
 
 ## Step 0: Check for Batch Mode
 
-If the user's argument contains `--approve-all` or `--reject-all`, run in batch mode. Do NOT use AskUserQuestion at any point during batch mode — process all items automatically.
+If the user's argument contains any batch flag (`--approve-all`, `--reject-all`, `--archive-all`, `--approve`, `--reject`, or `--archive`), run in batch mode. Do NOT use AskUserQuestion at any point during batch mode — process all items automatically.
+
+The `--approve`, `--reject`, and `--archive` flags (without `-all`) accept one or more filenames as arguments. These filenames are the draft `.md` files in `pipeline/040_review/`. The user may specify them with or without the `pipeline/040_review/` path prefix (e.g., `--approve draft-article-2026-03-10-001.md draft-article-2026-03-10-002.md` or `--approve pipeline/040_review/draft-article-2026-03-10-001.md`). Strip any path prefix and resolve each filename against `pipeline/040_review/`. If a specified file does not exist in `pipeline/040_review/`, report a warning for that file and continue processing the others.
 
 ### --approve-all
 
@@ -72,6 +74,18 @@ If the user's argument contains `--approve-all` or `--reject-all`, run in batch 
    - Git commit: `Review: batch archive "{headline}"`
 
 4. Output session summary (Step 6 format) showing all batch-archived items.
+
+### --approve \<file\>...
+
+Same as `--approve-all`, but only process the specified file(s) instead of all items in `pipeline/040_review/`. Parse all arguments after `--approve` as filenames (stop at end of input or next `--` flag). For each filename, resolve it against `pipeline/040_review/`, verify it exists, and apply the approve flow (article or package) exactly as described in `--approve-all` step 3. Report any files not found as warnings.
+
+### --reject \<file\>...
+
+Same as `--reject-all`, but only process the specified file(s) instead of all items in `pipeline/040_review/`. Parse all arguments after `--reject` as filenames. For each filename, resolve it against `pipeline/040_review/`, verify it exists, and apply the kill flow exactly as described in `--reject-all` step 3. Report any files not found as warnings.
+
+### --archive \<file\>...
+
+Same as `--archive-all`, but only process the specified file(s) instead of all items in `pipeline/040_review/`. Parse all arguments after `--archive` as filenames. For each filename, resolve it against `pipeline/040_review/`, verify it exists, and apply the archive flow exactly as described in `--archive-all` step 3. Report any files not found as warnings.
 
 If no batch flag is provided, continue to Step 1 for the normal interactive flow.
 
