@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.7] - 2026-03-10
+
 ### Added
 - `/review --approve <file>...`, `/review --reject <file>...`, and `/review --archive <file>...` — selective batch flags that apply actions to specific draft files instead of the entire review queue
 
