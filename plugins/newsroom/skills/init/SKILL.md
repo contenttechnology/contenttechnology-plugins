@@ -55,6 +55,7 @@ pipeline/020_approved/
 pipeline/030_drafts/
 pipeline/040_review/
 pipeline/050_published/
+pipeline/archived/
 pipeline/rejected/
 voice-models/authors/
 metrics/
@@ -141,7 +142,8 @@ The current state of the editorial pipeline is readable from the folder structur
 - `pipeline/020_approved/` — Briefs ready for production
 - `pipeline/030_drafts/` — Drafts in progress or revision
 - `pipeline/040_review/` — Drafts awaiting human review
-- `pipeline/050_published/` — Published pieces (archive)
+- `pipeline/050_published/` — Published pieces
+- `pipeline/archived/` — Shelved pieces (not rejected, may revisit)
 - `pipeline/rejected/` — Killed angles with reasoning
 
 ## File 2: config.md
@@ -286,7 +288,7 @@ Write to `knowledge-base/index.json`. Use this exact content:
 
 Use Bash to create .gitkeep files in all empty directories so git tracks them. Run a single command:
 
-touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep pipeline/010_pitches/.gitkeep pipeline/020_approved/.gitkeep pipeline/030_drafts/.gitkeep pipeline/040_review/.gitkeep pipeline/050_published/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
+touch knowledge-base/signals/.gitkeep knowledge-base/sources/.gitkeep knowledge-base/archive/.gitkeep beats/.gitkeep pipeline/010_pitches/.gitkeep pipeline/020_approved/.gitkeep pipeline/030_drafts/.gitkeep pipeline/040_review/.gitkeep pipeline/050_published/.gitkeep pipeline/archived/.gitkeep pipeline/rejected/.gitkeep metrics/.gitkeep
 
 ## Output
 After creating all files, confirm completion.

@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Added
+- `/review` now supports an "Archive" decision — shelves drafts and packages to `pipeline/archived/` without rejecting them, for content that isn't ready to publish but shouldn't be killed
+- `/review --archive-all` batch flag — bulk archive all items in `040_review/`
+- `pipeline/archived/` directory added to `/init` scaffold — tracked with `.gitkeep`
+- Archive reason presets: "Not timely", "Needs more research", "Holding for strategy", "Low priority" (plus custom via Other)
+- `/run` pipeline status now includes archived count
+
 ## [1.1.5] - 2026-03-04
 
 ### Added

@@ -1,13 +1,13 @@
 ---
 name: review
-description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, or kill with reasoning. Supports --approve-all and --reject-all for batch processing.
+description: Interactive human review of quality-approved drafts and content packages — approve, revise with feedback, archive, or kill with reasoning. Supports --approve-all, --reject-all, and --archive-all for batch processing.
 disable-model-invocation: true
-argument-hint: "[--approve-all | --reject-all]"
+argument-hint: "[--approve-all | --reject-all | --archive-all]"
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 ---
 
 <objective>
-Interactive skill for human review of quality-approved drafts and content packages in `pipeline/040_review/`. The human selects an item, reads it, and decides: approve, revise, or kill. For content packages, additional options include selective approval (keep some formats, drop others) and format-specific revision. Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
+Interactive skill for human review of quality-approved drafts and content packages in `pipeline/040_review/`. The human selects an item, reads it, and decides: approve, revise, archive, or kill. For content packages, additional options include selective approval (keep some formats, drop others) and format-specific revision. Revision feedback is applied by a production subagent and re-assessed by the quality gate before returning to the review queue. Every decision is logged and committed.
 </objective>
 
 <critical-rule>
@@ -60,6 +60,18 @@ If the user's argument contains `--approve-all` or `--reject-all`, run in batch 
    - Git commit: `Review: batch reject "{headline}"`
 
 4. Output session summary (Step 6 format) showing all batch-rejected items.
+
+### --archive-all
+
+1. Load all items from `pipeline/040_review/*.md` (same as Step 1).
+2. If no items found, report "No drafts or packages awaiting review." and exit.
+3. For each item, apply the archive flow — Step 4d without AskUserQuestion:
+   - Update frontmatter: `status: archived`, strip `draft-` from `id`, add `archived_by: human`, add `archived_date: {YYYY-MM-DD}`, add `archived_reason: "Batch archived"`
+   - Move and rename: `mv pipeline/040_review/draft-{type}-{date}-{NNN}.md pipeline/archived/{type}-{date}-{NNN}.md`
+   - Write decision log to `metrics/review-{YYYY-MM-DD-HHmm}-{id}.md` (same format as Step 4d, with reason "Batch archived")
+   - Git commit: `Review: batch archive "{headline}"`
+
+4. Output session summary (Step 6 format) showing all batch-archived items.
 
 If no batch flag is provided, continue to Step 1 for the normal interactive flow.
 
@@ -160,6 +172,7 @@ Then use AskUserQuestion:
 **Options**:
 - **Label**: "Approve" — **Description**: "Publish this draft — move to pipeline/050_published/"
 - **Label**: "Revise" — **Description**: "Send back with feedback for revision and quality re-assessment"
+- **Label**: "Archive" — **Description**: "Shelve this draft — move to pipeline/archived/ without rejecting"
 - **Label**: "Kill" — **Description**: "Reject this draft — move to pipeline/rejected/ with reasoning"
 
 ### 3b. Content Package Presentation
@@ -190,6 +203,7 @@ Then use AskUserQuestion:
 - **Label**: "Approve all" — **Description**: "Approve the entire package — all formats move to pipeline/050_published/"
 - **Label**: "Approve selectively" — **Description**: "Pick which formats to keep, drop the rest"
 - **Label**: "Revise formats" — **Description**: "Send specific formats back for revision with targeted feedback"
+- **Label**: "Archive package" — **Description**: "Shelve this package — move to pipeline/archived/ without rejecting"
 - **Label**: "Kill package" — **Description**: "Reject the entire package — move to pipeline/rejected/"
 
 ## Step 4a: Approve Path (Articles)
@@ -675,6 +689,88 @@ CHANGES_MADE:
 
 10. **Write decision log** and **git commit** (similar to article revise path, noting format-specific revisions).
 
+## Step 4d: Archive Path
+
+When the human selects "Archive" (for articles) or "Archive package" (for packages):
+
+1. **Capture archive reason**: Use AskUserQuestion:
+   - **Question**: "Why are you archiving this?" (applies to both articles and packages)
+   - **Options**:
+     - **Label**: "Not timely" — **Description**: "Topic isn't right for now but may be relevant later"
+     - **Label**: "Needs more research" — **Description**: "Promising angle but needs stronger sourcing or data"
+     - **Label**: "Holding for strategy" — **Description**: "Good piece but waiting for the right moment to publish"
+     - **Label**: "Low priority" — **Description**: "Decent but not urgent — may revisit later"
+   - The user can also use "Other" to provide a custom reason.
+
+2. **Update frontmatter** via Edit:
+   - Set `status: archived`
+   - Update `id`: strip the `draft-` prefix (e.g., `draft-article-2026-02-10-001` becomes `article-2026-02-10-001`, or `draft-package-2026-02-10-001` becomes `package-2026-02-10-001`)
+   - Add `archived_by: human`
+   - Add `archived_date: {YYYY-MM-DD}`
+   - Add `archived_reason: {reason}`
+
+3. **Move and rename file** via Bash: strip the `draft-` prefix from the filename (e.g., `mv pipeline/040_review/draft-article-2026-02-10-001.md pipeline/archived/article-2026-02-10-001.md`)
+
+4. **Write decision log** to `metrics/review-{YYYY-MM-DD-HHmm}-{id}.md`:
+
+For **article drafts**:
+```markdown
+---
+type: review-decision
+draft_id: {draft-id}
+date: {YYYY-MM-DDTHH:mm}
+decision: archived
+author: {author}
+style: {style}
+content_type: {content_type}
+archived_reason: {reason}
+quality_revisions: {revision}
+human_revisions: {human_revision}
+---
+
+## Review Decision: Archived
+
+**Draft**: {headline}
+**Decision**: Archived
+**Reason**: {archive reason}
+**Revisions before archive**: {revision} automated, {human_revision} human
+```
+
+For **content packages**:
+```markdown
+---
+type: review-decision
+package_id: {package-id}
+date: {YYYY-MM-DDTHH:mm}
+decision: archived
+author: {author}
+style: {style}
+package_tier: {tier}
+primary_platform: {platform}
+archived_reason: {reason}
+quality_revisions: {revision}
+human_revisions: {human_revision}
+---
+
+## Review Decision: Package Archived
+
+**Package**: {headline}
+**Decision**: Archived
+**Reason**: {archive reason}
+**Formats**: {list of formats in the package}
+**Revisions before archive**: {revision} automated, {human_revision} human
+```
+
+5. **Git commit** via Bash:
+```
+Review: archive "{headline}"
+
+- Reason: {archived reason}
+- Moved to pipeline/archived/
+```
+
+Note: Unlike the Kill path, archiving does NOT update the corresponding production brief status. The brief remains as-is since the content may be revisited later.
+
 ## Step 4c: Kill Path
 
 When the human selects "Kill" (for articles) or "Kill package" (for packages):
@@ -793,6 +889,10 @@ Output a summary of all decisions made in this session:
 1. **{Headline}** ({id}) — [{Article|Package}] Human revision {N}, quality re-assessment: {verdict}
    {If package: "Formats revised: {list}"}
 
+#### Archived: {count}
+{For each archived item:}
+1. **{Headline}** ({id}) — [{Article|Package}] Reason: {reason}
+
 #### Killed: {count}
 {For each killed item:}
 1. **{Headline}** ({id}) — [{Article|Package}] Reason: {reason}
@@ -803,6 +903,7 @@ Output a summary of all decisions made in this session:
 ### Pipeline Status
 - In review: {count} ({A} articles, {P} packages)
 - Published (total): {count in pipeline/050_published/}
+- Archived (total): {count in pipeline/archived/}
 - Rejected (total): {count in pipeline/rejected/}
 
 ### Next Steps

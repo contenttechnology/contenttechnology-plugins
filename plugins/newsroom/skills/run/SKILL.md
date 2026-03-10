@@ -54,6 +54,7 @@ No new work at any pipeline stage.
 Pipeline status:
 - Articles in review: {count from pipeline/040_review/}
 - Published: {count from pipeline/050_published/}
+- Archived: {count from pipeline/archived/}
 
 {If articles in review:} Action required: {count} articles awaiting human review in pipeline/040_review/.
 {If none:} All clear — no work pending anywhere in the pipeline.
