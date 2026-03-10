@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.6] - 2026-03-10
+
 ### Added
 - `/review` now supports an "Archive" decision — shelves drafts and packages to `pipeline/archived/` without rejecting them, for content that isn't ready to publish but shouldn't be killed
 - `/review --archive-all` batch flag — bulk archive all items in `040_review/`
