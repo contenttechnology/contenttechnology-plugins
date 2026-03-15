@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.9] - 2026-03-15
+
 ### Changed
 - `/posted` now takes a filename argument (e.g., `/posted article-2026-03-15-001.md`) instead of scanning all published files — faster and cheaper
 - `/posted` searches both `pipeline/050_published/` and `pipeline/archived/` for the source file
