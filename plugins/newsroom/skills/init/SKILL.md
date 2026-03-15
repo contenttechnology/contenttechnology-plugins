@@ -55,6 +55,7 @@ pipeline/020_approved/
 pipeline/030_drafts/
 pipeline/040_review/
 pipeline/050_published/
+pipeline/060_posted/
 pipeline/archived/
 pipeline/rejected/
 voice-models/authors/
