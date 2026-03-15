@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.8] - 2026-03-15
+
 ### Added
 - `/posted` skill — capture what was actually posted to a platform, perform a 7-dimension style-focused comparison against the approved version (tone, word choice, structure, brevity, rhythm, platform adaptation, evidence handling), and log structured adaptation entries to `voice-models/authors/{author}/adaptations.md`
 - `/refine-voice` skill — synthesise accumulated style adaptations into targeted voice model updates. Identifies recurring patterns across 5+ adaptation entries, proposes specific additions to the author's baseline or style modifier files, and applies only human-approved changes under a `## Learned Preferences` section
