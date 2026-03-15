@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed
+- `/posted` now takes a filename argument (e.g., `/posted article-2026-03-15-001.md`) instead of scanning all published files — faster and cheaper
+- `/posted` searches both `pipeline/050_published/` and `pipeline/archived/` for the source file
+- `/posted` performs a sanity check after the user pastes content, warning if the pasted text doesn't appear to match the source file
+
 ## [1.1.8] - 2026-03-15
 
 ### Added

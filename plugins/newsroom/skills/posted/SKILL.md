@@ -2,16 +2,67 @@
 name: posted
 description: Capture what was actually posted to a platform and analyse style divergence from the approved version — logs adaptation entries to the author's voice model for progressive refinement.
 disable-model-invocation: true
+argument-hint: "<filename>"
 allowed-tools: Read, Write, Edit, Bash, Task, Glob, Grep, AskUserQuestion
 ---
 
 <objective>
 Close the feedback loop between approved content and what actually gets posted. When the user posts content to a platform, they often make small tweaks — word choices, structural changes, tone shifts. This skill captures the posted version, performs a style-focused comparison against the approved version, and logs structured adaptation observations to the author's voice model directory. Over time, these observations feed into `/refine-voice` to progressively update the author's voice model.
+
+Usage: `/posted article-2026-03-15-001.md` or `/posted package-2026-03-10-002.md`
 </objective>
 
 <process>
 
-## Step 1: Receive Posted Content
+## Step 1: Locate the Source File
+
+The user must provide a filename as an argument (e.g., `article-2026-03-15-001.md` or `package-2026-03-10-002.md`). If no filename is provided, report:
+```
+Usage: /posted <filename>
+Example: /posted article-2026-03-15-001.md
+
+Provide the filename of the published or archived piece you posted.
+```
+And exit.
+
+Strip any path prefix the user may have included (e.g., `pipeline/050_published/article-...md` → `article-...md`).
+
+Search for the file in two locations, in order:
+1. `pipeline/050_published/{filename}`
+2. `pipeline/archived/{filename}`
+
+Use Read to attempt to load the file from `pipeline/050_published/` first. If it does not exist there, try `pipeline/archived/`.
+
+If the file is not found in either location, report:
+```
+File "{filename}" not found in pipeline/050_published/ or pipeline/archived/.
+
+Check the filename and try again. You can list available files with:
+  ls pipeline/050_published/
+  ls pipeline/archived/
+```
+And exit.
+
+Once found, record the full path (`source_path`) and read the file. Parse YAML frontmatter and extract:
+- `id`
+- `author`
+- `style`
+- `content_type` (articles) or `package_tier` (packages)
+- `published_date` or `archived_date`
+
+Also extract the headline from the first `#` heading in the markdown body (after frontmatter).
+
+Detect item type from frontmatter and filename:
+- Has `content_type` field, or filename starts with `article-` → **article**
+- Has `package_tier` field, or filename starts with `package-` → **package**
+
+Display the matched piece to the user:
+```
+Found: "{headline}" by {author}/{style} — {content_type or package_tier}
+Source: {source_path}
+```
+
+## Step 2: Receive Posted Content
 
 Use AskUserQuestion:
 
@@ -22,45 +73,38 @@ Use AskUserQuestion:
 
 Capture the pasted text. If the response is empty or fewer than 10 characters, re-ask once. If still empty, exit with: "No content received. Run /posted again when you have the text."
 
-## Step 2: Match to Published Piece
+## Step 3: Sanity Check
 
-Use Glob to find all files: `pipeline/050_published/*.md`
+Compare the pasted content against the source file's body text to verify the user pasted the right content. Extract the article body (for articles) or the full package content (for packages) from the source file.
 
-Read each file. Parse YAML frontmatter and extract:
-- `id`
-- `author`
-- `style`
-- `content_type` (articles) or `package_tier` (packages)
-- `published_date`
+Check for basic similarity: look for at least a few shared distinctive phrases, proper nouns, or data points between the pasted content and the source. A rough heuristic: extract the key noun phrases and named entities from both texts and check for overlap.
 
-Also extract the headline from the first `#` heading in the markdown body (after frontmatter).
+If the pasted content shares **very little** with the source (e.g., no recognisable phrases, names, or data points in common), display a warning:
 
-Detect item type from frontmatter and filename:
-- Has `content_type` field, or filename starts with `article-` → **article**
-- Has `package_tier` field, or filename starts with `package-` → **package**
-
-Filter to pieces published within the last 30 days (compare `published_date` to today's date).
-
-If no published pieces are found, report:
 ```
-No published content found in the last 30 days. Content must pass through the full pipeline before using /posted.
+⚠ The pasted content doesn't look like it matches "{headline}".
+
+The approved piece discusses: {2-3 key topics/phrases from the source}
+The pasted content discusses: {2-3 key topics/phrases from the pasted text}
+
+This may mean the wrong filename was provided, or the wrong content was pasted.
 ```
-And exit.
 
-Use AskUserQuestion to present matches:
+Use AskUserQuestion:
 
-**Question**: "Which published piece does this correspond to?"
+**Question**: "The pasted content doesn't appear to match the source file. Continue anyway?"
 
-**Options**: One option per recent published piece (max 6 — if more exist, show the 6 most recent first), formatted as:
+**Options**:
+- **Label**: "Continue" — **Description**: "Proceed with analysis — the content is correct despite the differences"
+- **Label**: "Cancel" — **Description**: "Exit so I can re-check the filename or pasted content"
 
-- **Label**: `{Headline}` (truncated to fit)
-- **Description**: `{author}/{style} — {content_type or package_tier} — {published_date}`
+If the user selects "Cancel", exit.
 
-If the user selects "Other", prompt them to specify a file path manually.
+If the content looks like a reasonable match (shares key topics, names, or data points), skip this warning and proceed.
 
-## Step 3: Package Format Selection (if applicable)
+## Step 4: Package Format Selection (if applicable)
 
-Read the matched published piece. Check if it has a `package_tier` field in its frontmatter.
+Check if the source piece has a `package_tier` field in its frontmatter.
 
 If it is a **package**:
 
@@ -77,7 +121,7 @@ Record the selected format name and extract just that format's content from the 
 
 If it is an **article**: skip this step. The full article body is the comparison target.
 
-## Step 4: Save Posted Version
+## Step 5: Save Posted Version
 
 Determine the next sequential number for today by scanning existing files in `pipeline/060_posted/` with pattern `posted-{YYYY-MM-DD}-*.md`.
 
@@ -103,10 +147,10 @@ status: pending-analysis
 
 ## Source Reference
 
-See `pipeline/050_published/{source-filename}` for the approved version.
+See `{source_path}` for the approved version.
 ```
 
-## Step 5: Style-Focused Comparison
+## Step 6: Style-Focused Comparison
 
 Extract the approved version text:
 - For **articles**: the full article body from the published file (everything between the frontmatter and the Production Metadata section)
@@ -207,7 +251,7 @@ Return your analysis in this exact format:
 
 If the subagent fails, update the posted file's status to `analysis-failed` and report the error. The posted content is still saved for future re-analysis.
 
-## Step 6: Log Adaptation Entry
+## Step 7: Log Adaptation Entry
 
 Parse the style analysis from the subagent's response (between `---STYLE_ANALYSIS---` and `---END_STYLE_ANALYSIS---`).
 
@@ -246,7 +290,7 @@ Append a new entry under the "## Unprocessed Entries" heading (before "## Proces
 - **confidence**: {confidence from analysis}
 ```
 
-## Step 7: Update Package Format Status (if applicable)
+## Step 8: Update Package Format Status (if applicable)
 
 If the source piece is a package and has `formats_published` in its frontmatter:
 
@@ -260,13 +304,13 @@ Read the published package file. Map the posted format heading to the correspond
 | Reusable Lines | `reusable_lines` |
 | LinkedIn Comment Version | `linkedin_comment` |
 
-Match the heading selected in Step 3 to the closest key in `formats_published`.
+Match the heading selected in Step 4 to the closest key in `formats_published`.
 
 Use Edit to update that format's `published: false` to `published: true` in the published piece's frontmatter.
 
 If the source is an article, skip this step.
 
-## Step 8: Update Posted File Status
+## Step 9: Update Posted File Status
 
 Edit the posted file's frontmatter to set `status: analysed`.
 
@@ -278,7 +322,7 @@ Append the full style analysis to the posted file after the "## Source Reference
 {The full analysis text from the subagent, excluding the delimiter tags}
 ```
 
-## Step 9: Summary Output
+## Step 10: Summary Output
 
 Count the total number of unprocessed adaptation entries for this author by reading the adaptations file.
 
@@ -290,7 +334,7 @@ Output:
 ### Matched to
 **{Headline}** by {author}/{style}
 Content type: {content_type or format name}
-Source: `pipeline/050_published/{source-filename}`
+Source: `{source_path}`
 
 ### Style Observations
 {The summary from the analysis}
@@ -306,12 +350,12 @@ Total unprocessed adaptations for {author}: **{count}**
 {If count < 5: "{5 - count} more entries needed before `/refine-voice` can synthesise patterns (minimum 5)."}
 ```
 
-## Step 10: Git Commit
+## Step 11: Git Commit
 
 Stage all new and modified files:
 - `pipeline/060_posted/{posted-file}.md`
 - `voice-models/authors/{author}/adaptations.md`
-- `pipeline/050_published/{source-file}.md` (only if formats_published was updated)
+- `{source_path}` (only if formats_published was updated)
 
 Commit with message:
 ```
@@ -324,10 +368,11 @@ Posted: "{headline}" by {author}
 
 ## Error Handling
 
-- **No published pieces found**: Report and exit cleanly. Suggest running the full pipeline first.
-- **User cannot identify which piece**: Allow "Other" with instructions to specify a file path manually. If the path doesn't exist, report the error and exit.
+- **No filename argument provided**: Display usage instructions and exit.
+- **File not found in published or archived**: Report the error with the filename, suggest `ls` commands to list available files, and exit.
 - **Pasted content is very short (< 10 characters)**: Re-ask once. If still too short, exit. Note: tweets are naturally short — don't reject based on length above the 10-char minimum.
-- **Style analysis subagent failure**: Save the posted content anyway (it has reference value). Set status to `analysis-failed`. Report the error and suggest re-running `/posted` with the same content.
+- **Sanity check fails and user cancels**: Exit cleanly. The user can re-run with the correct filename or content.
+- **Style analysis subagent failure**: Save the posted content anyway (it has reference value). Set status to `analysis-failed`. Report the error and suggest re-running `/posted` with the same filename.
 - **Author voice model files missing**: Proceed with analysis but instruct the subagent that baseline comparison was not possible. The analysis focuses purely on approved-vs-posted differences without voice model context.
 - **Adaptations file write conflict**: Read the file immediately before appending to get the latest state. Use sequential IDs based on the current count.
 - **Package format not found in formats_published**: Log a warning but don't fail. The format tracking may not match the section headings exactly.
