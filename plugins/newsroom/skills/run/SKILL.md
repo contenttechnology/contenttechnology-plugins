@@ -481,8 +481,8 @@ Prompt the production subagent with:
 - CRITICAL RULES: synthesis not summarisation, no AI tells, specific over general, earned opinions
 - Full brand guidelines, author baseline, style modifier
 - Full production brief (thesis, sources, structure guidance, voice notes, do-not-include list)
+- Target word count from brief — instruct the subagent that if `PUBLICATION.md` or `voice-models/brand-guidelines.md` specifies a different word length for this content type, the publication value takes priority over the brief's target
 - Full source material from signal reports
-- Target word count from brief
 - Output format: ---DRAFT_START--- / ---DRAFT_END--- with WORD_COUNT and PRODUCTION_NOTES
 
 ### 6. Save Article Draft
@@ -510,7 +510,7 @@ Read each signal file referenced in the brief's source inventory from `knowledge
 ### 5. Dispatch Package Production Subagent (Task, model: "sonnet")
 Prompt the production subagent with:
 - CRITICAL RULES: synthesis not summarisation, no AI tells, specific over general, format independence, no copy-paste between formats
-- Format-specific writing rules (standalone tweets: <280 chars, work without context; X threads: each tweet independently interesting, no numbering; LinkedIn posts: front-load insight, 120-250 words light / 300-500 words full; reusable lines: one sentence, "text to colleague" test; LinkedIn comment: 40-80 words, reference original)
+- Format-specific writing rules (standalone tweets: <280 chars, work without context; X threads: each tweet independently interesting, no numbering; LinkedIn posts: front-load insight, 120-250 words light / 300-500 words full; reusable lines: one sentence, "text to colleague" test; LinkedIn comment: 40-80 words, reference original) — instruct the subagent that any word lengths specified in `PUBLICATION.md` or `voice-models/brand-guidelines.md` override these defaults
 - Full brand guidelines, author baseline, style modifier
 - Full production brief (thesis, sources, structure guidance, voice notes, do-not-include list)
 - Full source material from signal reports

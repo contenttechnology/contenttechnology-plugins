@@ -239,7 +239,7 @@ Write a complete article draft that:
 2. Follows the structure guidance from the brief
 3. Sounds authentically like {new-author} writing in {new-style} mode
 4. Respects all brand voice constraints
-5. Falls within the target length: {word range}
+5. Falls within the target length: {word range} — if `PUBLICATION.md` or the brand guidelines above specify a different word length for this content type, the publication's value takes priority over this range
 6. Addresses the counter-arguments identified in the brief
 7. Delivers a clear "so what?" for the target audience: {audience segments}
 8. Avoids everything on the do-not-include list

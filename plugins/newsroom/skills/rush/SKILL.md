@@ -315,7 +315,7 @@ For a rush piece:
 - Close with what practitioners should do now and what to watch for next
 
 ## Target Length
-{Based on content type — typically 600-1,200 words for rush pieces. Enough to be substantive, short enough to be timely.}
+{Based on content type — typically 600-1,200 words for rush pieces. Enough to be substantive, short enough to be timely. If `PUBLICATION.md` or `voice-models/brand-guidelines.md` specifies a word length for this content type (or rush pieces specifically), use the publication value instead of the default above.}
 
 ## Output Format
 ---DRAFT_START---
