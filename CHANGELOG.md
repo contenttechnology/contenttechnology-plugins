@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+- Word-length precedence clarified across `/editorial`, `/produce`, `/rush`, `/run`, `/review`, and `/revoice` — lengths declared in `PUBLICATION.md` or `voice-models/brand-guidelines.md` now explicitly override the defaults baked into the skills and style modifiers
+- `/init` seeds optional "Word Lengths" sections in the generated `PUBLICATION.md` and `voice-models/brand-guidelines.md` so publications have a documented place to declare their own lengths; `FORMATTING.md`'s override list now calls out publication word lengths
+
 ## [1.1.9] - 2026-03-15
 
 ### Changed
