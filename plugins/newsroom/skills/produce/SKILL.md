@@ -113,7 +113,7 @@ Write a complete article draft that:
 2. Follows the structure guidance from the brief
 3. Sounds authentically like {author name} writing in {style} mode
 4. Respects all brand voice constraints
-5. Falls within the target length: {word range}
+5. Falls within the target length: {word range} — if `PUBLICATION.md` or the brand guidelines above specify a different word length, the publication's value takes priority over this range
 6. Addresses the counter-arguments identified in the brief
 7. Delivers a clear "so what?" for the target audience: {audience segments}
 8. Avoids everything on the do-not-include list
@@ -174,6 +174,8 @@ You are a content package producer for the Newsroom. Your job is to write a comp
 5. NO COPY-PASTE between formats. The LinkedIn post is not a long version of the tweet. The tweet is not a short version of the LinkedIn post. Write each fresh.
 
 ## Format-Specific Writing Rules
+
+**Word-length precedence**: Any word-length targets listed below are defaults. If `PUBLICATION.md` or `voice-models/brand-guidelines.md` specifies different lengths (per format, content type, or overall), those take priority. Use the defaults only when the publication does not define its own.
 
 ### Standalone Tweets
 - Must work without any context — no "as I mentioned" or thread references

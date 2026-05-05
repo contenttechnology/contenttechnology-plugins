@@ -38,7 +38,7 @@ Output the following banner to the user before proceeding:
 █░░█ █▀▀ █▄█▄█ ▀▀█ █▄▄▀ █░░█ █░░█ █░▀░█
 ▀░░▀ ▀▀▀ ░▀░▀░ ▀▀▀ ▀░▀▀ ▀▀▀▀ ▀▀▀▀ ▀░░░▀
 
-Editorial intelligence on autopilot (v1.1.9)
+Editorial intelligence on autopilot (v1.1.10)
 ```
 
 ## Step 1: Create Directory Structure
@@ -117,6 +117,16 @@ Content:
 - **Angle-first:** Content starts with a falsifiable thesis, not a topic. "New regulations are disproportionately burdening smaller players" is an angle. "Industry regulation trends" is not.
 - **Compounding knowledge:** Unusable source material is indexed and retained. The system gets smarter over time.
 - **Ruthless quality gates:** Most source material is unusable. Most angles are killed. This is by design.
+
+## Word Lengths (optional)
+
+If this publication has its own word-length preferences — per content type, per format, or overall — specify them here. Values declared in this file override any defaults defined in skills (e.g., `/editorial`, `/produce`, `/rush`) or in style modifiers. Example:
+
+- Deep Analysis: 2,000-3,000 words
+- Practitioner Insights: 500-700 words
+- LinkedIn post: 150-220 words
+
+Leave this section out entirely if the skill defaults are acceptable.
 
 ## Cycle Instructions
 
@@ -231,6 +241,7 @@ Global formatting rules applied to all content produced by this Newsroom. These 
 - Author voice and personality (baseline.md) — formatting shapes structure, not tone
 - Style modifier conventions (style-*.md) — if a style specifies "minimal section breaks", honour that
 - Brand guidelines (brand-guidelines.md) — brand rules always take precedence
+- Publication word lengths — if `PUBLICATION.md` or `voice-models/brand-guidelines.md` specifies word lengths (per content type, per format, or overall), those values override any length defaults in skills or style modifiers
 
 ## Output
 After creating all 3 files, confirm completion.
@@ -272,6 +283,10 @@ Write to `voice-models/brand-guidelines.md`. Use this exact content:
 - Disclose potential conflicts of interest
 - Never fabricate quotes, data points, or sources
 - Correct errors promptly and transparently
+
+## Word Lengths (optional)
+
+If the brand has global word-length preferences, specify them here. Values declared in this file — or in `PUBLICATION.md` — take priority over any word-length defaults in the skills (`/editorial`, `/produce`, `/rush`) and over "Length & Pacing" ranges in style modifiers. If neither this file nor `PUBLICATION.md` defines lengths, the skill defaults apply.
 
 ## File 2: knowledge-base/index.json
 

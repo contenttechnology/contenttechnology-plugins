@@ -6,6 +6,12 @@
 - `/run` orchestrator now pre-fetches `tool: xpull` sources from its own Bash before dispatching the research subagent, writing tweet JSON to `knowledge-base/sources/x-pulls/<beat-slug>-<date>.json`. Per-beat research subagents are instructed to read the pre-fetched file and must NOT invoke xpull, Skill, or `bun` themselves — eliminates two observed failure modes (rotated OAuth refresh tokens not persisting from subagent context, and fabricated tweet content when xpull silently fails)
 - `/run` continues without aborting if an xpull pre-fetch fails; the affected beat reports `---NO_NEW---` and the error is surfaced in the run report so the user can re-auth before the next run
 
+## [1.1.10] - 2026-04-22
+
+### Changed
+- Word-length precedence clarified across `/editorial`, `/produce`, `/rush`, `/run`, `/review`, and `/revoice` — lengths declared in `PUBLICATION.md` or `voice-models/brand-guidelines.md` now explicitly override the defaults baked into the skills and style modifiers
+- `/init` seeds optional "Word Lengths" sections in the generated `PUBLICATION.md` and `voice-models/brand-guidelines.md` so publications have a documented place to declare their own lengths; `FORMATTING.md`'s override list now calls out publication word lengths
+
 ## [1.1.9] - 2026-03-15
 
 ### Changed

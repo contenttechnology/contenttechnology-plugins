@@ -136,6 +136,7 @@ After selecting the author, read their `config.md` to determine `output_modes`:
      - Regulatory Watch: 600-1,000 words
      - Practitioner Insights: 400-800 words
      - Market Pulse: 300-600 words
+   - **Publication overrides these defaults**: if `PUBLICATION.md` or `voice-models/brand-guidelines.md` specifies word lengths (per content type or overall), use those instead. The ranges above are fallback defaults for publications that do not define their own.
 
 ### 5d. Package-Specific Decisions (when writing a package brief)
 

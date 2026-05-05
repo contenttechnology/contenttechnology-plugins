@@ -423,7 +423,7 @@ You are revising a draft that received human review feedback. Make ONLY the chan
 2. Do NOT rewrite sections that were not mentioned
 3. Preserve the author's voice and style throughout
 4. Maintain the original thesis and structure unless the feedback specifically asks for changes
-5. Keep the same approximate word count unless the feedback implies length changes
+5. Keep the same approximate word count unless the feedback implies length changes — if `PUBLICATION.md` or the brand guidelines above specify a word length for this content type, that publication value takes priority over the current draft's length
 
 ## Output Format
 ---REVISED_DRAFT---
