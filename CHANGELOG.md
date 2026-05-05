@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.11] - 2026-05-05
+
 ### Changed
 - `/run` orchestrator now pre-fetches `tool: xpull` sources from its own Bash before dispatching the research subagent, writing tweet JSON to `knowledge-base/sources/x-pulls/<beat-slug>-<date>.json`. Per-beat research subagents are instructed to read the pre-fetched file and must NOT invoke xpull, Skill, or `bun` themselves — eliminates two observed failure modes (rotated OAuth refresh tokens not persisting from subagent context, and fabricated tweet content when xpull silently fails)
 - `/run` continues without aborting if an xpull pre-fetch fails; the affected beat reports `---NO_NEW---` and the error is surfaced in the run report so the user can re-auth before the next run
