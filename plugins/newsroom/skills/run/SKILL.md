@@ -68,7 +68,27 @@ Write this to `metrics/run-{YYYY-MM-DD-HHmm}.md`, commit it, and exit.
 
 If neither, skip to Step 4.
 
-If work exists, dispatch a Task subagent (subagent_type: "general-purpose", model: "sonnet"):
+### Step 3a: Orchestrator-Level Pre-fetch for `tool: xpull` Sources
+
+Before dispatching the research subagent, scan all due beat configs for sources with `tool: xpull`. For each such source, run xpull from the orchestrator's own Bash (NOT from a subagent):
+
+```bash
+mkdir -p knowledge-base/sources/x-pulls
+cd ~/.claude/skills/xpull && bun run scripts/xpull.ts list <list_id> --limit <limit> --json \
+  > <project_root>/knowledge-base/sources/x-pulls/<beat-slug>-<YYYY-MM-DD>.json
+```
+
+Use `<list_id>` and `<limit>` from the beat source's `config` block. Use `<beat-slug>` from the beat's `slug` frontmatter field.
+
+**Why this matters**: xpull uses OAuth 2.0 rotating refresh tokens. Each successful call invalidates the prior refresh token and writes a new one to `~/.agents/skills/xpull/data/tokens.json`. The orchestrator's interactive Bash reliably persists this write. Subagent-context Bash invocations have historically failed to either persist the rotated token OR have produced fabricated tweet content when xpull fails — both modes have been observed. Centralising the call at the orchestrator eliminates both failure modes.
+
+**On failure**: If the xpull command exits non-zero, log the stderr and proceed without that beat's X data. Do NOT abort the run. The per-beat subagent will see a missing/empty JSON file and correctly report `---NO_NEW---` for that source. Surface the error in the final run report so the user can re-auth (`cd ~/.claude/skills/xpull && bun run scripts/xpull.ts auth`) before the next run.
+
+**On success**: Verify the JSON file is non-empty (`> 1KB`) and contains a tweet array. Note the resolved file path — you will pass it to the per-beat subagent in Step 3b's prompt.
+
+### Step 3b: Dispatch Research Subagent
+
+Dispatch a Task subagent (subagent_type: "general-purpose", model: "sonnet"):
 
 ```
 You are the Research Stage agent of an autonomous editorial pipeline run. Execute the full research cycle with zero human interaction.
@@ -79,12 +99,17 @@ You are the Research Stage agent of an autonomous editorial pipeline run. Execut
 ## Knowledge Base State
 {Paste knowledge-base/index.json contents — next_signal_id, processed_urls, processed_files}
 
+## Pre-fetched X Data (per beat)
+{For each beat that has a `tool: xpull` source and was successfully pre-fetched in Step 3a, list the resolved JSON path here, e.g.: `cre-proptech-on-x: knowledge-base/sources/x-pulls/cre-proptech-on-x-2026-05-05.json`. For beats whose pre-fetch failed, note the error so the per-beat subagent reports `---NO_NEW---` cleanly.}
+
 ## Your Task
 
 ### 1. Process Active Beats
 Read each of these beat config files and dispatch a research subagent (Task, model: "sonnet") per beat:
 
 {List active beat file paths}
+
+When a beat has a `tool: xpull` source, include the pre-fetched JSON path in the per-beat subagent's prompt under a "Pre-fetched X data" section. The subagent must read this file directly and must NOT invoke xpull.
 
 For each beat, the research subagent should:
 - Check each source URL against the processed_urls list — skip already-processed content
@@ -113,6 +138,7 @@ You are a research agent for the "{beat_name}" beat.
 Check each source for new content. Choose the access method based on the source's `tool` property:
 - **If the source has `tool: steel-browser` or `tool: steel-browser with playwright`**: You MUST use the Skill tool: `Skill(skill: "steel-browser", args: "<url>")`. Do NOT use WebFetch for these sources. Only fall back to WebFetch if the Skill call fails.
 - **If the source has `tool: agent-browser`**: You MUST use the Skill tool: `Skill(skill: "agent-browser", args: "<url>")`. Do NOT use WebFetch for these sources. Only fall back to WebFetch if the Skill call fails.
+- **If the source has `tool: xpull`**: DO NOT invoke xpull yourself, do NOT use Skill, do NOT shell out to `bun`, do NOT WebFetch the x.com URL. The orchestrator has pre-fetched the list to a local JSON file at the path provided in this prompt's "Pre-fetched X data" section (or, by convention, `knowledge-base/sources/x-pulls/<beat-slug>-<today>.json`). Read that file, parse the tweet array, and apply the beat's signal priorities. Each tweet has fields like `id`, `text`, `author_username`, `public_metrics`. Construct `source_url` as `https://x.com/i/web/status/<tweet_id>`. **Be honest**: most tweets in a 30-pull are noise. Report `---NO_NEW---` for the source if no genuine signal emerges. Do NOT fabricate engagement metrics, content, or summaries.
 - **If the source has no `tool` property (default)**: Use WebFetch for web pages and RSS feeds, WebSearch for search-based sources.
 
 For each new piece found, report:
